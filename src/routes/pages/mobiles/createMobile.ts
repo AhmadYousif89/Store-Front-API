@@ -1,0 +1,30 @@
+import { Router, Request, Response } from "express";
+import { mobileStore } from "../../../models/mobile";
+import { uuid } from "../../../utils/control";
+
+// method => POST /create
+// desc   => Create new mobile data.
+export const createMobile = Router().post(
+  "/products/mobiles/create/:brand/:model/:price/:maker/:com",
+  async (req: Request, res: Response): Promise<void> => {
+    const params = {
+      brand_name: req.params.brand,
+      model_name: req.params.model,
+      price: req.params.price as unknown as number,
+      manufacturer: req.params.maker,
+      made_in: req.params.com,
+    };
+    try {
+      const data = await mobileStore.createMob(params);
+      // console.log(
+      //   `params:
+      //   ${params.brand_name} ${params.model_name} ${params.price}
+      //   ${params.manufacturer} ${params.made_in}`
+      // );
+      res.status(201).json(data);
+    } catch (err) {
+      res.status(400).send(err);
+      console.error(err);
+    }
+  }
+);
