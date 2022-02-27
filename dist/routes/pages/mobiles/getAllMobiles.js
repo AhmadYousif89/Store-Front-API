@@ -15,7 +15,7 @@ exports.getMobiles = (0, express_1.Router)().get("/products/mobiles", async (_re
         res.status(200).json(data);
     }
     catch (err) {
-        res.status(404).json(err);
+        res.status(404).json({ msg: "Data not found !" });
         console.error(err);
     }
 });

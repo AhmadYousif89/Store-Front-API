@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mobile_1 = require("../models/mobile");
+const appSpec_1 = require("./appSpec");
 describe("Testing mobile Model functions: \n", () => {
     it("should have a get all mobiles method", () => {
         expect(mobile_1.mobileStore.getAllMobs).toBeDefined();
@@ -18,43 +19,11 @@ describe("Testing mobile Model functions: \n", () => {
         expect(mobile_1.mobileStore.delMob).toBeDefined();
     });
     describe("Testing SQL functions: \n ", () => {
-        let mobId;
         it("should return a list of all mobiles", async () => {
             const result = await mobile_1.mobileStore.getAllMobs();
-            if (result) {
-                mobId = result[0].mob_uid;
-            }
             expect(result).toEqual([
                 {
-                    mob_uid: mobId,
-                    brand_name: "Galaxy",
-                    model_name: "S20",
-                    manufacturer: "SAMSUNG",
-                    price: 1100,
-                    made_in: "SK",
-                },
-            ]);
-            console.log("all mobiles");
-        });
-        it("should return the correct mobile by ID", async () => {
-            const result = await mobile_1.mobileStore.getMobById(mobId);
-            expect(result).toEqual([
-                {
-                    mob_uid: mobId,
-                    brand_name: "Galaxy",
-                    model_name: "S20",
-                    manufacturer: "SAMSUNG",
-                    price: 1100,
-                    made_in: "SK",
-                },
-            ]);
-            console.log("one mobile");
-        });
-        it(`should update the price to = (900) for mobile by ID`, async () => {
-            const result = await mobile_1.mobileStore.updateMob(mobId, 900);
-            expect(result).toEqual([
-                {
-                    mob_uid: mobId,
+                    mob_uid: appSpec_1.mobId,
                     brand_name: "Galaxy",
                     model_name: "S20",
                     manufacturer: "SAMSUNG",
@@ -62,12 +31,48 @@ describe("Testing mobile Model functions: \n", () => {
                     made_in: "SK",
                 },
             ]);
+            console.log("all mobiles");
+        });
+        it("should return the correct mobile by ID", async () => {
+            const result = await mobile_1.mobileStore.getMobById(appSpec_1.mobId);
+            expect(result).toEqual([
+                {
+                    mob_uid: appSpec_1.mobId,
+                    brand_name: "Galaxy",
+                    model_name: "S20",
+                    manufacturer: "SAMSUNG",
+                    price: 900,
+                    made_in: "SK",
+                },
+            ]);
+            console.log("one mobile");
+        });
+        it(`should update the price to = (500) for mobile by ID`, async () => {
+            const result = await mobile_1.mobileStore.updateMob(appSpec_1.mobId, 1000);
+            expect(result).toEqual([
+                {
+                    mob_uid: appSpec_1.mobId,
+                    brand_name: "Galaxy",
+                    model_name: "S20",
+                    manufacturer: "SAMSUNG",
+                    price: 1000,
+                    made_in: "SK",
+                },
+            ]);
             console.log("update mobile");
         });
         it(`should delete the selected mobile by ID`, async () => {
-            mobile_1.mobileStore.delMob(mobId);
-            const result = await mobile_1.mobileStore.getAllMobs();
-            expect(result).toEqual([]);
+            const result = await mobile_1.mobileStore.delMob(appSpec_1.mobId);
+            expect(result).toEqual([
+                {
+                    mob_uid: appSpec_1.mobId,
+                    brand_name: "Galaxy",
+                    model_name: "S20",
+                    manufacturer: "SAMSUNG",
+                    price: 1000,
+                    made_in: "SK",
+                },
+            ]);
             console.log("delete mobile");
         });
     });

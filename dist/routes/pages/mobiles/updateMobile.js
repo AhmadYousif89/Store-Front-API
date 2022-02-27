@@ -16,7 +16,7 @@ exports.updateMobile = (0, express_1.Router)().put("/products/mobiles/update/:id
         res.status(200).json(data);
     }
     catch (err) {
-        res.status(400).json(err);
+        res.status(400).json({ msg: "Can't update mobile !" });
         console.error(err);
     }
 });

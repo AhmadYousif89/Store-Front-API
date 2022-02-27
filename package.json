@@ -13,7 +13,7 @@
     "lint": "eslint src/**/*.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "test-migrate-up": "SET ENV=test && db-migrate -e test up",
-    "test-migrate-down": "SET ENV=test && db-migrate -e test down",
+    "test-migrate-down": "SET ENV=test && db-migrate -e test down -c 2",
     "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test down -c 2"
   },
   "keywords": [],

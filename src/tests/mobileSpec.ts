@@ -1,4 +1,5 @@
 import { mobileStore } from "../models/mobile";
+import { mobId } from "./appSpec";
 
 describe("Testing mobile Model functions: \n", () => {
   it("should have a get all mobiles method", () => {
@@ -22,19 +23,15 @@ describe("Testing mobile Model functions: \n", () => {
   });
 
   describe("Testing SQL functions: \n ", () => {
-    let mobId: string | undefined;
     it("should return a list of all mobiles", async () => {
       const result = await mobileStore.getAllMobs();
-      if (result) {
-        mobId = result[0].mob_uid;
-      }
       expect(result).toEqual([
         {
           mob_uid: mobId,
           brand_name: "Galaxy",
           model_name: "S20",
           manufacturer: "SAMSUNG",
-          price: 1100,
+          price: 900,
           made_in: "SK",
         },
       ]);
@@ -49,22 +46,22 @@ describe("Testing mobile Model functions: \n", () => {
           brand_name: "Galaxy",
           model_name: "S20",
           manufacturer: "SAMSUNG",
-          price: 1100,
+          price: 900,
           made_in: "SK",
         },
       ]);
       console.log("one mobile");
     });
 
-    it(`should update the price to = (900) for mobile by ID`, async () => {
-      const result = await mobileStore.updateMob(mobId as string, 900);
+    it(`should update the price to = (500) for mobile by ID`, async () => {
+      const result = await mobileStore.updateMob(mobId as string, 1000);
       expect(result).toEqual([
         {
           mob_uid: mobId,
           brand_name: "Galaxy",
           model_name: "S20",
           manufacturer: "SAMSUNG",
-          price: 900,
+          price: 1000,
           made_in: "SK",
         },
       ]);
@@ -72,9 +69,17 @@ describe("Testing mobile Model functions: \n", () => {
     });
 
     it(`should delete the selected mobile by ID`, async () => {
-      mobileStore.delMob(mobId as string);
-      const result = await mobileStore.getAllMobs();
-      expect(result).toEqual([]);
+      const result = await mobileStore.delMob(mobId as string);
+      expect(result).toEqual([
+        {
+          mob_uid: mobId,
+          brand_name: "Galaxy",
+          model_name: "S20",
+          manufacturer: "SAMSUNG",
+          price: 1000,
+          made_in: "SK",
+        },
+      ]);
       console.log("delete mobile");
     });
   });

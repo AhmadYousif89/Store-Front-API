@@ -1,4 +1,5 @@
 import { userStore } from "./../models/users";
+import { userId, userPw } from "./appSpec";
 
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
@@ -18,15 +19,8 @@ describe("Testing user Model functions: \n", () => {
   });
 
   describe("Testing SQL functions: \n ", () => {
-    let userId: string | undefined, userPw: string;
     it("should get all data and extract user Id and Password", async () => {
       const result = await userStore.getAllUsers();
-      if (result) {
-        userId = result[0].u_uid;
-        console.log(`user id extracted: ${userId}`);
-        userPw = result[0].u_password;
-        console.log(`user pw extracted: ${userPw}`);
-      }
       expect(result).toEqual([
         {
           u_uid: userId,
@@ -49,26 +43,29 @@ describe("Testing user Model functions: \n", () => {
       console.log("one user");
     });
 
-    it(`should update the password to = abc for specific user by ID`, async () => {
-      await userStore.updateUser(userId as string, "abc");
-      const user = await userStore.getUserById(userId as string);
-      if (user) {
-        const userPw = user[0].u_password;
-        expect(user).toEqual([
-          {
-            u_uid: userId,
-            u_name: "Ali",
-            u_password: userPw,
-          },
-        ]);
-      }
+    let updatedUserPw: string;
+    it(`should update the password to = 123 for specific user by ID`, async () => {
+      const user = await userStore.updateUser(userId as string, "123");
+      updatedUserPw = user[0].u_password;
+      expect(user).toEqual([
+        {
+          u_uid: userId,
+          u_name: "Ali",
+          u_password: updatedUserPw,
+        },
+      ]);
       console.log("update user");
     });
 
     it("should delete the selected user by ID", async () => {
-      userStore.delUser(userId as string);
-      const result = await userStore.getAllUsers();
-      expect(result).toEqual([]);
+      const result = await userStore.delUser(userId as string);
+      expect(result).toEqual([
+        {
+          u_uid: userId,
+          u_name: "Ali",
+          u_password: updatedUserPw,
+        },
+      ]);
       console.log("delete user");
     });
   });

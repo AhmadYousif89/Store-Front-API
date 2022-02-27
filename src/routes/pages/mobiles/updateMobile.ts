@@ -17,7 +17,7 @@ export const updateMobile = Router().put(
       const data = await mobileStore.updateMob(mob_uid, price);
       res.status(200).json(data);
     } catch (err) {
-      res.status(400).json(err);
+      res.status(400).json({ msg: "Can't update mobile !" });
       console.error(err);
     }
   }

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const users_1 = require("./../models/users");
+const appSpec_1 = require("./appSpec");
 describe("Testing user Model functions: \n", () => {
     it("should have a get all users method", () => {
         expect(users_1.userStore.getAllUsers).toBeDefined();
@@ -18,54 +19,50 @@ describe("Testing user Model functions: \n", () => {
         expect(users_1.userStore.delUser).toBeDefined();
     });
     describe("Testing SQL functions: \n ", () => {
-        let userId, userPw;
         it("should get all data and extract user Id and Password", async () => {
             const result = await users_1.userStore.getAllUsers();
-            if (result) {
-                userId = result[0].u_uid;
-                console.log(`user id extracted: ${userId}`);
-                userPw = result[0].u_password;
-                console.log(`user pw extracted: ${userPw}`);
-            }
             expect(result).toEqual([
                 {
-                    u_uid: userId,
+                    u_uid: appSpec_1.userId,
                     u_name: "Ali",
-                    u_password: userPw,
+                    u_password: appSpec_1.userPw,
                 },
             ]);
             console.log("all users");
         });
         it("should return the correct user by ID", async () => {
-            const result = await users_1.userStore.getUserById(userId);
+            const result = await users_1.userStore.getUserById(appSpec_1.userId);
             expect(result).toEqual([
                 {
-                    u_uid: userId,
+                    u_uid: appSpec_1.userId,
                     u_name: "Ali",
-                    u_password: userPw,
+                    u_password: appSpec_1.userPw,
                 },
             ]);
             console.log("one user");
         });
-        it(`should update the password to = abc for specific user by ID`, async () => {
-            await users_1.userStore.updateUser(userId, "abc");
-            const user = await users_1.userStore.getUserById(userId);
-            if (user) {
-                const userPw = user[0].u_password;
-                expect(user).toEqual([
-                    {
-                        u_uid: userId,
-                        u_name: "Ali",
-                        u_password: userPw,
-                    },
-                ]);
-            }
+        let updatedUserPw;
+        it(`should update the password to = 123 for specific user by ID`, async () => {
+            const user = await users_1.userStore.updateUser(appSpec_1.userId, "123");
+            updatedUserPw = user[0].u_password;
+            expect(user).toEqual([
+                {
+                    u_uid: appSpec_1.userId,
+                    u_name: "Ali",
+                    u_password: updatedUserPw,
+                },
+            ]);
             console.log("update user");
         });
         it("should delete the selected user by ID", async () => {
-            users_1.userStore.delUser(userId);
-            const result = await users_1.userStore.getAllUsers();
-            expect(result).toEqual([]);
+            const result = await users_1.userStore.delUser(appSpec_1.userId);
+            expect(result).toEqual([
+                {
+                    u_uid: appSpec_1.userId,
+                    u_name: "Ali",
+                    u_password: updatedUserPw,
+                },
+            ]);
             console.log("delete user");
         });
     });

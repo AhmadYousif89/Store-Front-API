@@ -15,14 +15,13 @@ export const createMobile = Router().post(
     };
     console.log(
       `params:
-      ${params.brand_name} ${params.model_name} ${params.price}
-      ${params.manufacturer} ${params.made_in}`
+      ${params.brand_name} ${params.model_name} ${params.price} ${params.manufacturer} ${params.made_in}`
     );
     try {
       const data = await mobileStore.createMob(params);
       res.status(201).json(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).json({ msg: "Can't create mobile !" });
       console.error(err);
     }
   }

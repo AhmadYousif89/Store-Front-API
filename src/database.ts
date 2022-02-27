@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-import "dotenv/config";
 
 const { PG_PORT, PG_USER, PG_HOST, PG_DB, PG_DB_TEST, PG_PASSWORD, ENV } = process.env;
 
