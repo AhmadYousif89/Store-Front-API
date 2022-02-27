@@ -8,12 +8,12 @@ export const updateMobile = Router().put(
   async (req: Request, res: Response): Promise<void> => {
     const mob_uid = req.params.id;
     const price = req.params.price as unknown as number;
+    console.log(
+      `params: 
+      ${mob_uid} 
+      ${price}`
+    );
     try {
-      console.log(
-        `params: 
-        ${mob_uid} 
-        ${price}`
-      );
       const data = await mobileStore.updateMob(mob_uid, price);
       res.status(200).json(data);
     } catch (err) {

@@ -3,18 +3,22 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "repository": {
+    "url": "https://github.com/AhmadYousif89/Store-Front-API.git"
+  },
   "scripts": {
-    "start": "npx nodemon src/app.ts ",
-    "build": "npx tsc -w",
-    "lint": "eslint . --ext .ts",
+    "start": "npm run build && node dist/app.js",
+    "dev": "npx nodemon src/app.ts",
+    "build": "tsc -w",
+    "lint": "eslint src/**/*.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-    "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test down -c 2",
-    "up-t-tables": "SET ENV=test && db-migrate -e test up",
-    "down-t-tables": "SET ENV=test && db-migrate -e test down -c 2"
+    "test-migrate-up": "SET ENV=test && db-migrate -e test up",
+    "test-migrate-down": "SET ENV=test && db-migrate -e test down",
+    "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test down -c 2"
   },
   "keywords": [],
   "author": "Ahmad Yousif",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "db-migrate": "^0.11.13",

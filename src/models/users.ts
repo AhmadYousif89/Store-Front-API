@@ -1,5 +1,5 @@
 import pgClient from "../database";
-import { encrypt, isPwValide, Users } from "./../utils/control";
+import { encrypt, Users } from "./../utils/control";
 
 class UsersStore {
   async getAllUsers(): Promise<Users[]> {
@@ -42,24 +42,6 @@ class UsersStore {
     }
   }
 
-  async validateUser(u_name: string, u_password: string): Promise<Users[] | null> {
-    try {
-      const conct = await pgClient.connect();
-      const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
-      const result = await conct.query(sql, [u_name]);
-      if (result.rows.length) {
-        const user = result.rows[0];
-        console.log(user);
-        if (isPwValide(u_password, user.u_password)) {
-          return user;
-        }
-      }
-      return null;
-    } catch (err) {
-      throw new Error(`Can't update user with name (${u_name}) from table Users \n\n ${err}`);
-    }
-  }
-
   async updateUser(u_uid: string, u_password: string): Promise<Users[]> {
     try {
       const conct = await pgClient.connect();
@@ -81,7 +63,7 @@ class UsersStore {
       const result = await conct.query(sql, [u_uid]);
       conct.release();
       console.log(result.command, result.rowCount, result.rows[0]);
-      return result.rows[0];
+      return result.rows;
     } catch (err) {
       throw new Error(`can't delete user with id ${u_uid} from table users \n ${err}`);
     }

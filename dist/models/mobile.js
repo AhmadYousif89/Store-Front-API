@@ -90,7 +90,7 @@ class MobileStore {
             const result = await conct.query(sql, [mob_uid]);
             conct.release();
             console.log(result.command, result.rowCount, result.rows[0]);
-            return result.rows[0];
+            return result.rows;
         }
         catch (err) {
             throw new Error(`Can't delete mobile with id (${mob_uid}) from table mobiles \n\n ${err}`);

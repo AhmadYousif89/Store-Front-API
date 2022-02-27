@@ -7,13 +7,17 @@ const users_1 = require("../../../models/users");
 // desc   => Delete a specific user.
 exports.deleteUser = (0, express_1.Router)().delete("/users/delete/:id", async (req, res) => {
     const u_uid = req.params.id;
+    console.log("params: \n", u_uid);
     try {
-        console.log("params: \n", u_uid);
         const data = await users_1.userStore.delUser(u_uid);
+        if (data.length === 0) {
+            res.status(404).json({ msg: `User with ID ${u_uid} Doesn't Exist !` });
+            return;
+        }
         res.status(200).json(data);
     }
     catch (err) {
-        res.status(404).json(err);
+        res.status(404).json({ msg: "Data not found !" });
         console.error(err);
     }
 });

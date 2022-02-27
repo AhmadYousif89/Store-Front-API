@@ -10,10 +10,7 @@ const users_1 = require("./../models/users");
 const mobile_1 = require("../models/mobile");
 const port = process.env.SERVER_PORT;
 exports.route = (0, supertest_1.default)(app_1.default);
-describe("Testing our Application Functionality: \n", () => {
-    it("test", () => {
-        expect(1).toBe(1);
-    });
+describe("Testing Application Functionality: \n", () => {
     beforeAll(async () => {
         await users_1.userStore.createUser({
             u_name: "Ali",
@@ -31,11 +28,13 @@ describe("Testing our Application Functionality: \n", () => {
     });
     describe("Testing app end points: \n", () => {
         let mobId;
-        it("should get all mobiles", async () => {
+        it("should extract mobile Id", async () => {
             const mob = await mobile_1.mobileStore.getAllMobs();
             if (mob) {
                 mobId = mob[0].mob_uid;
             }
+            expect(mob[0].mob_uid).toEqual(mobId);
+            console.log(`mob id extracted: ${mobId}`);
         });
         it(`server should be running on http://localhost:${port} with status code 200`, async () => {
             const response = await exports.route.get("/");
@@ -62,9 +61,27 @@ describe("Testing our Application Functionality: \n", () => {
                 },
             ]);
         });
-        it(`should update one product price to (900) where id = (${mobId}) /products/mobiles/update/${mobId}/900`, async () => {
+        it(`should update one product price to (900) by Id /products/mobiles/update/${mobId}/900`, async () => {
             const response = await exports.route.get(`/products/mobiles/update/${mobId}/900`);
             expect(response.body).toEqual({});
+        });
+        it(`should authenticate user and retrive password`, async () => {
+            const user = await users_1.userStore.getAllUsers();
+            if (user) {
+                const userPw = user[0].u_password;
+                const response = await exports.route.get(`/auth/Ali/123`);
+                expect(response.body).toEqual({
+                    u_password: userPw,
+                });
+            }
+        });
+        it(`should not authenticate user and display error message`, async () => {
+            const response = await exports.route.get(`/auth/Ali/abc`);
+            expect(response.body).toEqual("Invalid password or User Name");
+        });
+        it(`should not authenticate user and display error message`, async () => {
+            const response = await exports.route.get(`/auth/Mido/123`);
+            expect(response.body).toEqual("Invalid password or User Name");
         });
     });
 });

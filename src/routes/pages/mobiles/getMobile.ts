@@ -5,10 +5,10 @@ import { mobileStore } from "../../../models/mobile";
 // desc   => Return a specific mobile.
 export const getMobById = Router().get(
   "/products/mobiles/:id",
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     const mob_uid = req.params.id;
+    console.log("params: ", mob_uid);
     try {
-      console.log("params: ", mob_uid);
       const data = await mobileStore.getMobById(mob_uid);
       res.status(200).json(data);
     } catch (err) {

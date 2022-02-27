@@ -27,17 +27,17 @@ describe("Testing mobile Model functions: \n", () => {
       const result = await mobileStore.getAllMobs();
       if (result) {
         mobId = result[0].mob_uid;
-        expect(result).toEqual([
-          {
-            mob_uid: mobId,
-            brand_name: "Galaxy",
-            model_name: "S20",
-            manufacturer: "SAMSUNG",
-            price: 1100,
-            made_in: "SK",
-          },
-        ]);
       }
+      expect(result).toEqual([
+        {
+          mob_uid: mobId,
+          brand_name: "Galaxy",
+          model_name: "S20",
+          manufacturer: "SAMSUNG",
+          price: 1100,
+          made_in: "SK",
+        },
+      ]);
       console.log("all mobiles");
     });
 
@@ -56,7 +56,7 @@ describe("Testing mobile Model functions: \n", () => {
       console.log("one mobile");
     });
 
-    it("should update the price to = (900) for specific mobile by ID", async () => {
+    it(`should update the price to = (900) for mobile by ID`, async () => {
       const result = await mobileStore.updateMob(mobId as string, 900);
       expect(result).toEqual([
         {
@@ -71,7 +71,7 @@ describe("Testing mobile Model functions: \n", () => {
       console.log("update mobile");
     });
 
-    it("should delete the selected mobile by ID", async () => {
+    it(`should delete the selected mobile by ID`, async () => {
       mobileStore.delMob(mobId as string);
       const result = await mobileStore.getAllMobs();
       expect(result).toEqual([]);

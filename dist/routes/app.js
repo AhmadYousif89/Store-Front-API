@@ -18,6 +18,7 @@ const createUser_1 = require("./pages/users.ts/createUser");
 const getAllUsers_1 = require("./pages/users.ts/getAllUsers");
 const updateUser_1 = require("./pages/users.ts/updateUser");
 const deleteUser_1 = require("./pages/users.ts/deleteUser");
+const authUser_1 = require("./pages/users.ts/authUser");
 exports.routes = (0, express_1.Router)();
 exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), products_1.products);
 exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), getAllMobiles_1.getMobiles);
@@ -30,3 +31,4 @@ exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), getUser_1.getUserByI
 exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), createUser_1.createUser);
 exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), updateUser_1.updateUser);
 exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), deleteUser_1.deleteUser);
+exports.routes.use("/", (0, cors_1.default)(app_1.corsOps), authUser_1.authUser);

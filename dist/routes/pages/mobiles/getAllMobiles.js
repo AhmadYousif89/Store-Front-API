@@ -8,6 +8,10 @@ const mobile_1 = require("../../../models/mobile");
 exports.getMobiles = (0, express_1.Router)().get("/products/mobiles", async (_req, res) => {
     try {
         const data = await mobile_1.mobileStore.getAllMobs();
+        if (data.length === 0) {
+            res.status(404).json({ msg: `No Mobiles Were Found !` });
+            return;
+        }
         res.status(200).json(data);
     }
     catch (err) {

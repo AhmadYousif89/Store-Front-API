@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { mobileStore } from "../../../models/mobile";
-import { uuid } from "../../../utils/control";
 
 // method => POST /create
 // desc   => Create new mobile data.
@@ -14,13 +13,13 @@ export const createMobile = Router().post(
       manufacturer: req.params.maker,
       made_in: req.params.com,
     };
+    console.log(
+      `params:
+      ${params.brand_name} ${params.model_name} ${params.price}
+      ${params.manufacturer} ${params.made_in}`
+    );
     try {
       const data = await mobileStore.createMob(params);
-      // console.log(
-      //   `params:
-      //   ${params.brand_name} ${params.model_name} ${params.price}
-      //   ${params.manufacturer} ${params.made_in}`
-      // );
       res.status(201).json(data);
     } catch (err) {
       res.status(400).send(err);

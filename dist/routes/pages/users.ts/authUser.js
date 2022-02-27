@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authUser = void 0;
 const express_1 = require("express");
-const authentication_1 = require("../../models/authentication");
+const authentication_1 = require("../../../models/authentication");
 // method => GET /auth
 // desc   => Authenticate user data.
 exports.authUser = (0, express_1.Router)().get("/auth/:name/:pw", async (req, res) => {
@@ -13,14 +13,10 @@ exports.authUser = (0, express_1.Router)().get("/auth/:name/:pw", async (req, re
       ${u_password}`);
     try {
         const data = await (0, authentication_1.validateUser)(u_name, u_password);
-        if (data.length === 0) {
-            res.json({ msg: `Invalid User Name or Password !` });
-            return;
-        }
         res.status(200).json(data);
     }
     catch (err) {
-        res.status(401).json({ msg: "Data Not Found !" });
+        res.status(404).json({ msg: "Data Not Found !" });
         console.error(err);
     }
 });

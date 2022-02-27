@@ -19,19 +19,21 @@ describe("Testing user Model functions: \n", () => {
 
   describe("Testing SQL functions: \n ", () => {
     let userId: string | undefined, userPw: string;
-    it("should return a list of all users", async () => {
+    it("should get all data and extract user Id and Password", async () => {
       const result = await userStore.getAllUsers();
       if (result) {
         userId = result[0].u_uid;
+        console.log(`user id extracted: ${userId}`);
         userPw = result[0].u_password;
-        expect(result).toEqual([
-          {
-            u_uid: userId,
-            u_name: "Ali",
-            u_password: userPw,
-          },
-        ]);
+        console.log(`user pw extracted: ${userPw}`);
       }
+      expect(result).toEqual([
+        {
+          u_uid: userId,
+          u_name: "Ali",
+          u_password: userPw,
+        },
+      ]);
       console.log("all users");
     });
 

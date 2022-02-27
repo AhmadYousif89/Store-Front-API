@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 
-const app: express.Application = express();
+const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 // app.use(express.static("public"));

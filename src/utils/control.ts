@@ -14,19 +14,13 @@ export type Users = {
   u_password: string;
 };
 
-// const { SALT, PEPPER } = process.env;
+const { SALT, PEPPER } = process.env;
 
 export const encrypt = (password: string): string => {
-  // password = salt + PEPPER;
-  const salt = bCrypt.genSaltSync(10);
-  const hash = bCrypt.hashSync(password, salt);
+  const hash = bCrypt.hashSync(password + PEPPER, parseInt(SALT as string));
   return hash;
 };
 
-// console.log(encrypt("123"));
-
 export const isPwValide = (password: string, hashed: string): boolean | null => {
-  return bCrypt.compareSync(password, hashed);
+  return bCrypt.compareSync(password + PEPPER, hashed);
 };
-
-// console.log(userMatchPw("123", "$2b$10$E8bAZojjglA/yBJ7QJrTouwytf8rt5aqvnkzqitinqZW.3Ou6CVdS"));

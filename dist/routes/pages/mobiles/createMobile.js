@@ -13,13 +13,11 @@ exports.createMobile = (0, express_1.Router)().post("/products/mobiles/create/:b
         manufacturer: req.params.maker,
         made_in: req.params.com,
     };
+    console.log(`params:
+      ${params.brand_name} ${params.model_name} ${params.price}
+      ${params.manufacturer} ${params.made_in}`);
     try {
         const data = await mobile_1.mobileStore.createMob(params);
-        // console.log(
-        //   `params:
-        //   ${params.brand_name} ${params.model_name} ${params.price}
-        //   ${params.manufacturer} ${params.made_in}`
-        // );
         res.status(201).json(data);
     }
     catch (err) {

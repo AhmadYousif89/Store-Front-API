@@ -8,10 +8,10 @@ const mobile_1 = require("../../../models/mobile");
 exports.updateMobile = (0, express_1.Router)().put("/products/mobiles/update/:id/:price", async (req, res) => {
     const mob_uid = req.params.id;
     const price = req.params.price;
+    console.log(`params: 
+      ${mob_uid} 
+      ${price}`);
     try {
-        console.log(`params: 
-        ${mob_uid} 
-        ${price}`);
         const data = await mobile_1.mobileStore.updateMob(mob_uid, price);
         res.status(200).json(data);
     }

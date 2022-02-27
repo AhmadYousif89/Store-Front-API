@@ -12,6 +12,7 @@ import { createUser } from "./pages/users.ts/createUser";
 import { getUsers } from "./pages/users.ts/getAllUsers";
 import { updateUser } from "./pages/users.ts/updateUser";
 import { deleteUser } from "./pages/users.ts/deleteUser";
+import { authUser } from "./pages/users.ts/authUser";
 
 export const routes = Router();
 
@@ -27,3 +28,5 @@ routes.use("/", cors(corsOps), getUserById);
 routes.use("/", cors(corsOps), createUser);
 routes.use("/", cors(corsOps), updateUser);
 routes.use("/", cors(corsOps), deleteUser);
+
+routes.use("/", cors(corsOps), authUser);

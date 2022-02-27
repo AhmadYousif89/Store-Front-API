@@ -47,24 +47,6 @@ class UsersStore {
             throw new Error(`Can't insert into table Users \n\n ${err}`);
         }
     }
-    async validateUser(u_name, u_password) {
-        try {
-            const conct = await database_1.default.connect();
-            const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
-            const result = await conct.query(sql, [u_name]);
-            if (result.rows.length) {
-                const user = result.rows[0];
-                console.log(user);
-                if ((0, control_1.isPwValide)(u_password, user.u_password)) {
-                    return user;
-                }
-            }
-            return null;
-        }
-        catch (err) {
-            throw new Error(`Can't update user with name (${u_name}) from table Users \n\n ${err}`);
-        }
-    }
     async updateUser(u_uid, u_password) {
         try {
             const conct = await database_1.default.connect();
@@ -86,7 +68,7 @@ class UsersStore {
             const result = await conct.query(sql, [u_uid]);
             conct.release();
             console.log(result.command, result.rowCount, result.rows[0]);
-            return result.rows[0];
+            return result.rows;
         }
         catch (err) {
             throw new Error(`can't delete user with id ${u_uid} from table users \n ${err}`);
