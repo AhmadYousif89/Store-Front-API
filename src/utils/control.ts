@@ -8,16 +8,20 @@ type Error = {
 };
 type Mobile = {
   mob_uid?: string;
-  brand_name: string;
-  model_name: string;
-  manufacturer: string;
-  price: number;
-  made_in: string;
+  brand_name?: string;
+  model_name?: string;
+  manufacturer?: string;
+  price?: number;
+  made_in?: string;
+  msg?: string;
+  data?: string | object;
 };
 type Users = {
   u_uid?: string;
-  u_name: string;
-  u_password: string;
+  u_name?: string;
+  u_password?: string;
+  msg?: string;
+  data?: string | object;
 };
 
 const { SALT, PEPPER } = process.env;

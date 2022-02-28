@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = exports.StoreDB = void 0;
 const database_1 = __importDefault(require("../database"));
-database_1.default;
 class StoreDB {
     async createTestDB() {
         try {
@@ -16,7 +15,7 @@ class StoreDB {
             console.log("DB_test created");
         }
         catch (err) {
-            throw new Error(`can't create database tech_store_test \n ${err}`);
+            throw new Error(`can't create database tech_store_test \n ${err.message}`);
         }
     }
     async dropTestDB() {
@@ -28,7 +27,7 @@ class StoreDB {
             console.log("DB_test droped");
         }
         catch (err) {
-            throw new Error(`can't drop database tech_store_test \n ${err}`);
+            throw new Error(`can't drop database tech_store_test \n ${err.message}`);
         }
     }
     async createTableMobiles() {
@@ -48,7 +47,7 @@ class StoreDB {
             console.log("Table created");
         }
         catch (err) {
-            throw new Error(`can't create table mobiles \n ${err}`);
+            throw new Error(`can't create table mobiles \n ${err.message}`);
         }
     }
     async createTableUsers() {
@@ -65,7 +64,7 @@ class StoreDB {
             console.log("Table created");
         }
         catch (err) {
-            throw new Error(`can't create table users \n ${err}`);
+            throw new Error(`can't create table users \n ${err.message}`);
         }
     }
     async dropTables() {
@@ -77,7 +76,7 @@ class StoreDB {
             console.log("Tables droped");
         }
         catch (err) {
-            throw new Error(`can't drop tables from database ${process.env.PG_DB_TEST} \n ${err}`);
+            throw new Error(`can't drop tables from database ${process.env.PG_DB_TEST} \n ${err.message}`);
         }
     }
 }

@@ -2,12 +2,12 @@ import app from "../app";
 import supertest from "supertest";
 import { userStore } from "./../models/users";
 import { mobileStore } from "../models/mobile";
+import { validateUser } from "../models/authentication";
 
 const port = process.env.SERVER_PORT;
 export const route = supertest(app);
 export let mobId: string | undefined;
 export let userId: string | undefined;
-export let userPw: string;
 
 describe("Testing Application Functionality: \n", () => {
   describe("Testing app end points: \n", () => {
@@ -15,13 +15,10 @@ describe("Testing Application Functionality: \n", () => {
       const user = await userStore.getAllUsers();
       if (user) {
         userId = user[0].u_uid;
-        userPw = user[0].u_password;
       }
       expect(user[0].u_uid).toEqual(userId);
-      expect(user[0].u_password).toEqual(userPw);
       setTimeout(() => {
         console.log(`user id extracted: ${userId}`);
-        console.log(`user pw extracted: ${userPw} \n`);
       }, 1);
     });
 
@@ -33,7 +30,7 @@ describe("Testing Application Functionality: \n", () => {
       expect(mob[0].mob_uid).toEqual(mobId);
       setTimeout(() => {
         console.log(`mob id extracted: ${mobId} \n`);
-      }, 0);
+      }, 1);
     });
 
     it(`server should be running on http://localhost:${port} with status code 200`, async () => {
@@ -64,22 +61,26 @@ describe("Testing Application Functionality: \n", () => {
 
     it(`should get all data from table mobiles`, async () => {
       const response = await route.get(`/products/mobiles`);
-      expect(response.body).toEqual([
-        {
-          mob_uid: mobId,
-          brand_name: "Galaxy",
-          model_name: "S20",
-          manufacturer: "SAMSUNG",
-          price: 1100,
-          made_in: "SK",
-        },
-      ]);
+      expect(response.body).toEqual({
+        msg: "data generated successfuly",
+        data: [
+          {
+            mob_uid: mobId,
+            brand_name: "Galaxy",
+            model_name: "S20",
+            manufacturer: "SAMSUNG",
+            price: 1100,
+            made_in: "SK",
+          },
+        ],
+      });
     });
 
     it(`should get one item from table mobiles by ID`, async () => {
       const response = await route.get(`/products/mobiles/${mobId}`);
-      expect(response.body).toEqual([
-        {
+      expect(response.body).toEqual({
+        msg: "mobile generated successfuly",
+        data: {
           mob_uid: mobId,
           brand_name: "Galaxy",
           model_name: "S20",
@@ -87,13 +88,14 @@ describe("Testing Application Functionality: \n", () => {
           price: 1100,
           made_in: "SK",
         },
-      ]);
+      });
     });
 
     it(`should update one item price to (900) by ID`, async () => {
       const response = await route.put(`/products/mobiles/update/${mobId}/900`);
-      expect(response.body).toEqual([
-        {
+      expect(response.body).toEqual({
+        msg: "Mobile updated successfuly",
+        data: {
           mob_uid: mobId,
           brand_name: "Galaxy",
           model_name: "S20",
@@ -101,7 +103,7 @@ describe("Testing Application Functionality: \n", () => {
           price: 900,
           made_in: "SK",
         },
-      ]);
+      });
     });
 
     beforeAll(async () => {
@@ -112,57 +114,46 @@ describe("Testing Application Functionality: \n", () => {
 
     it("should get all users from table users", async () => {
       const result = await route.get(`/users`);
-      expect(result.body).toEqual([
-        {
-          u_uid: userId,
-          u_name: "Ali",
-          u_password: userPw,
-        },
-      ]);
+      expect(result.body).toEqual({
+        msg: "data generated successfuly",
+        data: [
+          {
+            u_uid: userId,
+            u_name: "Ali",
+          },
+        ],
+      });
     });
 
     it("should get one user from table users by ID", async () => {
       const result = await route.get(`/users/${userId}`);
-      expect(result.body).toEqual([
-        {
+      expect(result.body).toEqual({
+        msg: "user generated successfuly",
+        data: {
           u_uid: userId,
           u_name: "Ali",
-          u_password: userPw,
         },
-      ]);
+      });
     });
 
     it("should update one user and SET password to = (abc)", async () => {
       const user = await route.put(`/users/update/${userId}/abc`);
-      userPw = user.body[0].u_password;
-      expect(user.body).toEqual([
-        {
-          u_uid: userId,
-          u_name: "Ali",
-          u_password: userPw,
-        },
-      ]);
+      expect(user.body).toEqual({
+        msg: "User updated successfuly",
+        data: { u_uid: userId, u_name: "Ali" },
+      });
     });
 
     it(`should authenticate user and retrive password`, async () => {
-      const user = await userStore.getAllUsers();
-      if (user) {
-        const userPw = user[0].u_password;
-        const response = await route.get(`/auth/Ali/abc`);
-        expect(response.body).toEqual({
-          u_password: userPw,
-        });
-      }
-    });
-
-    it(`should not authenticate user and display error message`, async () => {
-      const response = await route.get(`/auth/Ali/123`);
-      expect(response.body).toEqual("Invalid password or User Name");
-    });
-
-    it(`should not authenticate user and display error message`, async () => {
+      const user = await validateUser("Ali", "abc");
       const response = await route.get(`/auth/Ali/abc`);
-      expect(response.body).not.toEqual("Invalid password or User Name");
+      expect(response.body).toEqual(user);
+    });
+
+    it(`should not authenticate user and display error message`, async () => {
+      const user = await validateUser("Ali", "123");
+      const response = await route.get(`/auth/Ali/123`);
+      expect(response.body).toEqual(user);
     });
   });
 });

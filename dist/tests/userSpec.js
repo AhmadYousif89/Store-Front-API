@@ -25,44 +25,35 @@ describe("Testing user Model functions: \n", () => {
                 {
                     u_uid: appSpec_1.userId,
                     u_name: "Ali",
-                    u_password: appSpec_1.userPw,
                 },
             ]);
             console.log("all users");
         });
         it("should return the correct user by ID", async () => {
             const result = await users_1.userStore.getUserById(appSpec_1.userId);
-            expect(result).toEqual([
-                {
-                    u_uid: appSpec_1.userId,
-                    u_name: "Ali",
-                    u_password: appSpec_1.userPw,
-                },
-            ]);
+            expect(result).toEqual({
+                u_uid: appSpec_1.userId,
+                u_name: "Ali",
+            });
             console.log("one user");
         });
-        let updatedUserPw;
         it(`should update the password to = 123 for specific user by ID`, async () => {
             const user = await users_1.userStore.updateUser(appSpec_1.userId, "123");
-            updatedUserPw = user[0].u_password;
-            expect(user).toEqual([
-                {
+            expect(user).toEqual({
+                msg: "User updated successfuly",
+                data: {
                     u_uid: appSpec_1.userId,
                     u_name: "Ali",
-                    u_password: updatedUserPw,
                 },
-            ]);
+            });
             console.log("update user");
         });
         it("should delete the selected user by ID", async () => {
             const result = await users_1.userStore.delUser(appSpec_1.userId);
-            expect(result).toEqual([
-                {
-                    u_uid: appSpec_1.userId,
-                    u_name: "Ali",
-                    u_password: updatedUserPw,
-                },
-            ]);
+            expect(result).toEqual({
+                u_uid: appSpec_1.userId,
+                u_name: "Ali",
+            });
             console.log("delete user");
         });
     });

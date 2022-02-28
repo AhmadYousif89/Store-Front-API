@@ -5,7 +5,7 @@ const errorHandler = (error: Error, _req: Request, res: Response, next: NextFunc
   const status = error.status || 500;
   const message = error.message || "Oops, Something went wrong !";
   res.status(status).json({ status, message });
-  next();
+  // next();
 };
 
 export default errorHandler;

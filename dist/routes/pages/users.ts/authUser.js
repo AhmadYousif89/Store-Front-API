@@ -5,7 +5,7 @@ const express_1 = require("express");
 const authentication_1 = require("../../../models/authentication");
 // method => GET /auth
 // desc   => Authenticate user data.
-exports.authUser = (0, express_1.Router)().get("/auth/:name/:pw", async (req, res) => {
+exports.authUser = (0, express_1.Router)().get("/auth/:name/:pw", async (req, res, next) => {
     const u_name = req.params.name;
     const u_password = req.params.pw;
     console.log(`params:
@@ -16,7 +16,6 @@ exports.authUser = (0, express_1.Router)().get("/auth/:name/:pw", async (req, re
         res.status(200).json(data);
     }
     catch (err) {
-        res.status(404).json({ msg: "Data Not Found !" });
-        console.error(err);
+        next(err);
     }
 });

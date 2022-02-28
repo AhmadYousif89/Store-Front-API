@@ -1,11 +1,11 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { mobileStore } from "../../../models/mobile";
 
 // method => PUT /edit/:id
 // desc   => Update a specific mobile .
 export const updateMobile = Router().put(
   "/products/mobiles/update/:id/:price",
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const mob_uid = req.params.id;
     const price = req.params.price as unknown as number;
     console.log(
@@ -15,10 +15,12 @@ export const updateMobile = Router().put(
     );
     try {
       const data = await mobileStore.updateMob(mob_uid, price);
+      if (!data) {
+        res.status(404).json(data);
+      }
       res.status(200).json(data);
     } catch (err) {
-      res.status(400).json({ msg: "Can't update mobile !" });
-      console.error(err);
+      next(err);
     }
   }
 );

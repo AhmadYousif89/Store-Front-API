@@ -35,22 +35,21 @@ describe("Testing mobile Model functions: \n", () => {
         });
         it("should return the correct mobile by ID", async () => {
             const result = await mobile_1.mobileStore.getMobById(appSpec_1.mobId);
-            expect(result).toEqual([
-                {
-                    mob_uid: appSpec_1.mobId,
-                    brand_name: "Galaxy",
-                    model_name: "S20",
-                    manufacturer: "SAMSUNG",
-                    price: 900,
-                    made_in: "SK",
-                },
-            ]);
+            expect(result).toEqual({
+                mob_uid: appSpec_1.mobId,
+                brand_name: "Galaxy",
+                model_name: "S20",
+                manufacturer: "SAMSUNG",
+                price: 900,
+                made_in: "SK",
+            });
             console.log("one mobile");
         });
         it(`should update the price to = (500) for mobile by ID`, async () => {
             const result = await mobile_1.mobileStore.updateMob(appSpec_1.mobId, 1000);
-            expect(result).toEqual([
-                {
+            expect(result).toEqual({
+                msg: "Mobile updated successfuly",
+                data: {
                     mob_uid: appSpec_1.mobId,
                     brand_name: "Galaxy",
                     model_name: "S20",
@@ -58,21 +57,19 @@ describe("Testing mobile Model functions: \n", () => {
                     price: 1000,
                     made_in: "SK",
                 },
-            ]);
+            });
             console.log("update mobile");
         });
         it(`should delete the selected mobile by ID`, async () => {
             const result = await mobile_1.mobileStore.delMob(appSpec_1.mobId);
-            expect(result).toEqual([
-                {
-                    mob_uid: appSpec_1.mobId,
-                    brand_name: "Galaxy",
-                    model_name: "S20",
-                    manufacturer: "SAMSUNG",
-                    price: 1000,
-                    made_in: "SK",
-                },
-            ]);
+            expect(result).toEqual({
+                mob_uid: appSpec_1.mobId,
+                brand_name: "Galaxy",
+                model_name: "S20",
+                manufacturer: "SAMSUNG",
+                price: 1000,
+                made_in: "SK",
+            });
             console.log("delete mobile");
         });
     });

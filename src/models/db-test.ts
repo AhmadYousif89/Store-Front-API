@@ -1,33 +1,34 @@
-import pgClient from "../database";
-pgClient;
+import pgDB from "../database";
+import { Error } from "../utils/control";
+
 export class StoreDB {
   async createTestDB(): Promise<void> {
     try {
-      const conn = await pgClient.connect();
+      const conn = await pgDB.connect();
       const sql = "CREATE DATABASE tech_store_test;";
       conn.query(sql);
       conn.release();
       console.log("DB_test created");
     } catch (err) {
-      throw new Error(`can't create database tech_store_test \n ${err}`);
+      throw new Error(`can't create database tech_store_test \n ${(err as Error).message}`);
     }
   }
 
   async dropTestDB(): Promise<void> {
     try {
-      const conn = await pgClient.connect();
+      const conn = await pgDB.connect();
       const sql = "DROP DATABASE tech_store_test;";
       conn.query(sql);
       conn.release();
       console.log("DB_test droped");
     } catch (err) {
-      throw new Error(`can't drop database tech_store_test \n ${err}`);
+      throw new Error(`can't drop database tech_store_test \n ${(err as Error).message}`);
     }
   }
 
   async createTableMobiles(): Promise<void> {
     try {
-      const conn = await pgClient.connect();
+      const conn = await pgDB.connect();
       const sql = `
       CREATE TABLE mobiles (
       mob_uid UUID PRIMARY KEY,
@@ -41,13 +42,13 @@ export class StoreDB {
       conn.release();
       console.log("Table created");
     } catch (err) {
-      throw new Error(`can't create table mobiles \n ${err}`);
+      throw new Error(`can't create table mobiles \n ${(err as Error).message}`);
     }
   }
 
   async createTableUsers(): Promise<void> {
     try {
-      const conn = await pgClient.connect();
+      const conn = await pgDB.connect();
       const sql = `
       CREATE TABLE mobiles (
       u_uid UUID PRIMARY KEY,
@@ -58,19 +59,21 @@ export class StoreDB {
       conn.release();
       console.log("Table created");
     } catch (err) {
-      throw new Error(`can't create table users \n ${err}`);
+      throw new Error(`can't create table users \n ${(err as Error).message}`);
     }
   }
 
   async dropTables(): Promise<void> {
     try {
-      const conn = await pgClient.connect();
+      const conn = await pgDB.connect();
       const sql = "DROP TABLE mobile , user;";
       await conn.query(sql);
       conn.release();
       console.log("Tables droped");
     } catch (err) {
-      throw new Error(`can't drop tables from database ${process.env.PG_DB_TEST} \n ${err}`);
+      throw new Error(
+        `can't drop tables from database ${process.env.PG_DB_TEST} \n ${(err as Error).message}`
+      );
     }
   }
 }

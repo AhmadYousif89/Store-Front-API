@@ -1,11 +1,11 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { mobileStore } from "../../../models/mobile";
 
 // method => POST /create
 // desc   => Create new mobile data.
 export const createMobile = Router().post(
   "/products/mobiles/create/:brand/:model/:price/:maker/:com",
-  async (req: Request, res: Response): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const params = {
       brand_name: req.params.brand,
       model_name: req.params.model,
@@ -19,10 +19,12 @@ export const createMobile = Router().post(
     );
     try {
       const data = await mobileStore.createMob(params);
+      if (!data) {
+        res.status(404).json(data);
+      }
       res.status(201).json(data);
     } catch (err) {
-      res.status(400).json({ msg: "Can't create mobile !" });
-      console.error(err);
+      next(err);
     }
   }
 );

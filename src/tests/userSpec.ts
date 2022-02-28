@@ -1,5 +1,5 @@
 import { userStore } from "./../models/users";
-import { userId, userPw } from "./appSpec";
+import { userId } from "./appSpec";
 
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
@@ -25,7 +25,6 @@ describe("Testing user Model functions: \n", () => {
         {
           u_uid: userId,
           u_name: "Ali",
-          u_password: userPw,
         },
       ]);
       console.log("all users");
@@ -33,39 +32,31 @@ describe("Testing user Model functions: \n", () => {
 
     it("should return the correct user by ID", async () => {
       const result = await userStore.getUserById(userId as string);
-      expect(result).toEqual([
-        {
-          u_uid: userId,
-          u_name: "Ali",
-          u_password: userPw,
-        },
-      ]);
+      expect(result).toEqual({
+        u_uid: userId,
+        u_name: "Ali",
+      });
       console.log("one user");
     });
 
-    let updatedUserPw: string;
     it(`should update the password to = 123 for specific user by ID`, async () => {
       const user = await userStore.updateUser(userId as string, "123");
-      updatedUserPw = user[0].u_password;
-      expect(user).toEqual([
-        {
+      expect(user).toEqual({
+        msg: "User updated successfuly",
+        data: {
           u_uid: userId,
           u_name: "Ali",
-          u_password: updatedUserPw,
         },
-      ]);
+      });
       console.log("update user");
     });
 
     it("should delete the selected user by ID", async () => {
       const result = await userStore.delUser(userId as string);
-      expect(result).toEqual([
-        {
-          u_uid: userId,
-          u_name: "Ali",
-          u_password: updatedUserPw,
-        },
-      ]);
+      expect(result).toEqual({
+        u_uid: userId,
+        u_name: "Ali",
+      });
       console.log("delete user");
     });
   });

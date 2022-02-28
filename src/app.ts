@@ -1,6 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
-import { routes } from "./routes/app";
+import { routes } from "./routes/app.routes";
 import express, { Request, Response } from "express";
 import errorHandler from "./routes/middlewares/error.middleware";
 
@@ -9,7 +9,12 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 // app.use(express.static("public"));
 app.use(express.json());
-app.use(cors());
+
+export const corsOptions = {
+  origin: process.env.PG_HOST,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use("/", routes);
 
@@ -24,11 +29,6 @@ app.use((_req: Request, res: Response) => {
     msg: "Please read our API documention to know how to use the application, Good Luck !",
   });
 });
-
-export const corsOptions = {
-  origin: process.env.PG_HOST,
-  optionsSuccessStatus: 200,
-};
 
 const port = process.env.SERVER_PORT || 2020;
 

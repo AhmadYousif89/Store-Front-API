@@ -1,23 +1,25 @@
-import pgClient from "../database";
-import { isPwValide, Users } from "../utils/control";
+import pgDB from "../database";
+import { Error, isPwValide, Users } from "../utils/control";
 
-export const validateUser = async (
-  u_name: string,
-  u_password: string
-): Promise<Users[] | string> => {
+// Authentication function.
+export const validateUser = async (u_name: string, u_password: string): Promise<Users | string> => {
   try {
-    const conct = await pgClient.connect();
+    const conct = await pgDB.connect();
     const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
     const result = await conct.query(sql, [u_name]);
+    // checking for data.
     if (result.rows.length) {
       const user = result.rows[0];
+      // checking user password authenticity.
       if (isPwValide(u_password, user.u_password)) {
-        console.log("user pw is : ", user);
-        return user;
+        return { msg: "User authenticated successfully", data: user };
       }
     }
-    return `Invalid password or User Name`;
+    return { msg: "Authentication failed !", data: "Invalid password or User Name" };
   } catch (err) {
-    throw new Error(`Can't validate user with name (${u_name}) from table Users \n\n ${err}`);
+    // handling error
+    throw new Error(
+      `Can't validate user with name |${u_name}| from table Users \n ${(err as Error).message}`
+    );
   }
 };

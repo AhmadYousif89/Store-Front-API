@@ -12,8 +12,10 @@
     "build": "tsc -w",
     "lint": "eslint src/**/*.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-    "test-migrate-up": "SET ENV=test && db-migrate -e test up",
-    "test-migrate-down": "SET ENV=test && db-migrate -e test down -c 2",
+    "migrate-up": "db-migrate up",
+    "migrate-down": "db-migrate down -c 2",
+    "test:migrate-up": "SET ENV=test && db-migrate -e test up",
+    "test:migrate-down": "SET ENV=test && db-migrate -e test down -c 2",
     "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test down -c 2"
   },
   "keywords": [],
@@ -24,6 +26,7 @@
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
     "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3"
   },
   "devDependencies": {
