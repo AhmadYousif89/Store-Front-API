@@ -34,11 +34,11 @@ class UsersStore {
       throw new Error(`Unable to create new User (${values.u_name}) \n ${(err as Error).message}`);
     }
   }
-  // Get users without their password. (as it consider sensitive information)
+  // Get users
   async getAllUsers(): Promise<Users[]> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_uid , u_name FROM users `;
+      const sql = `SELECT * FROM users `;
       const result = await conct.query(sql);
       conct.release();
       console.log(result.command, result.rowCount, result.rows, "\n");
@@ -101,7 +101,7 @@ class UsersStore {
     }
   }
   // Delete user
-  async delUser(u_uid: string): Promise<Users> {
+  async delUser(u_uid: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM users WHERE u_uid = ($1) RETURNING u_uid , u_name`;
@@ -116,17 +116,14 @@ class UsersStore {
         };
       }
       conct.release();
-      return {
-        msg: "Delete failed !",
-        data: `User with id (${u_uid}) doesn't exist`,
-      };
+      return null;
     } catch (err) {
       throw new Error(
         `can't delete user with id ${u_uid} from table users \n ${(err as Error).message}`
       );
     }
   }
-  // Authentication function.
+  // Authenticate user.
   async validateUser(u_name: string, u_password: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
@@ -137,6 +134,7 @@ class UsersStore {
         const user = result.rows[0];
         // checking user password authenticity.
         if (isPwValide(u_password, user.u_password)) {
+          console.log(user);
           return user;
         }
       }
@@ -152,3 +150,4 @@ class UsersStore {
 }
 
 export const userStore = new UsersStore();
+// userStore.validateUser("aaa", "123");

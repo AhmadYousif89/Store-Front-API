@@ -1,7 +1,12 @@
 import { mobileStore } from "../models/mobile";
+import { mobile } from "./appSpec";
 
-let mobId: string | undefined;
+let mobId = "";
+
 describe("Testing mobile Model functions: \n", () => {
+  // beforeAll(async () => {
+
+  // });
   it("should have a get all mobiles method", () => {
     expect(mobileStore.getAllMobs).toBeDefined();
   });
@@ -24,13 +29,7 @@ describe("Testing mobile Model functions: \n", () => {
 
   describe("Testing SQL functions: \n ", () => {
     it(`should create new mobile`, async () => {
-      const result = await mobileStore.createMob({
-        brand_name: "Galaxy",
-        model_name: "S20",
-        manufacturer: "SAMSUNG",
-        price: 900,
-        made_in: "SK",
-      });
+      const result = await mobileStore.createMob(mobile);
       expect(result).toEqual({
         msg: "Mobile created successfuly",
         ...result,
@@ -40,15 +39,15 @@ describe("Testing mobile Model functions: \n", () => {
 
     it("should return a list of all mobiles", async () => {
       const result = await mobileStore.getAllMobs();
-      mobId = result[0].mob_uid;
+      mobId = result[0].mob_uid as string;
       expect(result).toEqual([
         {
           mob_uid: mobId,
-          brand_name: "Galaxy",
-          model_name: "S20",
-          manufacturer: "SAMSUNG",
-          price: 900,
-          made_in: "SK",
+          brand_name: mobile.brand_name,
+          model_name: mobile.model_name,
+          manufacturer: mobile.manufacturer,
+          price: mobile.price,
+          made_in: mobile.made_in,
         },
       ]);
       console.log("all mobiles");
@@ -58,11 +57,11 @@ describe("Testing mobile Model functions: \n", () => {
       const result = await mobileStore.getMobById(mobId as string);
       expect(result).toEqual({
         mob_uid: mobId,
-        brand_name: "Galaxy",
-        model_name: "S20",
-        manufacturer: "SAMSUNG",
-        price: 900,
-        made_in: "SK",
+        brand_name: mobile.brand_name,
+        model_name: mobile.model_name,
+        manufacturer: mobile.manufacturer,
+        price: mobile.price,
+        made_in: mobile.made_in,
       });
       console.log("one mobile");
     });
@@ -73,11 +72,11 @@ describe("Testing mobile Model functions: \n", () => {
         msg: "Mobile updated successfuly",
         data: {
           mob_uid: mobId,
-          brand_name: "Galaxy",
-          model_name: "S20",
-          manufacturer: "SAMSUNG",
+          brand_name: mobile.brand_name,
+          model_name: mobile.model_name,
+          manufacturer: mobile.manufacturer,
           price: 500,
-          made_in: "SK",
+          made_in: mobile.made_in,
         },
       });
       console.log("update mobile");
@@ -89,11 +88,11 @@ describe("Testing mobile Model functions: \n", () => {
         msg: "Mobile deleted successfuly",
         data: {
           mob_uid: mobId,
-          brand_name: "Galaxy",
-          model_name: "S20",
-          manufacturer: "SAMSUNG",
+          brand_name: mobile.brand_name,
+          model_name: mobile.model_name,
+          manufacturer: mobile.manufacturer,
           price: 500,
-          made_in: "SK",
+          made_in: mobile.made_in,
         },
       });
       console.log("delete mobile");

@@ -1,6 +1,9 @@
 import { userStore } from "./../models/users";
+import { user } from "./appSpec";
 
-let userId: string;
+let userId = "";
+let userPw = "";
+
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
     expect(userStore.getAllUsers).toBeDefined();
@@ -24,10 +27,7 @@ describe("Testing user Model functions: \n", () => {
 
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
-      const result = await userStore.createUser({
-        u_name: "Ali",
-        u_password: "123",
-      });
+      const result = await userStore.createUser(user);
       expect(result).toEqual({
         msg: "User created successfuly",
         ...result,
@@ -38,13 +38,20 @@ describe("Testing user Model functions: \n", () => {
     it("should get all data and extract user Id", async () => {
       const result = await userStore.getAllUsers();
       userId = result[0].u_uid as string;
+      userPw = result[0].u_password as string;
       expect(result).toEqual([
         {
           u_uid: userId,
-          u_name: "Ali",
+          u_name: user.u_name,
+          u_password: userPw,
         },
       ]);
       console.log("all users");
+    });
+
+    it("should get the count of rows in users table to equal (1) user", async () => {
+      const result = await userStore.getAllUsers();
+      expect(result.length).toEqual(1);
     });
 
     it("should return the correct user by ID", async () => {
@@ -53,7 +60,7 @@ describe("Testing user Model functions: \n", () => {
         msg: "User generated successfully",
         data: {
           u_uid: userId,
-          u_name: "Ali",
+          u_name: user.u_name,
         },
       });
       console.log("one user");
@@ -65,10 +72,26 @@ describe("Testing user Model functions: \n", () => {
         msg: "User updated successfuly",
         data: {
           u_uid: userId,
-          u_name: "Ali",
+          u_name: user.u_name,
         },
       });
       console.log("update user");
+    });
+
+    it(`should authenticate user by name and password`, async () => {
+      const result = await userStore.validateUser(user.u_name as string, "123");
+      const upw = result?.u_password;
+      expect(result).toEqual({
+        u_uid: userId,
+        u_name: user.u_name,
+        u_password: upw,
+      });
+      console.log("validate user");
+    });
+
+    it(`should not authenticate user and return null`, async () => {
+      const result = await userStore.validateUser(user.u_name as string, "abc");
+      expect(result).toBeNull();
     });
 
     it("should delete the selected user by ID", async () => {
@@ -77,7 +100,7 @@ describe("Testing user Model functions: \n", () => {
         msg: "User deleted successfuly",
         data: {
           u_uid: userId,
-          u_name: "Ali",
+          u_name: user.u_name,
         },
       });
       console.log("delete user");

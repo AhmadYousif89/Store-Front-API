@@ -60,6 +60,7 @@ const loginUser = Router().post(
       }
       res.status(200).json({
         msg: "User authenticated successfully",
+        data: user,
         token,
       });
     } catch (err) {
@@ -86,7 +87,7 @@ const getUsers = Router().get(
   }
 );
 
-// method => GET /users/:id
+// method => GET /users/id
 // desc   => Return a specific user.
 const getUserById = Router().get(
   "/users/id",
@@ -112,7 +113,7 @@ const getUserById = Router().get(
   }
 );
 
-// method => PUT /users/:id
+// method => PUT /users
 // desc   => Update a specific user .
 const updateUser = Router().put(
   "/users",
@@ -141,10 +142,10 @@ const updateUser = Router().put(
   }
 );
 
-// method => DELETE /users/:id
+// method => DELETE /users/id
 // desc   => Delete a specific user.
 const deleteUser = Router().delete(
-  "/users",
+  "/users/id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { uid } = req.body;
     console.log("params: \n", uid);
@@ -156,7 +157,10 @@ const deleteUser = Router().delete(
       }
       const data = await userStore.delUser(uid);
       if (!data) {
-        res.status(404).json(data);
+        res.status(404).json({
+          msg: "Delete failed !",
+          data: `User with id (${uid}) doesn't exist`,
+        });
         return;
       }
       res.status(200).json(data);

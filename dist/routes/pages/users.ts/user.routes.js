@@ -54,6 +54,7 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
         }
         res.status(200).json({
             msg: "User authenticated successfully",
+            data: user,
             token,
         });
     }
@@ -76,7 +77,7 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
         next(err);
     }
 });
-// method => GET /users/:id
+// method => GET /users/id
 // desc   => Return a specific user.
 const getUserById = (0, express_1.Router)().get("/users/id", async (req, res, next) => {
     const { uid } = req.body;
@@ -99,7 +100,7 @@ const getUserById = (0, express_1.Router)().get("/users/id", async (req, res, ne
         next(err);
     }
 });
-// method => PUT /users/:id
+// method => PUT /users
 // desc   => Update a specific user .
 const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) => {
     const { uid, password } = req.body;
@@ -123,9 +124,9 @@ const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) 
         next(err);
     }
 });
-// method => DELETE /users/:id
+// method => DELETE /users/id
 // desc   => Delete a specific user.
-const deleteUser = (0, express_1.Router)().delete("/users", async (req, res, next) => {
+const deleteUser = (0, express_1.Router)().delete("/users/id", async (req, res, next) => {
     const { uid } = req.body;
     console.log("params: \n", uid);
     try {
@@ -136,7 +137,10 @@ const deleteUser = (0, express_1.Router)().delete("/users", async (req, res, nex
         }
         const data = await users_1.userStore.delUser(uid);
         if (!data) {
-            res.status(404).json(data);
+            res.status(404).json({
+                msg: "Delete failed !",
+                data: `User with id (${uid}) doesn't exist`,
+            });
             return;
         }
         res.status(200).json(data);
