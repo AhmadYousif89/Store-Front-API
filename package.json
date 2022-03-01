@@ -7,16 +7,16 @@
     "url": "https://github.com/AhmadYousif89/Store-Front-API.git"
   },
   "scripts": {
-    "start": "npm run build && node dist/app.js",
-    "dev": "npx nodemon src/app.ts",
     "build": "tsc -w",
-    "lint": "eslint src/**/*.ts",
+    "dev": "npx nodemon src/app.ts",
+    "start": "npm run build && node dist/app.js",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
+    "lint": "eslint src/**/*.ts",
     "migrate-up": "db-migrate up",
-    "migrate-down": "db-migrate down -c 2",
+    "migrate-down": "db-migrate reset",
     "test:migrate-up": "SET ENV=test && db-migrate -e test up",
-    "test:migrate-down": "SET ENV=test && db-migrate -e test down -c 2",
-    "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test down -c 2"
+    "test:migrate-down": "SET ENV=test && db-migrate -e test reset",
+    "test": "SET ENV=test && db-migrate -e test up && tsc && jasmine && db-migrate -e test reset"
   },
   "keywords": [],
   "author": "Ahmad Yousif",
@@ -34,6 +34,7 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jasmine": "^3.10.3",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.18",
     "@types/pg": "^8.6.4",
     "@types/supertest": "^2.0.11",

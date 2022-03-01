@@ -70,7 +70,7 @@ class StoreDB {
     async dropTables() {
         try {
             const conn = await database_1.default.connect();
-            const sql = "DROP TABLE mobile , user;";
+            const sql = "DROP TABLE mobiles , users , migrations;";
             await conn.query(sql);
             conn.release();
             console.log("Tables droped");

@@ -1,21 +1,19 @@
 import app from "../app";
+import JWT from "jsonwebtoken";
 import supertest from "supertest";
 import { userStore } from "./../models/users";
 import { mobileStore } from "../models/mobile";
-import { validateUser } from "../models/authentication";
 
-const port = process.env.SERVER_PORT;
+const { SERVER_PORT, SECRET_TOKEN } = process.env;
 export const route = supertest(app);
-export let mobId: string | undefined;
-export let userId: string | undefined;
+let mobId: string | undefined;
+let userId: string | undefined;
 
 describe("Testing Application Functionality: \n", () => {
   describe("Testing app end points: \n", () => {
     it("should extract user Id and password", async () => {
       const user = await userStore.getAllUsers();
-      if (user) {
-        userId = user[0].u_uid;
-      }
+      userId = user[0].u_uid;
       expect(user[0].u_uid).toEqual(userId);
       setTimeout(() => {
         console.log(`user id extracted: ${userId}`);
@@ -24,16 +22,14 @@ describe("Testing Application Functionality: \n", () => {
 
     it("should extract mobile Id", async () => {
       const mob = await mobileStore.getAllMobs();
-      if (mob) {
-        mobId = mob[0].mob_uid;
-      }
+      mobId = mob[0].mob_uid;
       expect(mob[0].mob_uid).toEqual(mobId);
       setTimeout(() => {
         console.log(`mob id extracted: ${mobId} \n`);
       }, 1);
     });
 
-    it(`server should be running on http://localhost:${port} with status code 200`, async () => {
+    it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
       const response = await route.get("/");
       expect(response.statusCode).toBe(200);
     });
@@ -54,7 +50,7 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     beforeAll(async () => {
-      const response = await route.post("/products/mobiles/create/Galaxy/S20/1100/SAMSUNG/SK");
+      const response = await route.post("/products/mobiles/Galaxy/S20/1100/SAMSUNG/SK");
       expect(response.statusCode).toBe(201);
       console.log(`mobile has been created \n`);
     });
@@ -92,7 +88,7 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should update one item price to (900) by ID`, async () => {
-      const response = await route.put(`/products/mobiles/update/${mobId}/900`);
+      const response = await route.put(`/products/mobiles/${mobId}/900`);
       expect(response.body).toEqual({
         msg: "Mobile updated successfuly",
         data: {
@@ -106,8 +102,23 @@ describe("Testing Application Functionality: \n", () => {
       });
     });
 
+    it(`should delete one item from table mobiles by ID`, async () => {
+      const response = await route.delete(`/products/mobiles/${mobId}`);
+      expect(response.body).toEqual({
+        msg: "Mobile deleted successfuly",
+        data: {
+          mob_uid: mobId,
+          brand_name: "Galaxy",
+          model_name: "S20",
+          manufacturer: "SAMSUNG",
+          price: 900,
+          made_in: "SK",
+        },
+      });
+    });
+
     beforeAll(async () => {
-      const response = await route.post("/users/create/Ali/123");
+      const response = await route.post("/users/Ali/123");
       expect(response.statusCode).toBe(201);
       console.log(`user has been created \n`);
     });
@@ -115,7 +126,7 @@ describe("Testing Application Functionality: \n", () => {
     it("should get all users from table users", async () => {
       const result = await route.get(`/users`);
       expect(result.body).toEqual({
-        msg: "data generated successfuly",
+        msg: "Data generated successfully",
         data: [
           {
             u_uid: userId,
@@ -128,7 +139,7 @@ describe("Testing Application Functionality: \n", () => {
     it("should get one user from table users by ID", async () => {
       const result = await route.get(`/users/${userId}`);
       expect(result.body).toEqual({
-        msg: "user generated successfuly",
+        msg: "User generated successfully",
         data: {
           u_uid: userId,
           u_name: "Ali",
@@ -137,7 +148,7 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it("should update one user and SET password to = (abc)", async () => {
-      const user = await route.put(`/users/update/${userId}/abc`);
+      const user = await route.put(`/users/${userId}/abc`);
       expect(user.body).toEqual({
         msg: "User updated successfuly",
         data: { u_uid: userId, u_name: "Ali" },
@@ -145,15 +156,32 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should authenticate user and retrive password`, async () => {
-      const user = await validateUser("Ali", "abc");
-      const response = await route.get(`/auth/Ali/abc`);
-      expect(response.body).toEqual(user);
+      const user = await userStore.validateUser("Ali", "abc");
+      const token = JWT.sign({ user }, SECRET_TOKEN as string);
+      const response = await route.post(`/users/auth/Ali/abc`);
+      expect(response.body).toEqual({
+        msg: "User authenticated successfully",
+        token,
+      });
     });
 
     it(`should not authenticate user and display error message`, async () => {
-      const user = await validateUser("Ali", "123");
-      const response = await route.get(`/auth/Ali/123`);
-      expect(response.body).toEqual(user);
+      const response = await route.post(`/users/auth/Ali/123`);
+      expect(response.body).toEqual({
+        msg: "Authentication failed !",
+        data: "Invalid password or User Name",
+      });
+    });
+
+    it("should delete one user from table users by ID", async () => {
+      const result = await route.delete(`/users/${userId}`);
+      expect(result.body).toEqual({
+        msg: "User deleted successfuly",
+        data: {
+          u_uid: userId,
+          u_name: "Ali",
+        },
+      });
     });
   });
 });

@@ -66,7 +66,7 @@ export class StoreDB {
   async dropTables(): Promise<void> {
     try {
       const conn = await pgDB.connect();
-      const sql = "DROP TABLE mobile , user;";
+      const sql = "DROP TABLE mobiles , users , migrations;";
       await conn.query(sql);
       conn.release();
       console.log("Tables droped");

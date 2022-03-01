@@ -1,6 +1,6 @@
 import { userStore } from "./../models/users";
-import { userId } from "./appSpec";
 
+let userId: string;
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
     expect(userStore.getAllUsers).toBeDefined();
@@ -19,8 +19,21 @@ describe("Testing user Model functions: \n", () => {
   });
 
   describe("Testing SQL functions: \n ", () => {
-    it("should get all data and extract user Id and Password", async () => {
+    beforeAll(async () => {
+      const result = await userStore.createUser({
+        u_name: "Ali",
+        u_password: "123",
+      });
+      expect(result).toEqual({
+        msg: "User created successfuly",
+        ...result,
+      });
+      console.log("user has been created");
+    });
+
+    it("should get all data and extract user Id", async () => {
       const result = await userStore.getAllUsers();
+      userId = result[0].u_uid as string;
       expect(result).toEqual([
         {
           u_uid: userId,
@@ -31,17 +44,20 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should return the correct user by ID", async () => {
-      const result = await userStore.getUserById(userId as string);
+      const result = await userStore.getUserById(userId);
       expect(result).toEqual({
-        u_uid: userId,
-        u_name: "Ali",
+        msg: "User generated successfully",
+        data: {
+          u_uid: userId,
+          u_name: "Ali",
+        },
       });
       console.log("one user");
     });
 
     it(`should update the password to = 123 for specific user by ID`, async () => {
-      const user = await userStore.updateUser(userId as string, "123");
-      expect(user).toEqual({
+      const result = await userStore.updateUser(userId, "123");
+      expect(result).toEqual({
         msg: "User updated successfuly",
         data: {
           u_uid: userId,
@@ -52,10 +68,13 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should delete the selected user by ID", async () => {
-      const result = await userStore.delUser(userId as string);
+      const result = await userStore.delUser(userId);
       expect(result).toEqual({
-        u_uid: userId,
-        u_name: "Ali",
+        msg: "User deleted successfuly",
+        data: {
+          u_uid: userId,
+          u_name: "Ali",
+        },
       });
       console.log("delete user");
     });

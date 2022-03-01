@@ -24,15 +24,15 @@ class MobileStore {
             ]);
             // check if row has been created.
             if (result.rows.length) {
-                const user = result.rows[0];
-                // colsing connection with db.
-                conct.release();
+                const mobile = result.rows[0];
                 console.log(result.command, result.rows);
                 return {
-                    msg: `User created successfuly`,
-                    data: user,
+                    msg: `Mobile created successfuly`,
+                    data: mobile,
                 };
             }
+            // colsing connection with db.
+            conct.release();
             return {
                 msg: "update failed !",
             };
@@ -78,13 +78,13 @@ class MobileStore {
             const result = await conct.query(sql, [mob_uid, price]);
             if (result.rows.length) {
                 const mob = result.rows[0];
-                conct.release();
                 console.log(result.command, result.rowCount, mob);
                 return {
                     msg: `Mobile updated successfuly`,
                     data: mob,
                 };
             }
+            conct.release();
             return {
                 msg: "update failed !",
                 data: `Mobile with id (${mob_uid}) doesn't exist`,
@@ -100,9 +100,19 @@ class MobileStore {
             const conct = await database_1.default.connect();
             const sql = `DELETE FROM mobiles WHERE mob_uid = ($1) RETURNING *`;
             const result = await conct.query(sql, [mob_uid]);
+            if (result.rows.length) {
+                const mobile = result.rows[0];
+                console.log(result.command, result.rowCount, mobile);
+                return {
+                    msg: `Mobile deleted successfuly`,
+                    data: mobile,
+                };
+            }
             conct.release();
-            console.log(result.command, result.rowCount, result.rows[0]);
-            return result.rows[0];
+            return {
+                msg: "delete failed !",
+                data: `Mobile with id (${mob_uid}) doesn't exist`,
+            };
         }
         catch (err) {
             throw new Error(`Can't delete mobile with id (${mob_uid}) from table mobiles \n\n ${err.message}`);
