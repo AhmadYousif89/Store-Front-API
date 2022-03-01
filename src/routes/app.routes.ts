@@ -13,7 +13,7 @@ routes.use(mobileRoutes.getMobById);
 routes.use(mobileRoutes.updateMobile);
 routes.use(mobileRoutes.deleteMobile);
 
-routes.use(userRoutes.authUser);
+routes.use(userRoutes.loginUser);
 routes.use(userRoutes.createUser);
 routes.use(userRoutes.getUsers);
 routes.use(userRoutes.getUserById);

@@ -147,14 +147,14 @@ describe("Testing Application Functionality: \n", () => {
         it(`should authenticate user and retrive password`, async () => {
             const user = await users_1.userStore.validateUser("Ali", "abc");
             const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
-            const response = await exports.route.post(`/users/auth/Ali/abc`);
+            const response = await exports.route.post(`/users/login/Ali/abc`);
             expect(response.body).toEqual({
                 msg: "User authenticated successfully",
                 token,
             });
         });
         it(`should not authenticate user and display error message`, async () => {
-            const response = await exports.route.post(`/users/auth/Ali/123`);
+            const response = await exports.route.post(`/users/login/Ali/123`);
             expect(response.body).toEqual({
                 msg: "Authentication failed !",
                 data: "Invalid password or User Name",
@@ -168,6 +168,13 @@ describe("Testing Application Functionality: \n", () => {
                     u_uid: userId,
                     u_name: "Ali",
                 },
+            });
+        });
+        it("should not delete user and display error message", async () => {
+            const result = await exports.route.delete(`/users/edc46cf8-c383-4c49-89fe-7c1c56432658`);
+            expect(result.body).toEqual({
+                msg: "Delete failed !",
+                data: "User with id (edc46cf8-c383-4c49-89fe-7c1c56432658) doesn't exist",
             });
         });
     });

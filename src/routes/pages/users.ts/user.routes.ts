@@ -1,23 +1,26 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { userStore } from "../../../models/users";
 import JWT from "jsonwebtoken";
+import { Error } from "../../../utils/control";
 
 // method => POST /users
 // desc   => Create new user data.
 const createUser = Router().post(
-  "/users/:name/:pw",
+  "/users",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const params = {
-      u_name: req.params.name,
-      u_password: req.params.pw,
-    };
+    const { name, password } = req.body;
     console.log(
-      `params:
-      ${params.u_name}
-      ${params.u_password}`
+      `data:
+      ${name}
+      ${password}`
     );
     try {
-      const data = await userStore.createUser(params);
+      if (!name || !password) {
+        const error: Error = { status: 400, message: "Please provide user name and password !" };
+        next(error);
+        return;
+      }
+      const data = await userStore.createUser({ u_name: name, u_password: password });
       if (!data) {
         res.status(404).json(data);
         return;
@@ -29,21 +32,25 @@ const createUser = Router().post(
   }
 );
 
-// method => POST /users/auth
+// method => POST /users/login
 // desc   => Authenticate user data.
-const authUser = Router().post(
-  "/users/auth/:name/:pw",
-  async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-    const u_name = req.params.name;
-    const u_password = req.params.pw;
+const loginUser = Router().post(
+  "/users/login",
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { name, password } = req.body;
     console.log(
-      `params:
-      ${u_name}
-      ${u_password}`
+      `data:
+      ${name}
+      ${password}`
     );
     const { SECRET_TOKEN } = process.env;
     try {
-      const user = await userStore.validateUser(u_name, u_password);
+      if (!name || !password) {
+        const error: Error = { status: 401, message: "Please provide user name and password !" };
+        next(error);
+        return;
+      }
+      const user = await userStore.validateUser(name, password);
       const token = JWT.sign({ user }, SECRET_TOKEN as string);
       if (!user) {
         res
@@ -82,12 +89,17 @@ const getUsers = Router().get(
 // method => GET /users/:id
 // desc   => Return a specific user.
 const getUserById = Router().get(
-  "/users/:id",
+  "/users/id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const u_uid = req.params.id;
-    console.log("params: ", u_uid);
+    const { uid } = req.body;
+    console.log("data: ", uid);
     try {
-      const data = await userStore.getUserById(u_uid);
+      if (!uid) {
+        const error: Error = { status: 400, message: "Please provide user id !" };
+        next(error);
+        return;
+      }
+      const data = await userStore.getUserById(uid);
       if (!data) {
         res.status(404).json(data);
         return;
@@ -103,17 +115,21 @@ const getUserById = Router().get(
 // method => PUT /users/:id
 // desc   => Update a specific user .
 const updateUser = Router().put(
-  "/users/:id/:pw",
+  "/users",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const u_uid = req.params.id;
-    const u_password = req.params.pw;
+    const { uid, password } = req.body;
     console.log(
-      `params: 
-      ${u_uid} 
-      ${u_password}`
+      `data: 
+      ${uid} 
+      ${password}`
     );
     try {
-      const data = await userStore.updateUser(u_uid, u_password);
+      if (!uid || !password) {
+        const error: Error = { status: 400, message: "Please provide user id and password !" };
+        next(error);
+        return;
+      }
+      const data = await userStore.updateUser(uid, password);
       if (!data) {
         res.status(404).json(data);
         return;
@@ -128,12 +144,17 @@ const updateUser = Router().put(
 // method => DELETE /users/:id
 // desc   => Delete a specific user.
 const deleteUser = Router().delete(
-  "/users/:id",
+  "/users",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const u_uid = req.params.id;
-    console.log("params: \n", u_uid);
+    const { uid } = req.body;
+    console.log("params: \n", uid);
     try {
-      const data = await userStore.delUser(u_uid);
+      if (!uid) {
+        const error: Error = { status: 400, message: "Please provide user id !" };
+        next(error);
+        return;
+      }
+      const data = await userStore.delUser(uid);
       if (!data) {
         res.status(404).json(data);
         return;
@@ -145,4 +166,4 @@ const deleteUser = Router().delete(
   }
 );
 
-export default { createUser, authUser, getUsers, getUserById, updateUser, deleteUser };
+export default { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser };

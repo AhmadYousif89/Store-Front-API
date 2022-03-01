@@ -8,16 +8,18 @@ const users_1 = require("../../../models/users");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // method => POST /users
 // desc   => Create new user data.
-const createUser = (0, express_1.Router)().post("/users/:name/:pw", async (req, res, next) => {
-    const params = {
-        u_name: req.params.name,
-        u_password: req.params.pw,
-    };
-    console.log(`params:
-      ${params.u_name}
-      ${params.u_password}`);
+const createUser = (0, express_1.Router)().post("/users", async (req, res, next) => {
+    const { name, password } = req.body;
+    console.log(`data:
+      ${name}
+      ${password}`);
     try {
-        const data = await users_1.userStore.createUser(params);
+        if (!name || !password) {
+            const error = { status: 400, message: "Please provide user name and password !" };
+            next(error);
+            return;
+        }
+        const data = await users_1.userStore.createUser({ u_name: name, u_password: password });
         if (!data) {
             res.status(404).json(data);
             return;
@@ -28,17 +30,21 @@ const createUser = (0, express_1.Router)().post("/users/:name/:pw", async (req, 
         next(err);
     }
 });
-// method => POST /users/auth
+// method => POST /users/login
 // desc   => Authenticate user data.
-const authUser = (0, express_1.Router)().post("/users/auth/:name/:pw", async (req, res, next) => {
-    const u_name = req.params.name;
-    const u_password = req.params.pw;
-    console.log(`params:
-      ${u_name}
-      ${u_password}`);
+const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, next) => {
+    const { name, password } = req.body;
+    console.log(`data:
+      ${name}
+      ${password}`);
     const { SECRET_TOKEN } = process.env;
     try {
-        const user = await users_1.userStore.validateUser(u_name, u_password);
+        if (!name || !password) {
+            const error = { status: 401, message: "Please provide user name and password !" };
+            next(error);
+            return;
+        }
+        const user = await users_1.userStore.validateUser(name, password);
         const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
         if (!user) {
             res
@@ -72,11 +78,16 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
 });
 // method => GET /users/:id
 // desc   => Return a specific user.
-const getUserById = (0, express_1.Router)().get("/users/:id", async (req, res, next) => {
-    const u_uid = req.params.id;
-    console.log("params: ", u_uid);
+const getUserById = (0, express_1.Router)().get("/users/id", async (req, res, next) => {
+    const { uid } = req.body;
+    console.log("data: ", uid);
     try {
-        const data = await users_1.userStore.getUserById(u_uid);
+        if (!uid) {
+            const error = { status: 400, message: "Please provide user id !" };
+            next(error);
+            return;
+        }
+        const data = await users_1.userStore.getUserById(uid);
         if (!data) {
             res.status(404).json(data);
             return;
@@ -90,14 +101,18 @@ const getUserById = (0, express_1.Router)().get("/users/:id", async (req, res, n
 });
 // method => PUT /users/:id
 // desc   => Update a specific user .
-const updateUser = (0, express_1.Router)().put("/users/:id/:pw", async (req, res, next) => {
-    const u_uid = req.params.id;
-    const u_password = req.params.pw;
-    console.log(`params: 
-      ${u_uid} 
-      ${u_password}`);
+const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) => {
+    const { uid, password } = req.body;
+    console.log(`data: 
+      ${uid} 
+      ${password}`);
     try {
-        const data = await users_1.userStore.updateUser(u_uid, u_password);
+        if (!uid || !password) {
+            const error = { status: 400, message: "Please provide user id and password !" };
+            next(error);
+            return;
+        }
+        const data = await users_1.userStore.updateUser(uid, password);
         if (!data) {
             res.status(404).json(data);
             return;
@@ -110,11 +125,16 @@ const updateUser = (0, express_1.Router)().put("/users/:id/:pw", async (req, res
 });
 // method => DELETE /users/:id
 // desc   => Delete a specific user.
-const deleteUser = (0, express_1.Router)().delete("/users/:id", async (req, res, next) => {
-    const u_uid = req.params.id;
-    console.log("params: \n", u_uid);
+const deleteUser = (0, express_1.Router)().delete("/users", async (req, res, next) => {
+    const { uid } = req.body;
+    console.log("params: \n", uid);
     try {
-        const data = await users_1.userStore.delUser(u_uid);
+        if (!uid) {
+            const error = { status: 400, message: "Please provide user id !" };
+            next(error);
+            return;
+        }
+        const data = await users_1.userStore.delUser(uid);
         if (!data) {
             res.status(404).json(data);
             return;
@@ -125,4 +145,4 @@ const deleteUser = (0, express_1.Router)().delete("/users/:id", async (req, res,
         next(err);
     }
 });
-exports.default = { createUser, authUser, getUsers, getUserById, updateUser, deleteUser };
+exports.default = { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser };

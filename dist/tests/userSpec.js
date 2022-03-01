@@ -19,7 +19,7 @@ describe("Testing user Model functions: \n", () => {
         expect(users_1.userStore.delUser).toBeDefined();
     });
     describe("Testing SQL functions: \n ", () => {
-        beforeAll(async () => {
+        it("should create new user", async () => {
             const result = await users_1.userStore.createUser({
                 u_name: "Ali",
                 u_password: "123",

@@ -15,7 +15,7 @@ exports.routes.use(mobile_routes_1.default.getMobiles);
 exports.routes.use(mobile_routes_1.default.getMobById);
 exports.routes.use(mobile_routes_1.default.updateMobile);
 exports.routes.use(mobile_routes_1.default.deleteMobile);
-exports.routes.use(user_routes_1.default.authUser);
+exports.routes.use(user_routes_1.default.loginUser);
 exports.routes.use(user_routes_1.default.createUser);
 exports.routes.use(user_routes_1.default.getUsers);
 exports.routes.use(user_routes_1.default.getUserById);

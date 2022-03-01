@@ -23,6 +23,7 @@ class UsersStore {
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rows);
+                conct.release();
                 return {
                     msg: `User created successfuly`,
                     data: user,
@@ -31,7 +32,7 @@ class UsersStore {
             // colsing connection with db.
             conct.release();
             return {
-                msg: "update failed !",
+                msg: "Request failed !",
             };
         }
         catch (err) {
@@ -62,6 +63,7 @@ class UsersStore {
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rowCount, user);
+                conct.release();
                 return {
                     msg: `User generated successfully`,
                     data: user,
@@ -69,7 +71,7 @@ class UsersStore {
             }
             conct.release();
             return {
-                msg: "action failed !",
+                msg: "Request failed !",
                 data: `User with id (${u_uid}) doesn't exist`,
             };
         }
@@ -87,6 +89,7 @@ class UsersStore {
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rowCount, user);
+                conct.release();
                 return {
                     msg: `User updated successfuly`,
                     data: user,
@@ -94,7 +97,7 @@ class UsersStore {
             }
             conct.release();
             return {
-                msg: "update failed !",
+                msg: "Update failed !",
                 data: `User with id (${u_uid}) doesn't exist`,
             };
         }
@@ -111,6 +114,7 @@ class UsersStore {
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rowCount, user);
+                conct.release();
                 return {
                     msg: `User deleted successfuly`,
                     data: user,
@@ -118,7 +122,7 @@ class UsersStore {
             }
             conct.release();
             return {
-                msg: "delete failed !",
+                msg: "Delete failed !",
                 data: `User with id (${u_uid}) doesn't exist`,
             };
         }

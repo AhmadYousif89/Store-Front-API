@@ -5,21 +5,25 @@ describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
     expect(userStore.getAllUsers).toBeDefined();
   });
+
   it("should have a get user by Id method", () => {
     expect(userStore.getUserById).toBeDefined();
   });
+
   it("should have a create method", () => {
     expect(userStore.createUser).toBeDefined();
   });
+
   it("should have an update user method", () => {
     expect(userStore.updateUser).toBeDefined();
   });
+
   it("should have a delete user method", () => {
     expect(userStore.delUser).toBeDefined();
   });
 
   describe("Testing SQL functions: \n ", () => {
-    beforeAll(async () => {
+    it("should create new user", async () => {
       const result = await userStore.createUser({
         u_name: "Ali",
         u_password: "123",
