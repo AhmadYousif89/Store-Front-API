@@ -34,15 +34,16 @@ class UserModel {
         }
         catch (err) {
             // handling error.
+            // making my output error syntax.
             errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
             throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
         }
     }
-    // Get users
+    // Get users => (without retrieving user password as it consider sensitive information)
     async getAllUsers() {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT * FROM users `;
+            const sql = `SELECT u_uid, u_name FROM users `;
             const result = await conct.query(sql);
             conct.release();
             console.log(result.command, result.rowCount, result.rows, "\n");
@@ -145,15 +146,16 @@ class UserModel {
     async authenticateUser(u_name, u_password) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT u_uid, u_password  FROM users WHERE u_name = ($1) `;
+            const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
             const result = await conct.query(sql, [u_name]);
             // checking for data.
             if (result.rows.length) {
                 const user = result.rows[0];
                 // checking user password authenticity.
                 if ((0, control_1.isPwValide)(u_password, user.u_password)) {
-                    console.log(user);
-                    return user;
+                    const sql = `SELECT u_uid, u_name FROM users WHERE u_name = ($1)`;
+                    const data = await conct.query(sql, [u_name]);
+                    return data.rows[0];
                 }
             }
             conct.release();

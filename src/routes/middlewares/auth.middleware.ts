@@ -11,18 +11,19 @@ const handleAuthErr = (next: NextFunction) => {
 const handleAuthentication = (req: Request, _res: Response, next: NextFunction) => {
   try {
     // get authHeader
-    const authheader = req.headers.authorization;
+    const authheader = req.get("Authorization");
+    console.log(authheader);
     if (authheader) {
       // get authHeader token
       const token = authheader.split(" ")[1];
       // get authHeader bearer
       const bearer = authheader.split(" ")[0];
       // check and vaildate bearer and token
-      if (token && bearer === "bearer") {
+      if (token && bearer === "Bearer") {
         // verify and decode based on my secret token
         const decode = JWT.verify(token, SECRET_TOKEN as string);
         if (decode) {
-          // move forword to next route
+          // on success move to next route
           next();
         } else {
           // authentication failed
@@ -39,6 +40,7 @@ const handleAuthentication = (req: Request, _res: Response, next: NextFunction) 
   } catch (err) {
     // handle error
     handleAuthErr(next);
+    console.log(err);
   }
 };
 

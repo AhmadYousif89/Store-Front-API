@@ -10,6 +10,7 @@ const createMobile = (0, express_1.Router)().post("/products/mobiles/", async (r
     const price = Number.parseInt(req.body.price);
     console.log(`params:
       ${brand} ${model} ${price} ${maker} ${coo}`);
+    // validating values before submitting.
     if (!brand || !model || !price || price <= 0 || !maker || !coo) {
         res
             .status(400)

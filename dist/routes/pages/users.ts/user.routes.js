@@ -14,6 +14,7 @@ const createUser = (0, express_1.Router)().post("/users", async (req, res, next)
     console.log(`data:
       ${name}
       ${password}`);
+    // validating values before submitting.
     if (!name || !password) {
         res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
         return;
@@ -45,13 +46,14 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
             return;
         }
         const user = await users_1.userModel.authenticateUser(name, password);
-        const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
         if (!user) {
             res
                 .status(401)
                 .json({ msg: "Authentication failed !", data: "Invalid password or User Name" });
             return;
         }
+        // creating token based on user credentials and my secret token.
+        const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
         res.status(200).json({
             msg: "User authenticated successfully",
             data: user,
@@ -67,7 +69,9 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
 });
 // method => GET /users
 // desc   => Return all users data.
-const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) => {
+const getUsers = (0, express_1.Router)().get("/users", 
+// authMiddleware,
+async (_req, res, next) => {
     try {
         const data = await users_1.userModel.getAllUsers();
         if (data.length === 0) {

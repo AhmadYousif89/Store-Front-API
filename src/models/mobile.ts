@@ -35,6 +35,7 @@ class MobileModel {
       return null;
     } catch (err) {
       // handling error.
+      // making my output error syntax.
       errMsg = (err as Error).message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
       throw new Error(`Unable to create new mobile - ${errMsg}`);
     }

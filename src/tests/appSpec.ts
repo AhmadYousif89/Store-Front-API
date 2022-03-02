@@ -9,7 +9,6 @@ const { SERVER_PORT } = process.env;
 export const route = supertest(app);
 let mobId = "";
 let userId = "";
-let userPw = "";
 let token = "";
 export const user = {
   u_name: "Ali",
@@ -38,7 +37,6 @@ describe("Testing Application Functionality: \n", () => {
   it("should extract user Id and password", async () => {
     const user = await userModel.getAllUsers();
     userId = user[0].u_uid as string;
-    userPw = user[0].u_password as string;
     expect(user[0].u_uid).toEqual(userId);
     setTimeout(() => {
       console.log(`user id extracted: ${userId}`);
@@ -154,7 +152,6 @@ describe("Testing Application Functionality: \n", () => {
           {
             u_uid: userId,
             u_name: user.u_name,
-            u_password: userPw,
           },
         ],
       });
@@ -185,7 +182,7 @@ describe("Testing Application Functionality: \n", () => {
       expect(msg).toEqual("User authenticated successfully");
       expect(data).toEqual({
         u_uid: userId,
-        u_password: userPw,
+        u_name: user.u_name,
       });
       token = userToken;
     });

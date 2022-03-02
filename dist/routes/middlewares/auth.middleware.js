@@ -12,18 +12,19 @@ const handleAuthErr = (next) => {
 const handleAuthentication = (req, _res, next) => {
     try {
         // get authHeader
-        const authheader = req.headers.authorization;
+        const authheader = req.get("Authorization");
+        console.log(authheader);
         if (authheader) {
             // get authHeader token
             const token = authheader.split(" ")[1];
             // get authHeader bearer
             const bearer = authheader.split(" ")[0];
             // check and vaildate bearer and token
-            if (token && bearer === "bearer") {
+            if (token && bearer === "Bearer") {
                 // verify and decode based on my secret token
                 const decode = jsonwebtoken_1.default.verify(token, SECRET_TOKEN);
                 if (decode) {
-                    // move forword to next route
+                    // on success move to next route
                     next();
                 }
                 else {
@@ -44,6 +45,7 @@ const handleAuthentication = (req, _res, next) => {
     catch (err) {
         // handle error
         handleAuthErr(next);
+        console.log(err);
     }
 };
 exports.default = handleAuthentication;

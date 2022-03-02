@@ -15,7 +15,7 @@ routes.use(mobileRoutes.deleteMobile);
 
 routes.use(userRoutes.loginUser);
 routes.use(userRoutes.createUser);
-routes.use(userRoutes.getUsers);
+routes.use(authMiddleware, userRoutes.getUsers);
 routes.use(userRoutes.getUserById);
 routes.use(userRoutes.updateUser);
 routes.use(userRoutes.deleteUser);

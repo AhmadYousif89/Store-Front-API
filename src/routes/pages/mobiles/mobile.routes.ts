@@ -14,6 +14,7 @@ const createMobile = Router().post(
       `params:
       ${brand} ${model} ${price} ${maker} ${coo}`
     );
+    // validating values before submitting.
     if (!brand || !model || !price || price <= 0 || !maker || !coo) {
       res
         .status(400)

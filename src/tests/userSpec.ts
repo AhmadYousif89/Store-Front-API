@@ -2,7 +2,6 @@ import { userModel } from "./../models/users";
 import { user } from "./appSpec";
 
 let userId = "";
-let userPw = "";
 
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
@@ -38,12 +37,10 @@ describe("Testing user Model functions: \n", () => {
     it("should get all data and extract user Id", async () => {
       const result = await userModel.getAllUsers();
       userId = result[0].u_uid as string;
-      userPw = result[0].u_password as string;
       expect(result).toEqual([
         {
           u_uid: userId,
           u_name: user.u_name,
-          u_password: userPw,
         },
       ]);
       console.log("all users");
@@ -80,10 +77,9 @@ describe("Testing user Model functions: \n", () => {
 
     it(`should authenticate user by name and password`, async () => {
       const result = await userModel.authenticateUser(user.u_name as string, "123");
-      const upw = result?.u_password;
       expect(result).toEqual({
         u_uid: userId,
-        u_password: upw,
+        u_name: user.u_name,
       });
       console.log("validate user");
     });

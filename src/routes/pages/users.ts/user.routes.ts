@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { userModel } from "../../../models/users";
 import JWT from "jsonwebtoken";
 import { Error } from "../../../utils/control";
+import authMiddleware from "../../middlewares/auth.middleware";
 
 let error: Error;
 // method => POST /users
@@ -15,6 +16,7 @@ const createUser = Router().post(
       ${name}
       ${password}`
     );
+    // validating values before submitting.
     if (!name || !password) {
       res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
       return;
@@ -51,13 +53,14 @@ const loginUser = Router().post(
         return;
       }
       const user = await userModel.authenticateUser(name, password);
-      const token = JWT.sign({ user }, SECRET_TOKEN as string);
       if (!user) {
         res
           .status(401)
           .json({ msg: "Authentication failed !", data: "Invalid password or User Name" });
         return;
       }
+      // creating token based on user credentials and my secret token.
+      const token = JWT.sign({ user }, SECRET_TOKEN as string);
       res.status(200).json({
         msg: "User authenticated successfully",
         data: user,
@@ -76,6 +79,7 @@ const loginUser = Router().post(
 // desc   => Return all users data.
 const getUsers = Router().get(
   "/users",
+  // authMiddleware,
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const data = await userModel.getAllUsers();
