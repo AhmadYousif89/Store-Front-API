@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mobileStore = void 0;
+exports.mobileModel = void 0;
 const database_1 = __importDefault(require("../database"));
+let errMsg;
 // Building CRUD System for Product.
-class MobileStore {
+class MobileModel {
     // Create mobile
     async createMob(values) {
         try {
@@ -26,20 +27,21 @@ class MobileStore {
             if (result.rows.length) {
                 const mobile = result.rows[0];
                 console.log(result.command, result.rows);
+                // colsing connection with db.
+                conct.release();
                 return {
-                    msg: `Mobile created successfuly`,
+                    msg: `Mobile created successfully`,
                     data: mobile,
                 };
             }
             // colsing connection with db.
             conct.release();
-            return {
-                msg: "update failed !",
-            };
+            return null;
         }
         catch (err) {
             // handling error.
-            throw new Error(`Can't insert into table mobiles \n\n ${err.message}`);
+            errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
+            throw new Error(`Unable to create new mobile - ${errMsg}`);
         }
     }
     // Get mobiles
@@ -53,7 +55,8 @@ class MobileStore {
             return result.rows;
         }
         catch (err) {
-            throw new Error(`can't get data from table mobiles \n ${err.message}`);
+            errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
+            throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one mobile
@@ -62,12 +65,27 @@ class MobileStore {
             const conct = await database_1.default.connect();
             const sql = `SELECT * FROM mobiles WHERE mob_uid = ($1)`;
             const result = await conct.query(sql, [mob_uid]);
+            if (result.rows.length) {
+                const mobile = result.rows[0];
+                console.log(result.command, result.rowCount, mobile);
+                conct.release();
+                return {
+                    msg: `Mobile generated successfully`,
+                    data: mobile,
+                };
+            }
             conct.release();
-            console.log(result.command, result.rowCount, result.rows);
-            return result.rows[0];
+            return null;
         }
         catch (err) {
-            throw new Error(`can't get mobile number (${mob_uid}) from table mobiles \n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
+            }
+            throw new Error(`Unable to get mobile with id (${mob_uid}) - ${errMsg}`);
         }
     }
     // Update mobile
@@ -80,18 +98,22 @@ class MobileStore {
                 const mob = result.rows[0];
                 console.log(result.command, result.rowCount, mob);
                 return {
-                    msg: `Mobile updated successfuly`,
+                    msg: `Mobile updated successfully`,
                     data: mob,
                 };
             }
             conct.release();
-            return {
-                msg: "update failed !",
-                data: `Mobile with id (${mob_uid}) doesn't exist`,
-            };
+            return null;
         }
         catch (err) {
-            throw new Error(`Can't update mobile with id (${mob_uid}) from table mobiles \n\n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
+            }
+            throw new Error(`Unable to update mobile with id (${mob_uid}) - ${errMsg}`);
         }
     }
     // Delete mobile
@@ -104,19 +126,23 @@ class MobileStore {
                 const mobile = result.rows[0];
                 console.log(result.command, result.rowCount, mobile);
                 return {
-                    msg: `Mobile deleted successfuly`,
+                    msg: `Mobile deleted successfully`,
                     data: mobile,
                 };
             }
             conct.release();
-            return {
-                msg: "delete failed !",
-                data: `Mobile with id (${mob_uid}) doesn't exist`,
-            };
+            return null;
         }
         catch (err) {
-            throw new Error(`Can't delete mobile with id (${mob_uid}) from table mobiles \n\n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
+            }
+            throw new Error(`Unable to delete mobile with id (${mob_uid}) - ${errMsg}`);
         }
     }
 }
-exports.mobileStore = new MobileStore();
+exports.mobileModel = new MobileModel();

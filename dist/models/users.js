@@ -3,11 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userStore = void 0;
+exports.userModel = void 0;
 const database_1 = __importDefault(require("../database"));
 const control_1 = require("./../utils/control");
+let errMsg;
 // Building CRUD System for Users
-class UsersStore {
+class UserModel {
     // Create user
     async createUser(values) {
         try {
@@ -25,19 +26,16 @@ class UsersStore {
                 console.log(result.command, result.rows);
                 conct.release();
                 return {
-                    msg: `User created successfuly`,
+                    msg: `User created successfully`,
                     data: user,
                 };
             }
-            // colsing connection with db.
-            conct.release();
-            return {
-                msg: "Request failed !",
-            };
+            return null;
         }
         catch (err) {
             // handling error.
-            throw new Error(`Unable to create new User (${values.u_name}) \n ${err.message}`);
+            errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
         }
     }
     // Get users
@@ -51,7 +49,8 @@ class UsersStore {
             return result.rows;
         }
         catch (err) {
-            throw new Error(`can't get data from table users \n ${err.message}`);
+            errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one user
@@ -70,13 +69,17 @@ class UsersStore {
                 };
             }
             conct.release();
-            return {
-                msg: "Request failed !",
-                data: `User with id (${u_uid}) doesn't exist`,
-            };
+            return null;
         }
         catch (err) {
-            throw new Error(`can't get user with id ${u_uid} from table users \n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            }
+            throw new Error(`Unable to get user with id (${u_uid}) - ${errMsg}`);
         }
     }
     // Update user
@@ -91,18 +94,22 @@ class UsersStore {
                 console.log(result.command, result.rowCount, user);
                 conct.release();
                 return {
-                    msg: `User updated successfuly`,
+                    msg: `User updated successfully`,
                     data: user,
                 };
             }
             conct.release();
-            return {
-                msg: "Update failed !",
-                data: `User with id (${u_uid}) doesn't exist`,
-            };
+            return null;
         }
         catch (err) {
-            throw new Error(`Can't update user with id (${u_uid}) from table Users \n\n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            }
+            throw new Error(`Unable to update user with id (${u_uid}) - ${errMsg}`);
         }
     }
     // Delete user
@@ -116,7 +123,7 @@ class UsersStore {
                 console.log(result.command, result.rowCount, user);
                 conct.release();
                 return {
-                    msg: `User deleted successfuly`,
+                    msg: `User deleted successfully`,
                     data: user,
                 };
             }
@@ -124,14 +131,21 @@ class UsersStore {
             return null;
         }
         catch (err) {
-            throw new Error(`can't delete user with id ${u_uid} from table users \n ${err.message}`);
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            }
+            throw new Error(`Unable to delete user with id (${u_uid}) - ${errMsg}`);
         }
     }
     // Authenticate user.
-    async validateUser(u_name, u_password) {
+    async authenticateUser(u_name, u_password) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT u_uid, u_name, u_password  FROM users WHERE u_name = ($1) `;
+            const sql = `SELECT u_uid, u_password  FROM users WHERE u_name = ($1) `;
             const result = await conct.query(sql, [u_name]);
             // checking for data.
             if (result.rows.length) {
@@ -147,9 +161,11 @@ class UsersStore {
         }
         catch (err) {
             // handling error
-            throw new Error(`Can't validate user with name |${u_name}| from table Users \n ${err.message}`);
+            errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            throw new Error(`Unable to authenticate user - ${errMsg}`);
         }
     }
 }
-exports.userStore = new UsersStore();
+exports.userModel = new UserModel();
 // userStore.validateUser("aaa", "123");
+// console.log("invalid input syntax for type uuid: " + "\\" + `"666` + '\\"');

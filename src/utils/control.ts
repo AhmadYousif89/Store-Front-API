@@ -35,4 +35,9 @@ const isPwValide = (password: string, hashed: string): boolean | null => {
   return bCrypt.compareSync(password + PEPPER, hashed);
 };
 
-export { Error, Mobile, Users, encrypt, isPwValide };
+const replaceErrMsg = (err: Error, originalMsg: string, replacedMsg: string) => {
+  const newStr = err.message?.replace(originalMsg, replacedMsg);
+  return newStr;
+};
+
+export { Error, Mobile, Users, encrypt, isPwValide, replaceErrMsg };

@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { userStore } from "../../../models/users";
+import { userModel } from "../../../models/users";
 import JWT from "jsonwebtoken";
 import { Error } from "../../../utils/control";
 
+let error: Error;
 // method => POST /users
 // desc   => Create new user data.
 const createUser = Router().post(
@@ -14,20 +15,18 @@ const createUser = Router().post(
       ${name}
       ${password}`
     );
+    if (!name || !password) {
+      res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
+      return;
+    }
     try {
-      if (!name || !password) {
-        const error: Error = { status: 400, message: "Please provide user name and password !" };
-        next(error);
-        return;
-      }
-      const data = await userStore.createUser({ u_name: name, u_password: password });
-      if (!data) {
-        res.status(404).json(data);
-        return;
-      }
+      const data = await userModel.createUser({ u_name: name, u_password: password });
       res.status(201).json(data);
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );
@@ -46,11 +45,12 @@ const loginUser = Router().post(
     const { SECRET_TOKEN } = process.env;
     try {
       if (!name || !password) {
-        const error: Error = { status: 401, message: "Please provide user name and password !" };
-        next(error);
+        res
+          .status(400)
+          .json({ status: "Error", message: "Please provide user name and password !" });
         return;
       }
-      const user = await userStore.validateUser(name, password);
+      const user = await userModel.authenticateUser(name, password);
       const token = JWT.sign({ user }, SECRET_TOKEN as string);
       if (!user) {
         res
@@ -64,7 +64,10 @@ const loginUser = Router().post(
         token,
       });
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );
@@ -75,14 +78,17 @@ const getUsers = Router().get(
   "/users",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const data = await userStore.getAllUsers();
+      const data = await userModel.getAllUsers();
       if (data.length === 0) {
-        res.json({ msg: `No Users Were Found !` });
+        res.status(404).json({ msg: `No Users Were Found !` });
         return;
       }
       res.status(200).json({ msg: "Data generated successfully", data });
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );
@@ -94,21 +100,26 @@ const getUserById = Router().get(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { uid } = req.body;
     console.log("data: ", uid);
+    if (!uid) {
+      res.status(400).json({ status: "Error", message: "Please provide user id !" });
+      return;
+    }
     try {
-      if (!uid) {
-        const error: Error = { status: 400, message: "Please provide user id !" };
-        next(error);
-        return;
-      }
-      const data = await userStore.getUserById(uid);
+      const data = await userModel.getUserById(uid);
       if (!data) {
-        res.status(404).json(data);
+        res.status(404).json({
+          msg: "Request failed !",
+          data: `User with id (${uid}) doesn't exist`,
+        });
         return;
       }
       res.status(200).json(data);
       return;
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );
@@ -126,18 +137,23 @@ const updateUser = Router().put(
     );
     try {
       if (!uid || !password) {
-        const error: Error = { status: 400, message: "Please provide user id and password !" };
-        next(error);
+        res.status(400).json({ status: "Error", message: "Please provide user id and password !" });
         return;
       }
-      const data = await userStore.updateUser(uid, password);
+      const data = await userModel.updateUser(uid, password);
       if (!data) {
-        res.status(404).json(data);
+        res.status(404).json({
+          msg: "Update failed !",
+          data: `User with id (${uid}) doesn't exist`,
+        });
         return;
       }
       res.status(200).json(data);
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );
@@ -151,11 +167,10 @@ const deleteUser = Router().delete(
     console.log("params: \n", uid);
     try {
       if (!uid) {
-        const error: Error = { status: 400, message: "Please provide user id !" };
-        next(error);
+        res.status(400).json({ status: "Error", message: "Please provide user id !" });
         return;
       }
-      const data = await userStore.delUser(uid);
+      const data = await userModel.delUser(uid);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",
@@ -165,7 +180,10 @@ const deleteUser = Router().delete(
       }
       res.status(200).json(data);
     } catch (err) {
-      next(err);
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
     }
   }
 );

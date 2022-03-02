@@ -1,7 +1,7 @@
 import app from "../app";
 import supertest from "supertest";
-import { userStore } from "./../models/users";
-import { mobileStore } from "../models/mobile";
+import { userModel } from "./../models/users";
+import { mobileModel } from "../models/mobile";
 import { Users } from "../utils/control";
 import { Mobile } from "../utils/control";
 
@@ -25,18 +25,18 @@ export const mobile = {
 
 describe("Testing Application Functionality: \n", () => {
   beforeAll(async () => {
-    const result = await userStore.createUser(user);
-    expect(result.msg).toEqual("User created successfuly");
+    const result = await userModel.createUser(user);
+    expect(result?.msg).toEqual("User created successfully");
     console.log(`user has been created \n`);
   });
   beforeAll(async () => {
-    const result = await mobileStore.createMob(mobile);
-    expect(result.msg).toEqual("Mobile created successfuly");
+    const result = await mobileModel.createMob(mobile);
+    expect(result?.msg).toEqual("Mobile created successfully");
     console.log(`mobile has been created \n`);
   });
 
   it("should extract user Id and password", async () => {
-    const user = await userStore.getAllUsers();
+    const user = await userModel.getAllUsers();
     userId = user[0].u_uid as string;
     userPw = user[0].u_password as string;
     expect(user[0].u_uid).toEqual(userId);
@@ -46,7 +46,7 @@ describe("Testing Application Functionality: \n", () => {
   });
 
   it("should extract mobile Id", async () => {
-    const mob = await mobileStore.getAllMobs();
+    const mob = await mobileModel.getAllMobs();
     mobId = mob[0].mob_uid as string;
     expect(mob[0].mob_uid).toEqual(mobId);
     setTimeout(() => {
@@ -78,7 +78,7 @@ describe("Testing Application Functionality: \n", () => {
     it(`should get all data from table mobiles`, async () => {
       const response = await route.get(`/products/mobiles`);
       expect(response.body).toEqual({
-        msg: "data generated successfuly",
+        msg: "Data generated successfully",
         data: [
           {
             mob_uid: mobId,
@@ -93,9 +93,12 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should get one item from table mobiles by ID`, async () => {
-      const response = await route.get(`/products/mobiles/${mobId}`);
+      const response = await route
+        .get(`/products/mobiles/id`)
+        .set("Content-type", "application/json")
+        .send({ id: mobId });
       expect(response.body).toEqual({
-        msg: "mobile generated successfuly",
+        msg: "Mobile generated successfully",
         data: {
           mob_uid: mobId,
           brand_name: mobile.brand_name,
@@ -108,9 +111,12 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should update one item price to (900) by ID`, async () => {
-      const response = await route.put(`/products/mobiles/${mobId}/900`);
+      const response = await route
+        .put(`/products/mobiles/`)
+        .set("Content-type", "application/json")
+        .send({ id: mobId, price: 900 });
       expect(response.body).toEqual({
-        msg: "Mobile updated successfuly",
+        msg: "Mobile updated successfully",
         data: {
           mob_uid: mobId,
           brand_name: mobile.brand_name,
@@ -123,9 +129,12 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should delete one item from table mobiles by ID`, async () => {
-      const response = await route.delete(`/products/mobiles/${mobId}`);
+      const response = await route
+        .delete(`/products/mobiles/id`)
+        .set("Content-type", "application/json")
+        .send({ id: mobId });
       expect(response.body).toEqual({
-        msg: "Mobile deleted successfuly",
+        msg: "Mobile deleted successfully",
         data: {
           mob_uid: mobId,
           brand_name: mobile.brand_name,
@@ -176,7 +185,6 @@ describe("Testing Application Functionality: \n", () => {
       expect(msg).toEqual("User authenticated successfully");
       expect(data).toEqual({
         u_uid: userId,
-        u_name: user.u_name,
         u_password: userPw,
       });
       token = userToken;
@@ -189,7 +197,7 @@ describe("Testing Application Functionality: \n", () => {
         .send({ uid: userId, password: "abc" });
       expect(result.status).toEqual(200);
       expect(result.body).toEqual({
-        msg: "User updated successfuly",
+        msg: "User updated successfully",
         data: { u_uid: userId, u_name: user.u_name },
       });
     });
@@ -213,7 +221,7 @@ describe("Testing Application Functionality: \n", () => {
         .send({ uid: userId });
       expect(result.status).toEqual(200);
       expect(result.body).toEqual({
-        msg: "User deleted successfuly",
+        msg: "User deleted successfully",
         data: {
           u_uid: userId,
           u_name: user.u_name,

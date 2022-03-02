@@ -27,17 +27,17 @@ exports.mobile = {
 };
 describe("Testing Application Functionality: \n", () => {
     beforeAll(async () => {
-        const result = await users_1.userStore.createUser(exports.user);
-        expect(result.msg).toEqual("User created successfuly");
+        const result = await users_1.userModel.createUser(exports.user);
+        expect(result?.msg).toEqual("User created successfully");
         console.log(`user has been created \n`);
     });
     beforeAll(async () => {
-        const result = await mobile_1.mobileStore.createMob(exports.mobile);
-        expect(result.msg).toEqual("Mobile created successfuly");
+        const result = await mobile_1.mobileModel.createMob(exports.mobile);
+        expect(result?.msg).toEqual("Mobile created successfully");
         console.log(`mobile has been created \n`);
     });
     it("should extract user Id and password", async () => {
-        const user = await users_1.userStore.getAllUsers();
+        const user = await users_1.userModel.getAllUsers();
         userId = user[0].u_uid;
         userPw = user[0].u_password;
         expect(user[0].u_uid).toEqual(userId);
@@ -46,7 +46,7 @@ describe("Testing Application Functionality: \n", () => {
         }, 1);
     });
     it("should extract mobile Id", async () => {
-        const mob = await mobile_1.mobileStore.getAllMobs();
+        const mob = await mobile_1.mobileModel.getAllMobs();
         mobId = mob[0].mob_uid;
         expect(mob[0].mob_uid).toEqual(mobId);
         setTimeout(() => {
@@ -73,7 +73,7 @@ describe("Testing Application Functionality: \n", () => {
         it(`should get all data from table mobiles`, async () => {
             const response = await exports.route.get(`/products/mobiles`);
             expect(response.body).toEqual({
-                msg: "data generated successfuly",
+                msg: "Data generated successfully",
                 data: [
                     {
                         mob_uid: mobId,
@@ -87,9 +87,12 @@ describe("Testing Application Functionality: \n", () => {
             });
         });
         it(`should get one item from table mobiles by ID`, async () => {
-            const response = await exports.route.get(`/products/mobiles/${mobId}`);
+            const response = await exports.route
+                .get(`/products/mobiles/id`)
+                .set("Content-type", "application/json")
+                .send({ id: mobId });
             expect(response.body).toEqual({
-                msg: "mobile generated successfuly",
+                msg: "Mobile generated successfully",
                 data: {
                     mob_uid: mobId,
                     brand_name: exports.mobile.brand_name,
@@ -101,9 +104,12 @@ describe("Testing Application Functionality: \n", () => {
             });
         });
         it(`should update one item price to (900) by ID`, async () => {
-            const response = await exports.route.put(`/products/mobiles/${mobId}/900`);
+            const response = await exports.route
+                .put(`/products/mobiles/`)
+                .set("Content-type", "application/json")
+                .send({ id: mobId, price: 900 });
             expect(response.body).toEqual({
-                msg: "Mobile updated successfuly",
+                msg: "Mobile updated successfully",
                 data: {
                     mob_uid: mobId,
                     brand_name: exports.mobile.brand_name,
@@ -115,9 +121,12 @@ describe("Testing Application Functionality: \n", () => {
             });
         });
         it(`should delete one item from table mobiles by ID`, async () => {
-            const response = await exports.route.delete(`/products/mobiles/${mobId}`);
+            const response = await exports.route
+                .delete(`/products/mobiles/id`)
+                .set("Content-type", "application/json")
+                .send({ id: mobId });
             expect(response.body).toEqual({
-                msg: "Mobile deleted successfuly",
+                msg: "Mobile deleted successfully",
                 data: {
                     mob_uid: mobId,
                     brand_name: exports.mobile.brand_name,
@@ -165,7 +174,6 @@ describe("Testing Application Functionality: \n", () => {
             expect(msg).toEqual("User authenticated successfully");
             expect(data).toEqual({
                 u_uid: userId,
-                u_name: exports.user.u_name,
                 u_password: userPw,
             });
             token = userToken;
@@ -177,7 +185,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ uid: userId, password: "abc" });
             expect(result.status).toEqual(200);
             expect(result.body).toEqual({
-                msg: "User updated successfuly",
+                msg: "User updated successfully",
                 data: { u_uid: userId, u_name: exports.user.u_name },
             });
         });
@@ -199,7 +207,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ uid: userId });
             expect(result.status).toEqual(200);
             expect(result.body).toEqual({
-                msg: "User deleted successfuly",
+                msg: "User deleted successfully",
                 data: {
                     u_uid: userId,
                     u_name: exports.user.u_name,

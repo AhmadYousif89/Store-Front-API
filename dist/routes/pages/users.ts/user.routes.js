@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const users_1 = require("../../../models/users");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+let error;
 // method => POST /users
 // desc   => Create new user data.
 const createUser = (0, express_1.Router)().post("/users", async (req, res, next) => {
@@ -13,21 +14,19 @@ const createUser = (0, express_1.Router)().post("/users", async (req, res, next)
     console.log(`data:
       ${name}
       ${password}`);
+    if (!name || !password) {
+        res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
+        return;
+    }
     try {
-        if (!name || !password) {
-            const error = { status: 400, message: "Please provide user name and password !" };
-            next(error);
-            return;
-        }
-        const data = await users_1.userStore.createUser({ u_name: name, u_password: password });
-        if (!data) {
-            res.status(404).json(data);
-            return;
-        }
+        const data = await users_1.userModel.createUser({ u_name: name, u_password: password });
         res.status(201).json(data);
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 // method => POST /users/login
@@ -40,11 +39,12 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
     const { SECRET_TOKEN } = process.env;
     try {
         if (!name || !password) {
-            const error = { status: 401, message: "Please provide user name and password !" };
-            next(error);
+            res
+                .status(400)
+                .json({ status: "Error", message: "Please provide user name and password !" });
             return;
         }
-        const user = await users_1.userStore.validateUser(name, password);
+        const user = await users_1.userModel.authenticateUser(name, password);
         const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
         if (!user) {
             res
@@ -59,22 +59,28 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
         });
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 // method => GET /users
 // desc   => Return all users data.
 const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) => {
     try {
-        const data = await users_1.userStore.getAllUsers();
+        const data = await users_1.userModel.getAllUsers();
         if (data.length === 0) {
-            res.json({ msg: `No Users Were Found !` });
+            res.status(404).json({ msg: `No Users Were Found !` });
             return;
         }
         res.status(200).json({ msg: "Data generated successfully", data });
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 // method => GET /users/id
@@ -82,22 +88,27 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
 const getUserById = (0, express_1.Router)().get("/users/id", async (req, res, next) => {
     const { uid } = req.body;
     console.log("data: ", uid);
+    if (!uid) {
+        res.status(400).json({ status: "Error", message: "Please provide user id !" });
+        return;
+    }
     try {
-        if (!uid) {
-            const error = { status: 400, message: "Please provide user id !" };
-            next(error);
-            return;
-        }
-        const data = await users_1.userStore.getUserById(uid);
+        const data = await users_1.userModel.getUserById(uid);
         if (!data) {
-            res.status(404).json(data);
+            res.status(404).json({
+                msg: "Request failed !",
+                data: `User with id (${uid}) doesn't exist`,
+            });
             return;
         }
         res.status(200).json(data);
         return;
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 // method => PUT /users
@@ -109,19 +120,24 @@ const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) 
       ${password}`);
     try {
         if (!uid || !password) {
-            const error = { status: 400, message: "Please provide user id and password !" };
-            next(error);
+            res.status(400).json({ status: "Error", message: "Please provide user id and password !" });
             return;
         }
-        const data = await users_1.userStore.updateUser(uid, password);
+        const data = await users_1.userModel.updateUser(uid, password);
         if (!data) {
-            res.status(404).json(data);
+            res.status(404).json({
+                msg: "Update failed !",
+                data: `User with id (${uid}) doesn't exist`,
+            });
             return;
         }
         res.status(200).json(data);
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 // method => DELETE /users/id
@@ -131,11 +147,10 @@ const deleteUser = (0, express_1.Router)().delete("/users/id", async (req, res, 
     console.log("params: \n", uid);
     try {
         if (!uid) {
-            const error = { status: 400, message: "Please provide user id !" };
-            next(error);
+            res.status(400).json({ status: "Error", message: "Please provide user id !" });
             return;
         }
-        const data = await users_1.userStore.delUser(uid);
+        const data = await users_1.userModel.delUser(uid);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",
@@ -146,7 +161,10 @@ const deleteUser = (0, express_1.Router)().delete("/users/id", async (req, res, 
         res.status(200).json(data);
     }
     catch (err) {
-        next(err);
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
     }
 });
 exports.default = { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser };
