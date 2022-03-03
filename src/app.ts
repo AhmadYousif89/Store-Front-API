@@ -32,6 +32,8 @@ app.use((_req: Request, res: Response) => {
 
 const port = process.env.SERVER_PORT || 2020;
 
-app.listen(port, () => console.log(`server running on port ${port}...\n`));
+app.listen(port, async () => {
+  console.log(`server running on port ${port}...\n`);
+});
 
 export default app;

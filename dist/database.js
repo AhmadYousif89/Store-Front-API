@@ -7,7 +7,7 @@ const pgDB = new pg_1.Pool({
     port: PG_PORT,
     host: PG_HOST,
     user: PG_USER,
-    database: ENV === "development" ? PG_DB : PG_DB_TEST,
+    database: ENV === "dev" ? PG_DB : PG_DB_TEST,
     password: PG_PASSWORD,
 });
 pgDB.on("error", (err) => {

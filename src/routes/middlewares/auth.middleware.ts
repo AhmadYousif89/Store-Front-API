@@ -11,8 +11,7 @@ const handleAuthErr = (next: NextFunction) => {
 const handleAuthentication = (req: Request, _res: Response, next: NextFunction) => {
   try {
     // get authHeader
-    const authheader = req.get("Authorization");
-    console.log(authheader);
+    const authheader = req.headers.authorization;
     if (authheader) {
       // get authHeader token
       const token = authheader.split(" ")[1];

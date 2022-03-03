@@ -1,27 +1,41 @@
 import bCrypt from "bcrypt";
 
+type Users = {
+  u_uid?: string;
+  u_name?: string;
+  password?: string;
+  msg?: string;
+  data?: string | object;
+};
+type Orders = {
+  id?: number;
+  order_status?: string;
+  user_id?: string;
+  msg?: string;
+  data?: string | object;
+};
+type Product = {
+  id?: number;
+  name?: string;
+  price?: number;
+  category?: string;
+  msg?: string;
+  data?: string | object;
+};
+type Mobile = {
+  mob_uid?: string;
+  brand?: string;
+  model?: string;
+  maker?: string;
+  price?: number;
+  msg?: string;
+  data?: string | object;
+};
 type Error = {
   name?: string;
   message?: string;
   stack?: string;
   status?: number;
-};
-type Mobile = {
-  mob_uid?: string;
-  brand_name?: string;
-  model_name?: string;
-  manufacturer?: string;
-  price?: number;
-  made_in?: string;
-  msg?: string;
-  data?: string | object;
-};
-type Users = {
-  u_uid?: string;
-  u_name?: string;
-  u_password?: string;
-  msg?: string;
-  data?: string | object;
 };
 
 const { SALT, PEPPER } = process.env;
@@ -35,9 +49,4 @@ const isPwValide = (password: string, hashed: string): boolean | null => {
   return bCrypt.compareSync(password + PEPPER, hashed);
 };
 
-const replaceErrMsg = (err: Error, originalMsg: string, replacedMsg: string) => {
-  const newStr = err.message?.replace(originalMsg, replacedMsg);
-  return newStr;
-};
-
-export { Error, Mobile, Users, encrypt, isPwValide, replaceErrMsg };
+export { Product, Orders, Error, Mobile, Users, encrypt, isPwValide };

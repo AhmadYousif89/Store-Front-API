@@ -10,9 +10,9 @@ class UserModel {
       // openning connection with db.
       const conct = await pgDB.connect();
       // making query.
-      const sql = `INSERT INTO users (u_name, u_password) VALUES ($1, $2) RETURNING u_uid , u_name`;
+      const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_uid , u_name`;
       // encrypting password.
-      const hash = encrypt(values.u_password as string);
+      const hash = encrypt(values.password as string);
       // retrieving query result.
       const result = await conct.query(sql, [values.u_name, hash]);
       // check if row has been created.
@@ -28,7 +28,7 @@ class UserModel {
       return null;
     } catch (err) {
       // handling error.
-      // making my output error syntax.
+      // making my custom error syntax.
       errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
       throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
     }
@@ -51,7 +51,7 @@ class UserModel {
   async getUserById(u_uid: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_uid , u_name FROM users WHERE u_uid = ($1) `;
+      const sql = `SELECT u_uid, u_name FROM users WHERE u_uid = ($1) `;
       const result = await conct.query(sql, [u_uid]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -69,7 +69,7 @@ class UserModel {
       if (str) {
         errMsg = (err as Error).message?.replace(
           `invalid input syntax for type uuid: "${u_uid}"`,
-          "Please enter valid uuid !"
+          "Please enter valid user id !"
         );
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
@@ -78,11 +78,11 @@ class UserModel {
     }
   }
   // Update user
-  async updateUser(u_uid: string, u_password: string): Promise<Users | null> {
+  async updateUser(u_uid: string, password: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE users SET u_password = ($2) WHERE u_uid = ($1) RETURNING u_uid , u_name`;
-      const hash = encrypt(u_password);
+      const sql = `UPDATE users SET password = ($2) WHERE u_uid = ($1) RETURNING u_uid , u_name`;
+      const hash = encrypt(password);
       const result = await conct.query(sql, [u_uid, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -100,7 +100,7 @@ class UserModel {
       if (str) {
         errMsg = (err as Error).message?.replace(
           `invalid input syntax for type uuid: "${u_uid}"`,
-          "Please enter valid uuid !"
+          "Please enter valid user id !"
         );
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
@@ -130,7 +130,7 @@ class UserModel {
       if (str) {
         errMsg = (err as Error).message?.replace(
           `invalid input syntax for type uuid: "${u_uid}"`,
-          "Please enter valid uuid !"
+          "Please enter valid user id !"
         );
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
@@ -139,16 +139,16 @@ class UserModel {
     }
   }
   // Authenticate user.
-  async authenticateUser(u_name: string, u_password: string): Promise<Users | null> {
+  async authenticateUser(u_name: string, password: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
+      const sql = `SELECT password FROM users WHERE u_name = ($1)`;
       const result = await conct.query(sql, [u_name]);
       // checking for data.
       if (result.rows.length) {
         const user = result.rows[0];
         // checking user password authenticity.
-        if (isPwValide(u_password, user.u_password)) {
+        if (isPwValide(password, user.password)) {
           const sql = `SELECT u_uid, u_name FROM users WHERE u_name = ($1)`;
           const data = await conct.query(sql, [u_name]);
           return data.rows[0];
@@ -165,5 +165,3 @@ class UserModel {
 }
 
 export const userModel = new UserModel();
-// userStore.validateUser("aaa", "123");
-// console.log("invalid input syntax for type uuid: " + "\\" + `"666` + '\\"');

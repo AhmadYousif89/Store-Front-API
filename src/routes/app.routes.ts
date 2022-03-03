@@ -1,21 +1,32 @@
 import { Router } from "express";
-import { products } from "./pages/products";
-import userRoutes from "./pages/users.ts/user.routes";
-import mobileRoutes from "./pages/mobiles/mobile.routes";
-import authMiddleware from "./middlewares/auth.middleware";
+import user from "./pages/users/user.routes";
+import order from "./pages/products/order.routes";
+import product from "./pages/products/product.routes";
+import mobile from "./pages/products/mobiles/mobile.routes";
 
 export const routes = Router();
 
-routes.use(products);
-routes.use(mobileRoutes.createMobile);
-routes.use(mobileRoutes.getMobiles);
-routes.use(mobileRoutes.getMobById);
-routes.use(mobileRoutes.updateMobile);
-routes.use(mobileRoutes.deleteMobile);
+routes.use(user.loginUser);
+routes.use(user.createUser);
+routes.use(user.getUsers);
+routes.use(user.getUserById);
+routes.use(user.updateUser);
+routes.use(user.deleteUser);
 
-routes.use(userRoutes.loginUser);
-routes.use(userRoutes.createUser);
-routes.use(authMiddleware, userRoutes.getUsers);
-routes.use(userRoutes.getUserById);
-routes.use(userRoutes.updateUser);
-routes.use(userRoutes.deleteUser);
+routes.use(product.createProducts);
+routes.use(product.getProducts);
+routes.use(product.getProductById);
+routes.use(product.updateProduct);
+routes.use(product.deleteProduct);
+
+routes.use(order.createOrders);
+routes.use(order.getOrders);
+routes.use(order.getOrderById);
+routes.use(order.updateOrder);
+routes.use(order.deleteOrder);
+
+routes.use(mobile.createMobile);
+routes.use(mobile.getMobiles);
+routes.use(mobile.getMobById);
+routes.use(mobile.updateMobile);
+routes.use(mobile.deleteMobile);

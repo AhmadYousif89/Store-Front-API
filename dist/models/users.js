@@ -15,9 +15,9 @@ class UserModel {
             // openning connection with db.
             const conct = await database_1.default.connect();
             // making query.
-            const sql = `INSERT INTO users (u_name, u_password) VALUES ($1, $2) RETURNING u_uid , u_name`;
+            const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_uid , u_name`;
             // encrypting password.
-            const hash = (0, control_1.encrypt)(values.u_password);
+            const hash = (0, control_1.encrypt)(values.password);
             // retrieving query result.
             const result = await conct.query(sql, [values.u_name, hash]);
             // check if row has been created.
@@ -34,7 +34,7 @@ class UserModel {
         }
         catch (err) {
             // handling error.
-            // making my output error syntax.
+            // making my custom error syntax.
             errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
             throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
         }
@@ -58,7 +58,7 @@ class UserModel {
     async getUserById(u_uid) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT u_uid , u_name FROM users WHERE u_uid = ($1) `;
+            const sql = `SELECT u_uid, u_name FROM users WHERE u_uid = ($1) `;
             const result = await conct.query(sql, [u_uid]);
             if (result.rows.length) {
                 const user = result.rows[0];
@@ -75,7 +75,7 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
@@ -84,11 +84,11 @@ class UserModel {
         }
     }
     // Update user
-    async updateUser(u_uid, u_password) {
+    async updateUser(u_uid, password) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `UPDATE users SET u_password = ($2) WHERE u_uid = ($1) RETURNING u_uid , u_name`;
-            const hash = (0, control_1.encrypt)(u_password);
+            const sql = `UPDATE users SET password = ($2) WHERE u_uid = ($1) RETURNING u_uid , u_name`;
+            const hash = (0, control_1.encrypt)(password);
             const result = await conct.query(sql, [u_uid, hash]);
             if (result.rows.length) {
                 const user = result.rows[0];
@@ -105,7 +105,7 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
@@ -134,7 +134,7 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
@@ -143,16 +143,16 @@ class UserModel {
         }
     }
     // Authenticate user.
-    async authenticateUser(u_name, u_password) {
+    async authenticateUser(u_name, password) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT u_password FROM users WHERE u_name = ($1)`;
+            const sql = `SELECT password FROM users WHERE u_name = ($1)`;
             const result = await conct.query(sql, [u_name]);
             // checking for data.
             if (result.rows.length) {
                 const user = result.rows[0];
                 // checking user password authenticity.
-                if ((0, control_1.isPwValide)(u_password, user.u_password)) {
+                if ((0, control_1.isPwValide)(password, user.password)) {
                     const sql = `SELECT u_uid, u_name FROM users WHERE u_name = ($1)`;
                     const data = await conct.query(sql, [u_name]);
                     return data.rows[0];
@@ -169,5 +169,3 @@ class UserModel {
     }
 }
 exports.userModel = new UserModel();
-// userStore.validateUser("aaa", "123");
-// console.log("invalid input syntax for type uuid: " + "\\" + `"666` + '\\"');

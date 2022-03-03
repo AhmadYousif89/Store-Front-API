@@ -14,14 +14,13 @@ class MobileModel {
             // openning connection with db.
             const conct = await database_1.default.connect();
             // making query.
-            const sql = `INSERT INTO mobiles (brand_name, model_name, manufacturer, price, made_in) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+            const sql = `INSERT INTO mobiles (brand, model, maker, price) VALUES ($1, $2, $3, $4) RETURNING *`;
             // retrieving query result.
             const result = await conct.query(sql, [
-                values.brand_name,
-                values.model_name,
-                values.manufacturer,
+                values.brand,
+                values.model,
+                values.maker,
                 values.price,
-                values.made_in,
             ]);
             // check if row has been created.
             if (result.rows.length) {
@@ -40,7 +39,7 @@ class MobileModel {
         }
         catch (err) {
             // handling error.
-            // making my output error syntax.
+            // making my custom error syntax.
             errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
             throw new Error(`Unable to create new mobile - ${errMsg}`);
         }
@@ -81,7 +80,7 @@ class MobileModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid mobile id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
@@ -98,6 +97,7 @@ class MobileModel {
             if (result.rows.length) {
                 const mob = result.rows[0];
                 console.log(result.command, result.rowCount, mob);
+                conct.release();
                 return {
                     msg: `Mobile updated successfully`,
                     data: mob,
@@ -109,7 +109,7 @@ class MobileModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid mobile id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");
@@ -126,6 +126,7 @@ class MobileModel {
             if (result.rows.length) {
                 const mobile = result.rows[0];
                 console.log(result.command, result.rowCount, mobile);
+                conct.release();
                 return {
                     msg: `Mobile deleted successfully`,
                     data: mobile,
@@ -137,7 +138,7 @@ class MobileModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid uuid !");
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${mob_uid}"`, "Please enter valid mobile id !");
             }
             else {
                 errMsg = err.message?.replace(`relation "mobiles"`, "TABLE (mobiles)");

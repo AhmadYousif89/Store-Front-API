@@ -12,8 +12,7 @@ const handleAuthErr = (next) => {
 const handleAuthentication = (req, _res, next) => {
     try {
         // get authHeader
-        const authheader = req.get("Authorization");
-        console.log(authheader);
+        const authheader = req.headers.authorization;
         if (authheader) {
             // get authHeader token
             const token = authheader.split(" ")[1];
