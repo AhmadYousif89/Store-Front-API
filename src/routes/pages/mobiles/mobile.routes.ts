@@ -1,29 +1,32 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { ordersModel } from "../../../models/orders";
+import { mobileModel } from "../../../models/mobile";
 import { Error } from "../../../utils/control";
 
 let error: Error;
-// method => POST /user/account/orders
-// desc   => Create new Order data.
-const createOrders = Router().post(
-  "/user/account/orders",
+// method => POST /products/mobiles
+// desc   => Create new mobile data.
+const createMobile = Router().post(
+  "/products/mobiles/",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-    const { userId, status } = req.body;
+    const { brand, model, maker } = req.body;
+    const price = Number.parseInt(req.body.price);
     console.log(
       `params:
-      ${userId} ${status}`
+      ${brand} ${model} ${price} ${maker}`
     );
     // validating values before submitting.
-    if (!userId || !status) {
+    if (!brand || !model || !price || price <= 0 || !maker) {
       res
         .status(400)
         .json({ status: "Error", message: "Please provide correct details before submiting !" });
       return;
     }
     try {
-      const data = await ordersModel.createOrder({
-        order_status: status,
-        user_id: userId,
+      const data = await mobileModel.createMob({
+        brand: brand,
+        model: model,
+        maker: maker,
+        price: price,
       });
       res.status(201).json(data);
     } catch (err) {
@@ -35,15 +38,15 @@ const createOrders = Router().post(
   }
 );
 
-// method => GET /user/account/orders
-// desc   => Return all Orders data.
-const getOrders = Router().get(
-  "/user/account/orders",
+// method => GET /products/mobiles
+// desc   => Return all mobile data.
+const getMobiles = Router().get(
+  "/products/mobiles/",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const data = await ordersModel.getAllOrders();
+      const data = await mobileModel.getAllMobs();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Orders Were Found !` });
+        res.status(404).json({ msg: `No Mobiles Were Found !` });
         return;
       }
       res.status(200).json({ msg: "Data generated successfully", data });
@@ -56,23 +59,23 @@ const getOrders = Router().get(
   }
 );
 
-// method => GET /user/account/order/id
-// desc   => Return a specific Order.
-const getOrderById = Router().get(
-  "/user/account/order/id",
+// method => GET /products/mobiles/id
+// desc   => Return a specific mobile.
+const getMobById = Router().get(
+  "/products/mobiles/id/",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
-      res.status(400).json({ status: "Error", message: "Please provide order id !" });
+      res.status(400).json({ status: "Error", message: "Please provide mobile id !" });
       return;
     }
     try {
-      const data = await ordersModel.getOrderById(id);
+      const data = await mobileModel.getMobById(id);
       if (!data) {
         res
           .status(404)
-          .json({ msg: "Request failed !", data: `Order with id (${id}) doesn't Exist !` });
+          .json({ msg: "Request failed !", data: `Mobile with id (${id}) doesn't Exist !` });
         return;
       }
       res.status(200).json(data);
@@ -85,27 +88,30 @@ const getOrderById = Router().get(
   }
 );
 
-// method => PUT /user/account/orders
-// desc   => Update a specific Order .
-const updateOrder = Router().put(
-  "/user/account/orders",
+// method => PUT /products/mobiles
+// desc   => Update a specific mobile .
+const updateMobile = Router().put(
+  "/products/mobiles/",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { id, status } = req.body;
+    const { id } = req.body;
+    const price = Number.parseInt(req.body.price);
     console.log(
       `data: 
       ${id} 
-      ${status}`
+      ${price}`
     );
-    if (!id || !status) {
-      res.status(400).json({ status: "Error", message: "Please provide order status and id !" });
+    if (!id || !price || price <= 0) {
+      res
+        .status(400)
+        .json({ status: "Error", message: "Please provide mobile id and new price !" });
       return;
     }
     try {
-      const data = await ordersModel.updateOrder(id, status);
+      const data = await mobileModel.updateMob(id, price);
       if (!data) {
         res.status(404).json({
           msg: "Update failed !",
-          data: `Order with id (${id}) doesn't exist`,
+          data: `Mobile with id (${id}) doesn't exist`,
         });
       }
       res.status(200).json(data);
@@ -118,23 +124,23 @@ const updateOrder = Router().put(
   }
 );
 
-// method => DELETE /user/account/order/id
-// desc   => Delete a specific Order.
-const deleteOrder = Router().delete(
-  "/user/account/order/id",
+// method => DELETE /products/mobiles/id
+// desc   => Delete a specific mobile.
+const deleteMobile = Router().delete(
+  "/products/mobiles/id/",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
-      res.status(400).json({ status: "Error", message: "Please provide order id !" });
+      res.status(400).json({ status: "Error", message: "Please provide mobile id !" });
       return;
     }
     try {
-      const data = await ordersModel.delOrder(id);
+      const data = await mobileModel.delMob(id);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",
-          data: `Order with id (${id}) doesn't exist`,
+          data: `Mobile with id (${id}) doesn't exist`,
         });
         return;
       }
@@ -148,4 +154,4 @@ const deleteOrder = Router().delete(
   }
 );
 
-export default { createOrders, getOrders, getOrderById, updateOrder, deleteOrder };
+export default { createMobile, getMobiles, getMobById, updateMobile, deleteMobile };

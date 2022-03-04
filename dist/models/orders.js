@@ -141,5 +141,31 @@ class OrdersModel {
             throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
         }
     }
+    // Add new product order.
+    async addProductOrder(values) {
+        try {
+            // openning connection with db.
+            const conct = await database_1.default.connect();
+            // making query.
+            const sql = `INSERT INTO order_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING order_id, product_id, quantity`;
+            // retrieving query result.
+            const result = await conct.query(sql, [values.order_id, values.product_id, values.quantity]);
+            // check if row has been created.
+            if (result.rows.length) {
+                const product = result.rows[0];
+                console.log(result.command, result.rows);
+                conct.release();
+                return {
+                    msg: `Order-product added successfully`,
+                    data: product,
+                };
+            }
+            return null;
+        }
+        catch (err) {
+            errMsg = err.message?.replace(`relation "order_products"`, "TABLE (order_products)");
+            throw new Error(`Unable to add new order-product - ${errMsg}`);
+        }
+    }
 }
 exports.ordersModel = new OrdersModel();

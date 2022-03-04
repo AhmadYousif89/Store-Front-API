@@ -1,8 +1,8 @@
 import { Router } from "express";
 import user from "./pages/users/user.routes";
-import order from "./pages/products/order.routes";
+import order from "./pages/orders/order.routes";
 import product from "./pages/products/product.routes";
-import mobile from "./pages/products/mobiles/mobile.routes";
+import mobile from "./pages/mobiles/mobile.routes";
 
 export const routes = Router();
 

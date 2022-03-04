@@ -22,7 +22,7 @@ exports.mobile = {
     maker: "Samsung",
     price: 1000,
 };
-fdescribe("Testing Application Functionality: \n", () => {
+describe("Testing Application Functionality: \n", () => {
     it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
         const response = await exports.route.get("/");
         expect(response.statusCode).toBe(200);

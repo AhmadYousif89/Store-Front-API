@@ -6,12 +6,12 @@ let error;
 // method => POST /products
 // desc   => Create new product data.
 const createProducts = (0, express_1.Router)().post("/products", async (req, res, next) => {
-    const { name, category } = req.body;
+    const { category, name, brand, maker } = req.body;
     const price = Number.parseInt(req.body.price);
     console.log(`params:
-      ${name} ${price} ${category}`);
+      ${category} ${name} ${brand}  ${maker} ${price} `);
     // validating values before submitting.
-    if (!name || !price || price <= 0 || !category) {
+    if (!category || !name || !brand || !maker || !price || price <= 0) {
         res
             .status(400)
             .json({ status: "Error", message: "Please provide correct details before submiting !" });
@@ -19,9 +19,11 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
     }
     try {
         const data = await products_1.productModel.createProduct({
-            name: name,
-            price: price,
             category: category,
+            p_name: name,
+            brand: brand,
+            maker: maker,
+            price: price,
         });
         res.status(201).json(data);
     }
@@ -51,8 +53,8 @@ const getProducts = (0, express_1.Router)().get("/products", async (_req, res, n
     }
 });
 // method => GET /products/id
-// desc   => Return a specific product.
-const getProductById = (0, express_1.Router)().get("/products/id/", async (req, res, next) => {
+// desc   => Return a specific product by id.
+const getProductById = (0, express_1.Router)().get("/products/id", async (req, res, next) => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
@@ -76,18 +78,39 @@ const getProductById = (0, express_1.Router)().get("/products/id/", async (req, 
         next(error);
     }
 });
+// method => GET /products/category
+// desc   => Return a all product by category.
+const getProductBycategory = (0, express_1.Router)().get("/products/:category", async (req, res, next) => {
+    const category = req.params.category;
+    console.log("data: \n", category);
+    try {
+        const data = await products_1.productModel.getProductBycategory(category);
+        if (!data) {
+            res.status(404).json({
+                msg: "Request failed !",
+                data: `No products Found in category (${category})!`,
+            });
+            return;
+        }
+        res.status(200).json(data);
+    }
+    catch (err) {
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
+    }
+});
 // method => PUT /products
 // desc   => Update a specific product .
-const updateProduct = (0, express_1.Router)().put("/products/", async (req, res, next) => {
+const updateProduct = (0, express_1.Router)().put("/products", async (req, res, next) => {
     const { id } = req.body;
     const price = Number.parseInt(req.body.price);
     console.log(`data: 
       ${id} 
       ${price}`);
     if (!id || !price || price <= 0) {
-        res
-            .status(400)
-            .json({ status: "Error", message: "Please provide product id and new price !" });
+        res.status(400).json({ status: "Error", message: "Please provide valid id and price !" });
         return;
     }
     try {
@@ -109,7 +132,7 @@ const updateProduct = (0, express_1.Router)().put("/products/", async (req, res,
 });
 // method => DELETE /products/Products/id
 // desc   => Delete a specific Product.
-const deleteProduct = (0, express_1.Router)().delete("/products/Products/id/", async (req, res, next) => {
+const deleteProduct = (0, express_1.Router)().delete("/products/id", async (req, res, next) => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
@@ -134,4 +157,11 @@ const deleteProduct = (0, express_1.Router)().delete("/products/Products/id/", a
         next(error);
     }
 });
-exports.default = { createProducts, getProducts, getProductById, updateProduct, deleteProduct };
+exports.default = {
+    createProducts,
+    getProducts,
+    getProductById,
+    getProductBycategory,
+    updateProduct,
+    deleteProduct,
+};

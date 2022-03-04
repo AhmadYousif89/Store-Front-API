@@ -33,11 +33,14 @@ class UserModel {
       throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
     }
   }
-  // Get users => (without retrieving user password as it consider sensitive information)
+  /*
+  - Get users => (without retrieving user password as it consider sensitive information)
+  - If we want to control how much of data to be received when calling this route we could use keyword (LIMIT) like = LIMIT 5.
+  */
   async getAllUsers(): Promise<Users[]> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_uid, u_name FROM users `;
+      const sql = `SELECT u_uid, u_name FROM users`;
       const result = await conct.query(sql);
       conct.release();
       console.log(result.command, result.rowCount, result.rows, "\n");

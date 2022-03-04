@@ -3,17 +3,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orders_1 = require("../../../models/orders");
 let error;
-// method => POST /user/account/orders
+// method => POST /user/cart/orders
 // desc   => Create new Order data.
-const createOrders = (0, express_1.Router)().post("/user/account/orders", async (req, res, next) => {
-    const { userId, status } = req.body;
+const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (req, res, next) => {
+    const { userId } = req.body;
+    const status = req.body.status.toLowerCase();
     console.log(`params:
       ${userId} ${status}`);
     // validating values before submitting.
-    if (!userId || !status) {
+    if (!userId) {
         res
             .status(400)
             .json({ status: "Error", message: "Please provide correct details before submiting !" });
+        return;
+    }
+    else if (status !== "active" && status !== "complete") {
+        res
+            .status(406)
+            .json({ status: "Error", message: "Please insert value between (active) or (complete) !" });
         return;
     }
     try {
@@ -30,9 +37,9 @@ const createOrders = (0, express_1.Router)().post("/user/account/orders", async 
         next(error);
     }
 });
-// method => GET /user/account/orders
+// method => GET /user/cart/orders
 // desc   => Return all Orders data.
-const getOrders = (0, express_1.Router)().get("/user/account/orders", async (_req, res, next) => {
+const getOrders = (0, express_1.Router)().get("/user/cart/orders", async (_req, res, next) => {
     try {
         const data = await orders_1.ordersModel.getAllOrders();
         if (data.length === 0) {
@@ -48,15 +55,11 @@ const getOrders = (0, express_1.Router)().get("/user/account/orders", async (_re
         next(error);
     }
 });
-// method => GET /user/account/order/id
+// method => GET /user/cart/orders/id
 // desc   => Return a specific Order.
-const getOrderById = (0, express_1.Router)().get("/user/account/order/id", async (req, res, next) => {
-    const { id } = req.body;
+const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async (req, res, next) => {
+    const id = req.params.id;
     console.log("data: \n", id);
-    if (!id) {
-        res.status(400).json({ status: "Error", message: "Please provide order id !" });
-        return;
-    }
     try {
         const data = await orders_1.ordersModel.getOrderById(id);
         if (!data) {
@@ -74,9 +77,9 @@ const getOrderById = (0, express_1.Router)().get("/user/account/order/id", async
         next(error);
     }
 });
-// method => PUT /user/account/orders
+// method => PUT /user/cart/orders
 // desc   => Update a specific Order .
-const updateOrder = (0, express_1.Router)().put("/user/account/orders", async (req, res, next) => {
+const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req, res, next) => {
     const { id, status } = req.body;
     console.log(`data: 
       ${id} 
@@ -102,9 +105,9 @@ const updateOrder = (0, express_1.Router)().put("/user/account/orders", async (r
         next(error);
     }
 });
-// method => DELETE /user/account/order/id
+// method => DELETE /user/cart/order/id
 // desc   => Delete a specific Order.
-const deleteOrder = (0, express_1.Router)().delete("/user/account/order/id", async (req, res, next) => {
+const deleteOrder = (0, express_1.Router)().delete("/user/cart/order/id", async (req, res, next) => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
@@ -129,4 +132,42 @@ const deleteOrder = (0, express_1.Router)().delete("/user/account/order/id", asy
         next(error);
     }
 });
-exports.default = { createOrders, getOrders, getOrderById, updateOrder, deleteOrder };
+// method => POST /user/cart/orders/:id/products
+// desc   => Add new product to user orders.
+const addProductOrder = (0, express_1.Router)().post("/user/cart/order/:id/products", async (req, res, next) => {
+    const oId = req.params.id;
+    const pId = req.body.product_id;
+    const quantity = Number.parseInt(req.body.quantity);
+    console.log(`
+    data:
+    ${oId} ${pId} ${quantity}
+    `);
+    if (!pId || !quantity || quantity <= 0) {
+        res
+            .status(400)
+            .json({ status: "Error", message: "Please provide product id and valid quantity !" });
+        return;
+    }
+    try {
+        const data = await orders_1.ordersModel.addProductOrder({
+            order_id: oId,
+            product_id: pId,
+            quantity: quantity,
+        });
+        if (!data) {
+            res.status(404).json({
+                msg: "Request failed !",
+                data: `Order with id (${oId}) doesn't exist`,
+            });
+            return;
+        }
+        res.status(200).json(data);
+    }
+    catch (err) {
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
+    }
+});
+exports.default = { createOrders, getOrders, getOrderById, updateOrder, deleteOrder, addProductOrder };

@@ -15,10 +15,20 @@ type Orders = {
   data?: string | object;
 };
 type Product = {
-  id?: number;
-  name?: string;
-  price?: number;
+  p_uid?: number;
   category?: string;
+  p_name?: string;
+  brand?: string;
+  maker?: string;
+  price?: number;
+  msg?: string;
+  data?: string | object;
+};
+type OP = {
+  id?: number;
+  quantity?: number;
+  order_id?: string;
+  product_id?: string;
   msg?: string;
   data?: string | object;
 };
@@ -49,4 +59,4 @@ const isPwValide = (password: string, hashed: string): boolean | null => {
   return bCrypt.compareSync(password + PEPPER, hashed);
 };
 
-export { Product, Orders, Error, Mobile, Users, encrypt, isPwValide };
+export { Users, Orders, Product, OP, Error, Mobile, encrypt, isPwValide };

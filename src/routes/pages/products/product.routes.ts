@@ -8,14 +8,14 @@ let error: Error;
 const createProducts = Router().post(
   "/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-    const { name, category } = req.body;
+    const { category, name, brand, maker } = req.body;
     const price = Number.parseInt(req.body.price);
     console.log(
       `params:
-      ${name} ${price} ${category}`
+      ${category} ${name} ${brand}  ${maker} ${price} `
     );
     // validating values before submitting.
-    if (!name || !price || price <= 0 || !category) {
+    if (!category || !name || !brand || !maker || !price || price <= 0) {
       res
         .status(400)
         .json({ status: "Error", message: "Please provide correct details before submiting !" });
@@ -23,9 +23,11 @@ const createProducts = Router().post(
     }
     try {
       const data = await productModel.createProduct({
-        name: name,
-        price: price,
         category: category,
+        p_name: name,
+        brand: brand,
+        maker: maker,
+        price: price,
       });
       res.status(201).json(data);
     } catch (err) {
@@ -59,9 +61,9 @@ const getProducts = Router().get(
 );
 
 // method => GET /products/id
-// desc   => Return a specific product.
+// desc   => Return a specific product by id.
 const getProductById = Router().get(
-  "/products/id/",
+  "/products/id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
@@ -87,10 +89,36 @@ const getProductById = Router().get(
   }
 );
 
+// method => GET /products/category
+// desc   => Return a all product by category.
+const getProductBycategory = Router().get(
+  "/products/:category",
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const category = req.params.category;
+    console.log("data: \n", category);
+    try {
+      const data = await productModel.getProductBycategory(category);
+      if (!data) {
+        res.status(404).json({
+          msg: "Request failed !",
+          data: `No products Found in category (${category})!`,
+        });
+        return;
+      }
+      res.status(200).json(data);
+    } catch (err) {
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
+    }
+  }
+);
+
 // method => PUT /products
 // desc   => Update a specific product .
 const updateProduct = Router().put(
-  "/products/",
+  "/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     const price = Number.parseInt(req.body.price);
@@ -100,9 +128,7 @@ const updateProduct = Router().put(
       ${price}`
     );
     if (!id || !price || price <= 0) {
-      res
-        .status(400)
-        .json({ status: "Error", message: "Please provide product id and new price !" });
+      res.status(400).json({ status: "Error", message: "Please provide valid id and price !" });
       return;
     }
     try {
@@ -126,7 +152,7 @@ const updateProduct = Router().put(
 // method => DELETE /products/Products/id
 // desc   => Delete a specific Product.
 const deleteProduct = Router().delete(
-  "/products/Products/id/",
+  "/products/id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
@@ -153,4 +179,11 @@ const deleteProduct = Router().delete(
   }
 );
 
-export default { createProducts, getProducts, getProductById, updateProduct, deleteProduct };
+export default {
+  createProducts,
+  getProducts,
+  getProductById,
+  getProductBycategory,
+  updateProduct,
+  deleteProduct,
+};

@@ -20,7 +20,7 @@ export const mobile = {
   price: 1000,
 } as Mobile;
 
-fdescribe("Testing Application Functionality: \n", () => {
+describe("Testing Application Functionality: \n", () => {
   it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
     const response = await route.get("/");
     expect(response.statusCode).toBe(200);

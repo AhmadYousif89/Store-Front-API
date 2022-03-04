@@ -14,9 +14,15 @@ class ProductModel {
             // openning connection with db.
             const conct = await database_1.default.connect();
             // making query.
-            const sql = `INSERT INTO products (id, name, price,category) VALUES ($1, $2, $3) RETURNING *`;
+            const sql = `INSERT INTO products (category, p_name, brand, maker, price) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
             // retrieving query result.
-            const result = await conct.query(sql, [values.id, values.name, values.price]);
+            const result = await conct.query(sql, [
+                values.category,
+                values.p_name,
+                values.brand,
+                values.maker,
+                values.price,
+            ]);
             // check if row has been created.
             if (result.rows.length) {
                 const product = result.rows[0];
@@ -35,7 +41,7 @@ class ProductModel {
         catch (err) {
             // handling error.
             // making my custom error syntax.
-            errMsg = err.message?.replace(`relation "Products"`, "TABLE (Products)");
+            errMsg = err.message?.replace(`relation "products"`, "TABLE (Products)");
             throw new Error(`Unable to create new Product - ${errMsg}`);
         }
     }
@@ -58,7 +64,7 @@ class ProductModel {
     async getProductById(id) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT * FROM products WHERE id = ($1)`;
+            const sql = `SELECT * FROM products WHERE p_uid = ($1)`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
                 const product = result.rows[0];
@@ -83,11 +89,40 @@ class ProductModel {
             throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
         }
     }
+    // Get one Product by category
+    async getProductBycategory(category) {
+        try {
+            const conct = await database_1.default.connect();
+            const sql = `SELECT * FROM products WHERE category = ($1) LIMIT 5`;
+            const result = await conct.query(sql, [category]);
+            if (result.rows.length) {
+                const product = result.rows[0];
+                console.log(result.command, result.rowCount, product);
+                conct.release();
+                return {
+                    msg: `Products generated successfully`,
+                    data: product,
+                };
+            }
+            conct.release();
+            return null;
+        }
+        catch (err) {
+            const str = err.message?.includes("uuid");
+            if (str) {
+                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${category}"`, "Please enter valid Product id !");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
+            }
+            throw new Error(`Unable to get Product in category (${category}) - ${errMsg}`);
+        }
+    }
     // Update Product
     async updateProduct(id, price) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `UPDATE Products SET price = ($2) WHERE id = ($1) RETURNING *`;
+            const sql = `UPDATE Products SET price = ($2) WHERE p_uid = ($1) RETURNING *`;
             const result = await conct.query(sql, [id, price]);
             if (result.rows.length) {
                 const product = result.rows[0];
@@ -116,7 +151,7 @@ class ProductModel {
     async delProduct(id) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `DELETE FROM products WHERE id = ($1) RETURNING *`;
+            const sql = `DELETE FROM products WHERE p_uid = ($1) RETURNING *`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
                 const product = result.rows[0];
