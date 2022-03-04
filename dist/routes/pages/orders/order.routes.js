@@ -11,16 +11,10 @@ const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (re
     console.log(`params:
       ${userId} ${status}`);
     // validating values before submitting.
-    if (!userId) {
+    if (!userId || !status) {
         res
             .status(400)
             .json({ status: "Error", message: "Please provide correct details before submiting !" });
-        return;
-    }
-    else if (status !== "active" && status !== "complete") {
-        res
-            .status(406)
-            .json({ status: "Error", message: "Please insert value between (active) or (complete) !" });
         return;
     }
     try {

@@ -30,7 +30,21 @@ class OrdersModel {
     } catch (err) {
       // handling error.
       // making my custom error syntax.
-      errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      const uuidStr = (err as Error).message?.includes("uuid");
+      const enumStr = (err as Error).message?.includes("enum");
+      if (uuidStr) {
+        errMsg = (err as Error).message?.replace(
+          `invalid input syntax for type uuid: "${values.user_id}"`,
+          "Please enter valid user id !"
+        );
+      } else if (enumStr) {
+        errMsg = (err as Error).message?.replace(
+          `invalid input value for enum status: "${values.order_status}"`,
+          "Please enter value between (active) or (complete) for order status !"
+        );
+      } else {
+        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      }
       throw new Error(`Unable to create new Orders - ${errMsg}`);
     }
   }
