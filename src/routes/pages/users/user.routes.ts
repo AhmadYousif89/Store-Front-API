@@ -5,10 +5,10 @@ import { Error } from "../../../utils/control";
 import authMiddleware from "../../middlewares/auth.middleware";
 
 let error: Error;
-// method => POST /users
+// method => POST /users/signup
 // desc   => Create new user data.
 const createUser = Router().post(
-  "/users/sign-up",
+  "/users/signup",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, password } = req.body;
     console.log(
@@ -96,18 +96,14 @@ const getUsers = Router().get(
   }
 );
 
-// method => GET /users/id
+// method => GET /users/:id
 // desc   => Return a specific user.
 const getUserById = Router().get(
-  "/users/id",
-  authMiddleware,
+  "/users/id/:id",
+  // authMiddleware,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { uid } = req.body;
-    console.log("data: ", uid);
-    if (!uid) {
-      res.status(400).json({ status: "Error", message: "Please provide user id !" });
-      return;
-    }
+    const uid = req.params.id;
+    console.log("data: \n", uid);
     try {
       const data = await userModel.getUserById(uid);
       if (!data) {

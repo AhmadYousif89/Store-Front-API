@@ -24,7 +24,7 @@ class OrdersModel {
                 // colsing connection with db.
                 conct.release();
                 return {
-                    msg: `Orders created successfully`,
+                    msg: `Order created successfully`,
                     data: orders,
                 };
             }
@@ -35,18 +35,28 @@ class OrdersModel {
         catch (err) {
             // handling error.
             // making my custom error syntax.
-            const uuidStr = err.message?.includes("uuid");
+            const str = err.message?.includes("uuid");
             const enumStr = err.message?.includes("enum");
-            if (uuidStr) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${values.user_id}"`, "Please enter valid user id !");
+            const userFk = err.message?.includes("foreign");
+            if (str) {
+                errMsg = err.message
+                    ?.replace("", "Please enter a valid user id !.")
+                    .split(".")[0];
             }
             else if (enumStr) {
-                errMsg = err.message?.replace(`invalid input value for enum status: "${values.order_status}"`, "Please enter value between (active) or (complete) for order status !");
+                errMsg = err.message
+                    ?.replace("", "Please enter value between (active) and (complete) for order status !.")
+                    .split(".")[0];
+            }
+            else if (userFk) {
+                errMsg = err.message
+                    ?.replace("", "Incorrect user id or user does not exist !.")
+                    .split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
             }
-            throw new Error(`Unable to create new Orders - ${errMsg}`);
+            throw new Error(`Unable to create new Order - ${errMsg}`);
         }
     }
     // Get orders
@@ -75,7 +85,7 @@ class OrdersModel {
                 console.log(result.command, result.rowCount, orders);
                 conct.release();
                 return {
-                    msg: `Orders generated successfully`,
+                    msg: `Order generated successfully`,
                     data: orders,
                 };
             }
@@ -83,28 +93,30 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            const str = err.message?.includes("uuid");
-            if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${id}"`, "Please enter valid order id !");
+            const int = err.message?.includes("integer");
+            if (int) {
+                errMsg = err.message
+                    ?.replace(``, "Please enter a positive integer value for order id !.")
+                    .split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
             }
-            throw new Error(`Unable to get orders with id (${id}) - ${errMsg}`);
+            throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
         }
     }
     // Update Orders
     async updateOrder(id, status) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `UPDATE orders SET status = ($2) WHERE id = ($1) RETURNING *`;
+            const sql = `UPDATE orders SET order_status = ($2) WHERE id = ($1) RETURNING *`;
             const result = await conct.query(sql, [id, status]);
             if (result.rows.length) {
                 const order = result.rows[0];
                 console.log(result.command, result.rowCount, order);
                 conct.release();
                 return {
-                    msg: `Orders updated successfully`,
+                    msg: `Order updated successfully`,
                     data: order,
                 };
             }
@@ -112,9 +124,23 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            const str = err.message?.includes("uuid");
-            if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${id}"`, "Please enter valid order id !");
+            const userFk = err.message?.includes("foreign");
+            const enumStr = err.message?.includes("enum");
+            const int = err.message?.includes("integer");
+            if (userFk) {
+                errMsg = err.message
+                    ?.replace(``, "Please make sure you have a User first !.")
+                    .split(".")[0];
+            }
+            else if (enumStr) {
+                errMsg = err.message
+                    ?.replace(``, "Please enter value between (active) and (complete) for order status !.")
+                    .split(".")[0];
+            }
+            else if (int) {
+                errMsg = err.message
+                    ?.replace(``, "Please enter a positive integer value for order id !.")
+                    .split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
@@ -133,7 +159,7 @@ class OrdersModel {
                 console.log(result.command, result.rowCount, orders);
                 conct.release();
                 return {
-                    msg: `Orders deleted successfully`,
+                    msg: `Order deleted successfully`,
                     data: orders,
                 };
             }
@@ -142,8 +168,16 @@ class OrdersModel {
         }
         catch (err) {
             const str = err.message?.includes("uuid");
+            const int = err.message?.includes("integer");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${id}"`, "Please enter valid order id !");
+                errMsg = err.message
+                    ?.replace(``, "Please enter valid order id !.")
+                    .split(".")[0];
+            }
+            else if (int) {
+                errMsg = err.message
+                    ?.replace(``, "Please enter a positive integer value for order id !.")
+                    .split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
@@ -152,12 +186,12 @@ class OrdersModel {
         }
     }
     // Add new product order.
-    async addProductOrder(values) {
+    async addProductToOrder(values) {
         try {
             // openning connection with db.
             const conct = await database_1.default.connect();
             // making query.
-            const sql = `INSERT INTO order_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING order_id, product_id, quantity`;
+            const sql = `INSERT INTO ordered_products (order_id, product_id, p_quantity) VALUES ($1, $2, $3) RETURNING order_id, product_id, p_quantity`;
             // retrieving query result.
             const result = await conct.query(sql, [values.order_id, values.product_id, values.quantity]);
             // check if row has been created.
@@ -166,14 +200,28 @@ class OrdersModel {
                 console.log(result.command, result.rows);
                 conct.release();
                 return {
-                    msg: `Order-product added successfully`,
+                    msg: `Product has been added successfully to order number ${values.order_id}`,
                     data: product,
                 };
             }
             return null;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "order_products"`, "TABLE (order_products)");
+            const str = err.message?.includes("uuid");
+            const strFK = err.message?.includes("foreign");
+            if (str) {
+                errMsg = err.message
+                    ?.replace("", "Please enter a valid product id !.")
+                    .split(".")[0];
+            }
+            else if (strFK) {
+                errMsg = err.message
+                    ?.replace("", "Please enter a valid order id !.")
+                    .split(".")[0];
+            }
+            else {
+                errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+            }
             throw new Error(`Unable to add new order-product - ${errMsg}`);
         }
     }

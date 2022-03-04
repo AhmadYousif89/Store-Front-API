@@ -54,15 +54,15 @@ class UserModel {
         }
         catch (err) {
             errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
-            throw new Error(`Unable to get data - ${errMsg}`);
+            throw new Error(`Unable to get Users - ${errMsg}`);
         }
     }
     // Get one user
-    async getUserById(u_uid) {
+    async getUserById(uid) {
         try {
             const conct = await database_1.default.connect();
             const sql = `SELECT u_uid, u_name FROM users WHERE u_uid = ($1) `;
-            const result = await conct.query(sql, [u_uid]);
+            const result = await conct.query(sql, [uid]);
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rowCount, user);
@@ -78,12 +78,12 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
+                errMsg = err.message?.replace(``, "Please enter valid user id !.").split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
             }
-            throw new Error(`Unable to get user with id (${u_uid}) - ${errMsg}`);
+            throw new Error(`Unable to get user with id (${uid}) - ${errMsg}`);
         }
     }
     // Update user
@@ -108,7 +108,7 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
+                errMsg = err.message?.replace(``, "Please enter valid user id !.").split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
@@ -137,7 +137,7 @@ class UserModel {
         catch (err) {
             const str = err.message?.includes("uuid");
             if (str) {
-                errMsg = err.message?.replace(`invalid input syntax for type uuid: "${u_uid}"`, "Please enter valid user id !");
+                errMsg = err.message?.replace(``, "Please enter valid user id !.").split(".")[0];
             }
             else {
                 errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");

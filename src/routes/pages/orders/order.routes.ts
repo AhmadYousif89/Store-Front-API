@@ -8,11 +8,12 @@ let error: Error;
 const createOrders = Router().post(
   "/user/cart/orders",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-    const { userId } = req.body;
+    const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
     console.log(
       `params:
-      ${userId} ${status}`
+      ${userId} 
+      ${status}`
     );
     // validating values before submitting.
     if (!userId || !status) {
@@ -57,15 +58,15 @@ const getOrders = Router().get(
   }
 );
 
-// method => GET /user/cart/orders/id
+// method => GET /user/cart/orders/id/:id
 // desc   => Return a specific Order.
 const getOrderById = Router().get(
-  "/user/cart/orders/:id",
+  "/user/cart/orders/id/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = req.params.id;
     console.log("data: \n", id);
     try {
-      const data = await ordersModel.getOrderById(id);
+      const data = await ordersModel.getOrderById(id as unknown as number);
       if (!data) {
         res
           .status(404)
@@ -87,14 +88,17 @@ const getOrderById = Router().get(
 const updateOrder = Router().put(
   "/user/cart/orders",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { id, status } = req.body;
+    const id = req.body.order_id;
+    const status = req.body.status.toLowerCase();
     console.log(
       `data: 
       ${id} 
       ${status}`
     );
-    if (!id || !status) {
-      res.status(400).json({ status: "Error", message: "Please provide order status and id !" });
+    if (!id || id <= 0 || !status) {
+      res
+        .status(400)
+        .json({ status: "Error", message: "Please provide valid order status and id !" });
       return;
     }
     try {
@@ -118,7 +122,7 @@ const updateOrder = Router().put(
 // method => DELETE /user/cart/order/id
 // desc   => Delete a specific Order.
 const deleteOrder = Router().delete(
-  "/user/cart/order/id",
+  "/user/cart/orders/id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
@@ -147,12 +151,12 @@ const deleteOrder = Router().delete(
 
 // method => POST /user/cart/orders/:id/products
 // desc   => Add new product to user orders.
-const addProductOrder = Router().post(
-  "/user/cart/order/:id/products",
+const addProductToOrder = Router().post(
+  "/user/cart/orders/:id/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const oId = req.params.id;
+    const oId = parseInt(req.params.id);
     const pId = req.body.product_id;
-    const quantity = Number.parseInt(req.body.quantity);
+    const quantity = parseInt(req.body.quantity);
     console.log(`
     data:
     ${oId} ${pId} ${quantity}
@@ -164,7 +168,7 @@ const addProductOrder = Router().post(
       return;
     }
     try {
-      const data = await ordersModel.addProductOrder({
+      const data = await ordersModel.addProductToOrder({
         order_id: oId,
         product_id: pId,
         quantity: quantity,
@@ -186,4 +190,11 @@ const addProductOrder = Router().post(
   }
 );
 
-export default { createOrders, getOrders, getOrderById, updateOrder, deleteOrder, addProductOrder };
+export default {
+  createOrders,
+  getOrders,
+  getOrderById,
+  updateOrder,
+  deleteOrder,
+  addProductToOrder,
+};

@@ -6,11 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const users_1 = require("../../../models/users");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const auth_middleware_1 = __importDefault(require("../../middlewares/auth.middleware"));
 let error;
-// method => POST /users
+// method => POST /users/signup
 // desc   => Create new user data.
-const createUser = (0, express_1.Router)().post("/users/sign-up", async (req, res, next) => {
+const createUser = (0, express_1.Router)().post("/users/signup", async (req, res, next) => {
     const { name, password } = req.body;
     console.log(`data:
       ${name}
@@ -86,15 +85,13 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
         next(error);
     }
 });
-// method => GET /users/id
+// method => GET /users/:id
 // desc   => Return a specific user.
-const getUserById = (0, express_1.Router)().get("/users/id", auth_middleware_1.default, async (req, res, next) => {
-    const { uid } = req.body;
-    console.log("data: ", uid);
-    if (!uid) {
-        res.status(400).json({ status: "Error", message: "Please provide user id !" });
-        return;
-    }
+const getUserById = (0, express_1.Router)().get("/users/id/:id", 
+// authMiddleware,
+async (req, res, next) => {
+    const uid = req.params.id;
+    console.log("data: \n", uid);
     try {
         const data = await users_1.userModel.getUserById(uid);
         if (!data) {

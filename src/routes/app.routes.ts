@@ -2,7 +2,6 @@ import { Router } from "express";
 import user from "./pages/users/user.routes";
 import order from "./pages/orders/order.routes";
 import product from "./pages/products/product.routes";
-import mobile from "./pages/mobiles/mobile.routes";
 
 export const routes = Router();
 
@@ -24,9 +23,10 @@ routes.use(order.getOrders);
 routes.use(order.getOrderById);
 routes.use(order.updateOrder);
 routes.use(order.deleteOrder);
+routes.use(order.addProductToOrder);
 
-routes.use(mobile.createMobile);
-routes.use(mobile.getMobiles);
-routes.use(mobile.getMobById);
-routes.use(mobile.updateMobile);
-routes.use(mobile.deleteMobile);
+// routes.use(mobile.createMobile);
+// routes.use(mobile.getMobiles);
+// routes.use(mobile.getMobById);
+// routes.use(mobile.updateMobile);
+// routes.use(mobile.deleteMobile);

@@ -6,7 +6,8 @@ let error;
 // method => POST /products
 // desc   => Create new product data.
 const createProducts = (0, express_1.Router)().post("/products", async (req, res, next) => {
-    const { category, name, brand, maker } = req.body;
+    const { name, brand, maker } = req.body;
+    const category = req.body.category.toLowerCase();
     const price = Number.parseInt(req.body.price);
     console.log(`params:
       ${category} ${name} ${brand}  ${maker} ${price} `);
@@ -14,7 +15,7 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
     if (!category || !name || !brand || !maker || !price || price <= 0) {
         res
             .status(400)
-            .json({ status: "Error", message: "Please provide correct details before submiting !" });
+            .json({ status: "Error", message: "Please provide any missing fields before submiting !" });
         return;
     }
     try {
@@ -52,44 +53,17 @@ const getProducts = (0, express_1.Router)().get("/products", async (_req, res, n
         next(error);
     }
 });
-// method => GET /products/id
+// method => GET /products/id/:id
 // desc   => Return a specific product by id.
-const getProductById = (0, express_1.Router)().get("/products/id", async (req, res, next) => {
-    const { id } = req.body;
+const getProductById = (0, express_1.Router)().get("/products/id/:id", async (req, res, next) => {
+    const id = req.params.id;
     console.log("data: \n", id);
-    if (!id) {
-        res.status(400).json({ status: "Error", message: "Please provide product id !" });
-        return;
-    }
     try {
         const data = await products_1.productModel.getProductById(id);
         if (!data) {
             res
                 .status(404)
                 .json({ msg: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
-            return;
-        }
-        res.status(200).json(data);
-    }
-    catch (err) {
-        error = {
-            message: `Request Failed ! ${err.message}`,
-        };
-        next(error);
-    }
-});
-// method => GET /products/category
-// desc   => Return a all product by category.
-const getProductBycategory = (0, express_1.Router)().get("/products/:category", async (req, res, next) => {
-    const category = req.params.category;
-    console.log("data: \n", category);
-    try {
-        const data = await products_1.productModel.getProductBycategory(category);
-        if (!data) {
-            res.status(404).json({
-                msg: "Request failed !",
-                data: `No products Found in category (${category})!`,
-            });
             return;
         }
         res.status(200).json(data);
@@ -130,9 +104,9 @@ const updateProduct = (0, express_1.Router)().put("/products", async (req, res, 
         next(error);
     }
 });
-// method => DELETE /products/Products/id
+// method => DELETE /products/Products
 // desc   => Delete a specific Product.
-const deleteProduct = (0, express_1.Router)().delete("/products/id", async (req, res, next) => {
+const deleteProduct = (0, express_1.Router)().delete("/products", async (req, res, next) => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
@@ -161,7 +135,6 @@ exports.default = {
     createProducts,
     getProducts,
     getProductById,
-    getProductBycategory,
     updateProduct,
     deleteProduct,
 };

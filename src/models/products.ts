@@ -36,7 +36,14 @@ class ProductModel {
     } catch (err) {
       // handling error.
       // making my custom error syntax.
-      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (Products)");
+      const str = (err as Error).message?.includes("enum");
+      if (str) {
+        errMsg = (err as Error).message
+          ?.replace(``, "Please enter category between (electronics) and (mobiles) !.")
+          .split(".")[0];
+      } else {
+        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (Products)");
+      }
       throw new Error(`Unable to create new Product - ${errMsg}`);
     }
   }
@@ -74,44 +81,13 @@ class ProductModel {
     } catch (err) {
       const str = (err as Error).message?.includes("uuid");
       if (str) {
-        errMsg = (err as Error).message?.replace(
-          `invalid input syntax for type uuid: "${id}"`,
-          "Please enter valid Product id !"
-        );
+        errMsg = (err as Error).message
+          ?.replace(``, "Please enter a valid product id !.")
+          .split(".")[0];
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
       }
       throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
-    }
-  }
-  // Get one Product by category
-  async getProductBycategory(category: string): Promise<Product | null> {
-    try {
-      const conct = await pgDB.connect();
-      const sql = `SELECT * FROM products WHERE category = ($1) LIMIT 5`;
-      const result = await conct.query(sql, [category]);
-      if (result.rows.length) {
-        const product = result.rows[0];
-        console.log(result.command, result.rowCount, product);
-        conct.release();
-        return {
-          msg: `Products generated successfully`,
-          data: product,
-        };
-      }
-      conct.release();
-      return null;
-    } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(
-          `invalid input syntax for type uuid: "${category}"`,
-          "Please enter valid Product id !"
-        );
-      } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
-      }
-      throw new Error(`Unable to get Product in category (${category}) - ${errMsg}`);
     }
   }
   // Update Product

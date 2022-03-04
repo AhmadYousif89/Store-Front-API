@@ -8,7 +8,8 @@ let error: Error;
 const createProducts = Router().post(
   "/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-    const { category, name, brand, maker } = req.body;
+    const { name, brand, maker } = req.body;
+    const category = req.body.category.toLowerCase();
     const price = Number.parseInt(req.body.price);
     console.log(
       `params:
@@ -18,7 +19,7 @@ const createProducts = Router().post(
     if (!category || !name || !brand || !maker || !price || price <= 0) {
       res
         .status(400)
-        .json({ status: "Error", message: "Please provide correct details before submiting !" });
+        .json({ status: "Error", message: "Please provide any missing fields before submiting !" });
       return;
     }
     try {
@@ -60,49 +61,19 @@ const getProducts = Router().get(
   }
 );
 
-// method => GET /products/id
+// method => GET /products/id/:id
 // desc   => Return a specific product by id.
 const getProductById = Router().get(
-  "/products/id",
+  "/products/id/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { id } = req.body;
+    const id = req.params.id;
     console.log("data: \n", id);
-    if (!id) {
-      res.status(400).json({ status: "Error", message: "Please provide product id !" });
-      return;
-    }
     try {
       const data = await productModel.getProductById(id);
       if (!data) {
         res
           .status(404)
           .json({ msg: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
-        return;
-      }
-      res.status(200).json(data);
-    } catch (err) {
-      error = {
-        message: `Request Failed ! ${(err as Error).message}`,
-      };
-      next(error);
-    }
-  }
-);
-
-// method => GET /products/category
-// desc   => Return a all product by category.
-const getProductBycategory = Router().get(
-  "/products/:category",
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const category = req.params.category;
-    console.log("data: \n", category);
-    try {
-      const data = await productModel.getProductBycategory(category);
-      if (!data) {
-        res.status(404).json({
-          msg: "Request failed !",
-          data: `No products Found in category (${category})!`,
-        });
         return;
       }
       res.status(200).json(data);
@@ -149,10 +120,10 @@ const updateProduct = Router().put(
   }
 );
 
-// method => DELETE /products/Products/id
+// method => DELETE /products/Products
 // desc   => Delete a specific Product.
 const deleteProduct = Router().delete(
-  "/products/id",
+  "/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id } = req.body;
     console.log("data: \n", id);
@@ -183,7 +154,6 @@ export default {
   createProducts,
   getProducts,
   getProductById,
-  getProductBycategory,
   updateProduct,
   deleteProduct,
 };

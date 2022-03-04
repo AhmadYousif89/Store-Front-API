@@ -6,10 +6,11 @@ let error;
 // method => POST /user/cart/orders
 // desc   => Create new Order data.
 const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (req, res, next) => {
-    const { userId } = req.body;
+    const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
     console.log(`params:
-      ${userId} ${status}`);
+      ${userId} 
+      ${status}`);
     // validating values before submitting.
     if (!userId || !status) {
         res
@@ -49,9 +50,9 @@ const getOrders = (0, express_1.Router)().get("/user/cart/orders", async (_req, 
         next(error);
     }
 });
-// method => GET /user/cart/orders/id
+// method => GET /user/cart/orders/id/:id
 // desc   => Return a specific Order.
-const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async (req, res, next) => {
+const getOrderById = (0, express_1.Router)().get("/user/cart/orders/id/:id", async (req, res, next) => {
     const id = req.params.id;
     console.log("data: \n", id);
     try {
@@ -74,12 +75,15 @@ const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async 
 // method => PUT /user/cart/orders
 // desc   => Update a specific Order .
 const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req, res, next) => {
-    const { id, status } = req.body;
+    const id = req.body.order_id;
+    const status = req.body.status.toLowerCase();
     console.log(`data: 
       ${id} 
       ${status}`);
-    if (!id || !status) {
-        res.status(400).json({ status: "Error", message: "Please provide order status and id !" });
+    if (!id || id <= 0 || !status) {
+        res
+            .status(400)
+            .json({ status: "Error", message: "Please provide valid order status and id !" });
         return;
     }
     try {
@@ -101,7 +105,7 @@ const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req,
 });
 // method => DELETE /user/cart/order/id
 // desc   => Delete a specific Order.
-const deleteOrder = (0, express_1.Router)().delete("/user/cart/order/id", async (req, res, next) => {
+const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/id", async (req, res, next) => {
     const { id } = req.body;
     console.log("data: \n", id);
     if (!id) {
@@ -128,10 +132,10 @@ const deleteOrder = (0, express_1.Router)().delete("/user/cart/order/id", async 
 });
 // method => POST /user/cart/orders/:id/products
 // desc   => Add new product to user orders.
-const addProductOrder = (0, express_1.Router)().post("/user/cart/order/:id/products", async (req, res, next) => {
-    const oId = req.params.id;
+const addProductToOrder = (0, express_1.Router)().post("/user/cart/orders/:id/products", async (req, res, next) => {
+    const oId = parseInt(req.params.id);
     const pId = req.body.product_id;
-    const quantity = Number.parseInt(req.body.quantity);
+    const quantity = parseInt(req.body.quantity);
     console.log(`
     data:
     ${oId} ${pId} ${quantity}
@@ -143,7 +147,7 @@ const addProductOrder = (0, express_1.Router)().post("/user/cart/order/:id/produ
         return;
     }
     try {
-        const data = await orders_1.ordersModel.addProductOrder({
+        const data = await orders_1.ordersModel.addProductToOrder({
             order_id: oId,
             product_id: pId,
             quantity: quantity,
@@ -164,4 +168,11 @@ const addProductOrder = (0, express_1.Router)().post("/user/cart/order/:id/produ
         next(error);
     }
 });
-exports.default = { createOrders, getOrders, getOrderById, updateOrder, deleteOrder, addProductOrder };
+exports.default = {
+    createOrders,
+    getOrders,
+    getOrderById,
+    updateOrder,
+    deleteOrder,
+    addProductToOrder,
+};
