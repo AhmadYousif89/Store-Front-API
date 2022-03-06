@@ -8,11 +8,16 @@ type Users = {
   data?: string | object;
 };
 type Orders = {
-  id?: number;
+  o_id?: number;
   order_status?: string;
   user_id?: string;
-  quantity?: number;
+  msg?: string;
+  data?: string | object;
+};
+type OP = {
+  op_id?: number;
   order_id?: number;
+  quantity?: number;
   product_id?: string;
   msg?: string;
   data?: string | object;
@@ -22,15 +27,6 @@ type Product = {
   category?: string;
   p_name?: string;
   brand?: string;
-  maker?: string;
-  price?: number;
-  msg?: string;
-  data?: string | object;
-};
-type Mobile = {
-  mob_uid?: string;
-  brand?: string;
-  model?: string;
   maker?: string;
   price?: number;
   msg?: string;
@@ -54,4 +50,9 @@ const isPwValide = (password: string, hashed: string): boolean | null => {
   return bCrypt.compareSync(password + PEPPER, hashed);
 };
 
-export { Users, Orders, Product, Error, Mobile, encrypt, isPwValide };
+const customErr = (err: Error, msg: string, spliter: string) => {
+  const str = (err as Error).message?.replace("", msg).split(spliter)[0];
+  return str;
+};
+
+export { Users, Orders, Product, OP, Error, encrypt, isPwValide, customErr };

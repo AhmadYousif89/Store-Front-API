@@ -16,7 +16,7 @@ describe("Testing Authentication route: \n", () => {
     });
     it("should extract user Id and password", async () => {
         setTimeout(async () => {
-            const user = await users_1.userModel.getAllUsers();
+            const user = await users_1.userModel.getUsers();
             userId = user[0].u_uid;
             expect(user[0].u_uid).toEqual(userId);
             console.log(`user id extracted: ${userId}`);

@@ -1,7 +1,8 @@
 import { Router } from "express";
-import user from "./pages/users/user.routes";
-import order from "./pages/orders/order.routes";
-import product from "./pages/products/product.routes";
+import user from "./api/users/user.routes";
+import order from "./api/orders/order.routes";
+import product from "./api/products/product.routes";
+import Ops from "./api/orders/orderedproducts.routes";
 
 export const routes = Router();
 
@@ -25,8 +26,8 @@ routes.use(order.updateOrder);
 routes.use(order.deleteOrder);
 routes.use(order.addProductToOrder);
 
-// routes.use(mobile.createMobile);
-// routes.use(mobile.getMobiles);
-// routes.use(mobile.getMobById);
-// routes.use(mobile.updateMobile);
-// routes.use(mobile.deleteMobile);
+routes.use(Ops.addProductToOrder);
+routes.use(Ops.getOrderedProducts);
+routes.use(Ops.getRowByOPid);
+routes.use(Ops.updateOrderedProduct);
+routes.use(Ops.delOrderedProduct);

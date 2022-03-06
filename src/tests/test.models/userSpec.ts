@@ -4,7 +4,7 @@ import { user } from "../test.app/appSpec";
 let userId = "";
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
-    expect(userModel.getAllUsers).toBeDefined();
+    expect(userModel.getUsers).toBeDefined();
   });
 
   it("should have a get user by Id method", () => {
@@ -34,7 +34,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should get all data and extract user Id", async () => {
-      const result = await userModel.getAllUsers();
+      const result = await userModel.getUsers();
       userId = result[0].u_uid as string;
       expect(result).toEqual([
         {
@@ -46,7 +46,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should get the count of rows in users table to equal (1) user", async () => {
-      const result = await userModel.getAllUsers();
+      const result = await userModel.getUsers();
       expect(result.length).toEqual(1);
     });
 

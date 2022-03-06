@@ -1,24 +1,33 @@
 import app from "../../app";
 import supertest from "supertest";
 import { userModel } from "../../models/users";
-import { mobileModel } from "../../models/mobile";
-import { Users } from "../../utils/control";
-import { Mobile } from "../../utils/control";
+import { orderModel } from "../../models/orders";
+import { productModel } from "./../../models/products";
+import { Orders, Product, Users } from "../../utils/control";
 
 const { SERVER_PORT } = process.env;
 export const route = supertest(app);
-let mobId = "";
 let userId = "";
+let pId = "";
 export const user = {
   u_name: "Ali",
   password: "123",
 } as Users;
-export const mobile = {
+export const order = {
+  id: 1,
+  order_status: "active",
+  user_id: userId,
+  quantity: 10,
+  order_id: 1,
+  product_id: pId,
+} as Orders;
+export const product = {
+  category: "mobiles",
+  p_name: "S20",
   brand: "Galaxy",
-  model: "S20",
   maker: "Samsung",
   price: 1000,
-} as Mobile;
+} as Product;
 
 describe("Testing Application Functionality: \n", () => {
   it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
@@ -38,33 +47,35 @@ describe("Testing Application Functionality: \n", () => {
     expect(response.body.msg).toEqual("No Products Were Found !");
   });
 
-  it(`should get end point /products/mobiles with status code 404 and error message`, async () => {
-    const response = await route.get("/products/mobiles");
-    expect(response.statusCode).toBe(404);
-    expect(response.body.msg).toEqual("No Mobiles Were Found !");
-  });
-
-  it(`should get end point /user/account/orders with status code 404 and error message`, async () => {
-    const response = await route.get("/user/account/orders");
+  it(`should get end point /user/cart/orders with status code 404 and error message`, async () => {
+    const response = await route.get("/user/cart/orders");
     expect(response.statusCode).toBe(404);
     expect(response.body.msg).toEqual("No Orders Were Found !");
   });
 
   describe("Testing app end points: \n", () => {
     beforeAll(async () => {
-      const result = await userModel.createUser(user);
-      expect(result?.msg).toEqual("User created successfully");
+      const createUser = await userModel.createUser(user);
+      expect(createUser?.msg).toEqual("User created successfully");
       console.log(`user has been created \n`);
+
+      const createProduct = await productModel.createProduct(product);
+      expect(createProduct?.msg).toEqual("Product created successfully");
+      console.log(`product has been created \n`);
+
+      const createOrder = await orderModel.createOrder(order);
+      expect(createOrder?.msg).toEqual("Order created successfully");
+      console.log(`order has been created \n`);
+
+      const userOrder = await orderModel.addProductToOrder(order);
+      expect(userOrder?.msg).toEqual(
+        `Product has been added successfully to order number (${order.order_id})`
+      );
+      console.log(`product has been added to order (${order.order_id}) \n`);
     });
 
-    beforeAll(async () => {
-      const result = await mobileModel.createMob(mobile);
-      expect(result?.msg).toEqual("Mobile created successfully");
-      console.log(`mobile has been created \n`);
-    });
-
-    it("should extract user Id and password", async () => {
-      const user = await userModel.getAllUsers();
+    it("should extract user Id ", async () => {
+      const user = await userModel.getUsers();
       userId = user[0].u_uid as string;
       expect(user[0].u_uid).toEqual(userId);
       setTimeout(() => {
@@ -72,12 +83,12 @@ describe("Testing Application Functionality: \n", () => {
       }, 1);
     });
 
-    it("should extract mobile Id", async () => {
-      const mob = await mobileModel.getAllMobs();
-      mobId = mob[0].mob_uid as string;
-      expect(mob[0].mob_uid).toEqual(mobId);
+    it("should extract product Id", async () => {
+      const product = await productModel.getProducts();
+      pId = product[0].p_uid as string;
+      expect(product[0].p_uid).toEqual(pId);
       setTimeout(() => {
-        console.log(`mob id extracted: ${mobId} \n`);
+        console.log(`product id extracted: ${pId} \n`);
       }, 1);
     });
 
@@ -86,78 +97,79 @@ describe("Testing Application Functionality: \n", () => {
       expect(response.statusCode).toBe(200);
     });
 
-    // it(`should get end point /products with status code 200`, async () => {
-    //   const response = await route.get("/products");
-    //   expect(response.statusCode).toBe(200);
-    // });
-
-    it(`should get end point /products/mobiles with status code 200`, async () => {
-      const response = await route.get("/products/mobiles");
+    it(`should get end point /products with status code 200`, async () => {
+      const response = await route.get("/products");
       expect(response.statusCode).toBe(200);
     });
 
-    it(`should get all data from table mobiles`, async () => {
-      const response = await route.get(`/products/mobiles`);
+    it(`should get end point /user/cart/orders with status code 200`, async () => {
+      const response = await route.get("/user/cart/orders");
+      expect(response.statusCode).toBe(200);
+    });
+
+    it(`should get all data from table products`, async () => {
+      const response = await route.get(`/products`);
       expect(response.body).toEqual({
         msg: "Data generated successfully",
         data: [
           {
-            mob_uid: mobId,
-            brand: mobile.brand,
-            model: mobile.model,
-            maker: mobile.maker,
-            price: mobile.price,
+            p_uid: pId,
+            category: product.category,
+            p_name: product.p_name,
+            brand: product.brand,
+            maker: product.maker,
+            price: product.price,
           },
         ],
       });
     });
 
-    it(`should get one item from table mobiles by ID`, async () => {
-      const response = await route
-        .get(`/products/mobiles/id`)
-        .set("Content-type", "application/json")
-        .send({ id: mobId });
+    it(`should get one item from table products`, async () => {
+      const response = await route.get(`/products/id/${pId}`);
       expect(response.body).toEqual({
-        msg: "Mobile generated successfully",
+        msg: "Product generated successfully",
         data: {
-          mob_uid: mobId,
-          brand: mobile.brand,
-          model: mobile.model,
-          maker: mobile.maker,
-          price: mobile.price,
+          p_uid: pId,
+          category: product.category,
+          p_name: product.p_name,
+          brand: product.brand,
+          maker: product.maker,
+          price: product.price,
         },
       });
     });
 
-    it(`should update one item price to (900) by ID`, async () => {
+    it(`should update the price for one item to (900)`, async () => {
       const response = await route
-        .put(`/products/mobiles/`)
+        .put(`/products`)
         .set("Content-type", "application/json")
-        .send({ id: mobId, price: 900 });
+        .send({ id: pId, price: 900 });
       expect(response.body).toEqual({
-        msg: "Mobile updated successfully",
+        msg: "Product updated successfully",
         data: {
-          mob_uid: mobId,
-          brand: mobile.brand,
-          model: mobile.model,
-          maker: mobile.maker,
+          p_uid: pId,
+          category: product.category,
+          p_name: product.p_name,
+          brand: product.brand,
+          maker: product.maker,
           price: 900,
         },
       });
     });
 
-    it(`should delete one item from table mobiles by ID`, async () => {
+    it(`should delete one item from table Products by ID`, async () => {
       const response = await route
-        .delete(`/products/mobiles/id`)
+        .delete(`/products/id`)
         .set("Content-type", "application/json")
-        .send({ id: mobId });
+        .send({ id: pId });
       expect(response.body).toEqual({
-        msg: "Mobile deleted successfully",
+        msg: "Product deleted successfully",
         data: {
-          mob_uid: mobId,
-          brand: mobile.brand,
-          model: mobile.model,
-          maker: mobile.maker,
+          p_uid: pId,
+          category: product.category,
+          p_name: product.p_name,
+          brand: product.brand,
+          maker: product.maker,
           price: 900,
         },
       });
@@ -176,11 +188,8 @@ describe("Testing Application Functionality: \n", () => {
       });
     });
 
-    it("should not get user until authorized", async () => {
-      const result = await route
-        .get(`/users/id`)
-        .set("Content-type", "application/json")
-        .send({ uid: userId });
+    xit("should not get user until authorized", async () => {
+      const result = await route.get(`/users/id/${userId}`);
       expect(result.statusCode).toBe(401);
       expect(result.body).toEqual({
         message: "Access denied, Faild to authenticate !",

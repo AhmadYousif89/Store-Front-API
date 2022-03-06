@@ -8,7 +8,7 @@ require("dotenv/config");
 const cors_1 = __importDefault(require("cors"));
 const app_routes_1 = require("./routes/app.routes");
 const express_1 = __importDefault(require("express"));
-const error_middleware_1 = __importDefault(require("./routes/middlewares/error.middleware"));
+const error_middleware_1 = __importDefault(require("./middlewares/error.middleware"));
 const app = (0, express_1.default)();
 app.use(express_1.default.urlencoded({ extended: false }));
 // app.use(express.static("public"));

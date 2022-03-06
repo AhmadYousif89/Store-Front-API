@@ -1,5 +1,5 @@
 import pgDB from "../database";
-import { encrypt, Error, isPwValide, Users } from "./../utils/control";
+import { encrypt, Error, isPwValide, Users, customErr } from "./../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for Users
@@ -10,7 +10,7 @@ class UserModel {
       // openning connection with db.
       const conct = await pgDB.connect();
       // making query.
-      const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_uid , u_name`;
+      const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_id , u_name`;
       // encrypting password.
       const hash = encrypt(values.password as string);
       // retrieving query result.
@@ -37,10 +37,10 @@ class UserModel {
   - Get users => (without retrieving user password as it consider sensitive information)
   - If we want to control how much of data to be received when calling this route we could use keyword (LIMIT) like = LIMIT 5.
   */
-  async getAllUsers(): Promise<Users[]> {
+  async getUsers(): Promise<Users[]> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_uid, u_name FROM users`;
+      const sql = `SELECT u_id, u_name FROM users`;
       const result = await conct.query(sql);
       conct.release();
       console.log(result.command, result.rowCount, result.rows, "\n");
@@ -54,7 +54,7 @@ class UserModel {
   async getUserById(uid: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_uid, u_name FROM users WHERE u_uid = ($1) `;
+      const sql = `SELECT u_id, u_name FROM users WHERE u_id = ($1) `;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -68,9 +68,8 @@ class UserModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(``, "Please enter valid user id !.").split(".")[0];
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
       }
@@ -78,12 +77,12 @@ class UserModel {
     }
   }
   // Update user
-  async updateUser(u_uid: string, password: string): Promise<Users | null> {
+  async updateUser(u_id: string, password: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE users SET password = ($2) WHERE u_uid = ($1) RETURNING u_uid , u_name`;
+      const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name`;
       const hash = encrypt(password);
-      const result = await conct.query(sql, [u_uid, hash]);
+      const result = await conct.query(sql, [u_id, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
         console.log(result.command, result.rowCount, user);
@@ -96,21 +95,20 @@ class UserModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(``, "Please enter valid user id !.").split(".")[0];
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
       }
-      throw new Error(`Unable to update user with id (${u_uid}) - ${errMsg}`);
+      throw new Error(`Unable to update user with id (${u_id}) - ${errMsg}`);
     }
   }
   // Delete user
-  async delUser(u_uid: string): Promise<Users | null> {
+  async delUser(u_id: string): Promise<Users | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `DELETE FROM users WHERE u_uid = ($1) RETURNING u_uid , u_name`;
-      const result = await conct.query(sql, [u_uid]);
+      const sql = `DELETE FROM users WHERE u_id = ($1) RETURNING u_id , u_name`;
+      const result = await conct.query(sql, [u_id]);
       if (result.rows.length) {
         const user = result.rows[0];
         console.log(result.command, result.rowCount, user);
@@ -123,13 +121,18 @@ class UserModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(``, "Please enter valid user id !.").split(".")[0];
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
+      } else if ((err as Error).message?.includes("foreign")) {
+        errMsg = customErr(
+          err as Error,
+          `User can not be deleted - delete any related orders first !.`,
+          "."
+        );
       } else {
         errMsg = (err as Error).message?.replace(`relation "users"`, "TABLE (users)");
       }
-      throw new Error(`Unable to delete user with id (${u_uid}) - ${errMsg}`);
+      throw new Error(`Unable to delete user with id (${u_id}) - ${errMsg}`);
     }
   }
   // Authenticate user.
@@ -143,7 +146,7 @@ class UserModel {
         const user = result.rows[0];
         // checking user password authenticity.
         if (isPwValide(password, user.password)) {
-          const sql = `SELECT u_uid, u_name FROM users WHERE u_name = ($1)`;
+          const sql = `SELECT u_id, u_name FROM users WHERE u_name = ($1)`;
           const data = await conct.query(sql, [u_name]);
           return data.rows[0];
         }

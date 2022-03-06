@@ -1,5 +1,5 @@
 import pgDB from "../database";
-import { Product, Error } from "../utils/control";
+import { Product, Error, customErr } from "../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for Product.
@@ -10,7 +10,7 @@ class ProductModel {
       // openning connection with db.
       const conct = await pgDB.connect();
       // making query.
-      const sql = `INSERT INTO products (category, p_name, brand, maker, price) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+      const sql = `INSERT INTO products (category, p_name, brand, maker, price, popular) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
       // retrieving query result.
       const result = await conct.query(sql, [
         values.category,
@@ -36,11 +36,12 @@ class ProductModel {
     } catch (err) {
       // handling error.
       // making my custom error syntax.
-      const str = (err as Error).message?.includes("enum");
-      if (str) {
-        errMsg = (err as Error).message
-          ?.replace(``, "Please enter category between (electronics) and (mobiles) !.")
-          .split(".")[0];
+      if ((err as Error).message?.includes("enum")) {
+        errMsg = customErr(
+          err as Error,
+          "Please enter category between (electronics) and (mobiles) !.",
+          "."
+        );
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (Products)");
       }
@@ -48,7 +49,7 @@ class ProductModel {
     }
   }
   // Get Products
-  async getAllProducts(): Promise<Product[]> {
+  async getProducts(): Promise<Product[]> {
     try {
       const conct = await pgDB.connect();
       const sql = "SELECT * FROM products";
@@ -65,7 +66,7 @@ class ProductModel {
   async getProductById(id: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT * FROM products WHERE p_uid = ($1)`;
+      const sql = `SELECT * FROM products WHERE p_id = ($1)`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const product = result.rows[0];
@@ -79,11 +80,8 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message
-          ?.replace(``, "Please enter a valid product id !.")
-          .split(".")[0];
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
       }
@@ -94,7 +92,7 @@ class ProductModel {
   async updateProduct(id: string, price: number): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE Products SET price = ($2) WHERE p_uid = ($1) RETURNING *`;
+      const sql = `UPDATE Products SET price = ($2) WHERE p_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [id, price]);
       if (result.rows.length) {
         const product = result.rows[0];
@@ -108,12 +106,8 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(
-          `invalid input syntax for type uuid: "${id}"`,
-          "Please enter valid Product id !"
-        );
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
       }
@@ -124,7 +118,7 @@ class ProductModel {
   async delProduct(id: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `DELETE FROM products WHERE p_uid = ($1) RETURNING *`;
+      const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const product = result.rows[0];
@@ -138,11 +132,13 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
-      const str = (err as Error).message?.includes("uuid");
-      if (str) {
-        errMsg = (err as Error).message?.replace(
-          `invalid input syntax for type uuid: "${id}"`,
-          "Please enter valid Product id !"
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
+      } else if ((err as Error).message?.includes("foreign")) {
+        errMsg = customErr(
+          err as Error,
+          "Product can not be deleted - remove this product from any related orders !.",
+          "."
         );
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");

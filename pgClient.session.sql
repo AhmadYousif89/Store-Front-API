@@ -1,39 +1,36 @@
 CREATE TABLE IF NOT EXISTS users (
-    u_uid UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    u_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     u_name VARCHAR(100),
     password VARCHAR
 );
 DROP TABLE users;
 
+DROP TYPE IF EXISTS status;
+CREATE TYPE status AS ENUM ('active','complete');
 CREATE TABLE IF NOT EXISTS orders (
-    id SERIAL PRIMARY KEY,
-    order_status VARCHAR(50),
-    user_id REFERENCES users(u_uid) 
+    o_id SERIAL PRIMARY KEY,
+    order_status status NOT NULL,
+    user_id uuid REFERENCES users(u_uid)  NOT NULL
 );
 DROP TABLE orders;
 
+DROP TYPE IF EXISTS category;
+CREATE TYPE category AS ENUM ('mobiles','electronics');
 CREATE TABLE IF NOT EXISTS products (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    price INTEGER,
-    category VARCHAR(50)
+    p_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    category category NOT NULL,
+    p_name VARCHAR(100) NOT NULL, 
+    brand VARCHAR(100) NOT NULL,
+    maker VARCHAR(100) NOT NULL,
+    price INTEGER NOT NULL
 );
 DROP TABLE products;
 
-CREATE TABLE IF NOT EXISTS order-products (
-    id SERIAL PRIMARY KEY,
-    quantity INTEGER,
-    order_id REFERENCES orders(id) 
-    product_id REFERENCES products(id) 
+CREATE TABLE IF NOT EXISTS ordered_products (
+    op_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id) NOT NULL ,
+    product_id UUID REFERENCES products(p_uid) NOT NULL,
+    p_quantity INTEGER NOT NULL
 );
 DROP TABLE order_products;
-
-CREATE TABLE IF NOT EXISTS mobiles (
-    mob_uid UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    brand VARCHAR(100) NOT NULL,
-    model VARCHAR(100) NOT NULL,
-    maker VARCHAR(100) NOT NULL,
-    price integer NOT NULL,
-);
-DROP TABLE mobiles;
 

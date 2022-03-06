@@ -5,7 +5,7 @@ const appSpec_1 = require("../test.app/appSpec");
 let userId = "";
 describe("Testing user Model functions: \n", () => {
     it("should have a get all users method", () => {
-        expect(users_1.userModel.getAllUsers).toBeDefined();
+        expect(users_1.userModel.getUsers).toBeDefined();
     });
     it("should have a get user by Id method", () => {
         expect(users_1.userModel.getUserById).toBeDefined();
@@ -29,7 +29,7 @@ describe("Testing user Model functions: \n", () => {
             console.log("user has been created");
         });
         it("should get all data and extract user Id", async () => {
-            const result = await users_1.userModel.getAllUsers();
+            const result = await users_1.userModel.getUsers();
             userId = result[0].u_uid;
             expect(result).toEqual([
                 {
@@ -40,7 +40,7 @@ describe("Testing user Model functions: \n", () => {
             console.log("all users");
         });
         it("should get the count of rows in users table to equal (1) user", async () => {
-            const result = await users_1.userModel.getAllUsers();
+            const result = await users_1.userModel.getUsers();
             expect(result.length).toEqual(1);
         });
         it("should return the correct user by ID", async () => {

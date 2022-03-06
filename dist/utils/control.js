@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isPwValide = exports.encrypt = void 0;
+exports.customErr = exports.isPwValide = exports.encrypt = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const { SALT, PEPPER } = process.env;
 const encrypt = (password) => {
@@ -15,3 +15,8 @@ const isPwValide = (password, hashed) => {
     return bcrypt_1.default.compareSync(password + PEPPER, hashed);
 };
 exports.isPwValide = isPwValide;
+const customErr = (err, msg, spliter) => {
+    const str = err.message?.replace("", msg).split(spliter)[0];
+    return str;
+};
+exports.customErr = customErr;
