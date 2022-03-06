@@ -40,7 +40,7 @@ class OrdersModel {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
             }
             else if (err.message?.includes("enum")) {
-                errMsg = (0, control_1.customErr)(err, "Please enter value between (active) and (complete) for order status !.", ".");
+                errMsg = (0, control_1.customErr)(err, "Please enter value between [ new | active ] for order status !.", ".");
             }
             else if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect user id or user does not exist !.", ".");
@@ -85,12 +85,7 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            if (err.message?.includes("integer")) {
-                errMsg = (0, control_1.customErr)(err, "Please enter a positive integer value for order id !.", ".");
-            }
-            else {
-                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
-            }
+            errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
             throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
         }
     }
@@ -114,7 +109,7 @@ class OrdersModel {
         }
         catch (err) {
             if (err.message?.includes("enum")) {
-                errMsg = (0, control_1.customErr)(err, "Please enter value between (active) and (complete) for order status !.", ".");
+                errMsg = (0, control_1.customErr)(err, "Please enter value between [ active | complete ] for order status !.", ".");
             }
             else {
                 errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
@@ -141,7 +136,12 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+            if (err.message?.includes("foreign")) {
+                errMsg = (0, control_1.customErr)(err, "Please remove any products related to this order first !.", ".");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+            }
             throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
         }
     }

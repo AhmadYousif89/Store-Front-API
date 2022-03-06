@@ -45,6 +45,7 @@ describe("Testing product Model functions: \n", () => {
           brand: product.brand,
           maker: product.maker,
           price: product.price,
+          popular: product.popular,
         },
       ]);
       console.log("all products");
@@ -61,13 +62,14 @@ describe("Testing product Model functions: \n", () => {
           brand: product.brand,
           maker: product.maker,
           price: product.price,
+          popular: product.popular,
         },
       });
       console.log("one product");
     });
 
-    it(`should update the price to = (500) for product by ID`, async () => {
-      const result = await productModel.updateProduct(pId as string, 500);
+    it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
+      const result = await productModel.updateProduct(pId as string, 500, "yes");
       expect(result).toEqual({
         msg: "product updated successfully",
         data: {
@@ -77,6 +79,7 @@ describe("Testing product Model functions: \n", () => {
           brand: product.brand,
           maker: product.maker,
           price: 500,
+          popular: "yes",
         },
       });
       console.log("update product");
@@ -93,6 +96,7 @@ describe("Testing product Model functions: \n", () => {
           brand: product.brand,
           maker: product.maker,
           price: 500,
+          popular: "yes",
         },
       });
       console.log("delete product");

@@ -99,7 +99,7 @@ const getUsers = Router().get(
 // method => GET /users/:id
 // desc   => Return a specific user.
 const getUserById = Router().get(
-  "/users/id/:id",
+  "/users/:id",
   // authMiddleware,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const uid = req.params.id;
@@ -187,18 +187,14 @@ const updateUser = Router().put(
   }
 );
 
-// method => DELETE /users/id
+// method => DELETE /users/:id
 // desc   => Delete a specific user.
 const deleteUser = Router().delete(
-  "/users/id",
+  "/users/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { uid } = req.body;
+    const uid = req.params.id;
     console.log("params: \n", uid);
     try {
-      if (!uid) {
-        res.status(400).json({ status: "Error", message: "Please provide user id !" });
-        return;
-      }
       const data = await userModel.delUser(uid);
       if (!data) {
         res.status(404).json({

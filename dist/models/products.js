@@ -23,6 +23,7 @@ class ProductModel {
                 values.brand,
                 values.maker,
                 values.price,
+                values.popular,
             ]);
             // check if row has been created.
             if (result.rows.length) {
@@ -42,8 +43,11 @@ class ProductModel {
         catch (err) {
             // handling error.
             // making my custom error syntax.
-            if (err.message?.includes("enum")) {
+            if (err.message?.includes("enum category")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter category between (electronics) and (mobiles) !.", ".");
+            }
+            else if (err.message?.includes("enum popular")) {
+                errMsg = (0, control_1.customErr)(err, "Please choose popularity between (yes) or (no) !.", ".");
             }
             else {
                 errMsg = err.message?.replace(`relation "products"`, "TABLE (Products)");
@@ -95,11 +99,11 @@ class ProductModel {
         }
     }
     // Update Product
-    async updateProduct(id, price) {
+    async updateProduct(id, price, popular) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `UPDATE Products SET price = ($2) WHERE p_id = ($1) RETURNING *`;
-            const result = await conct.query(sql, [id, price]);
+            const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
+            const result = await conct.query(sql, [id, price, popular]);
             if (result.rows.length) {
                 const product = result.rows[0];
                 console.log(result.command, result.rowCount, product);
@@ -115,6 +119,9 @@ class ProductModel {
         catch (err) {
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
+            }
+            else if (err.message?.includes("enum")) {
+                errMsg = (0, control_1.customErr)(err, "Please enter a value between [ yes | no ] for popular !.", ".");
             }
             else {
                 errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");

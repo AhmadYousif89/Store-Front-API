@@ -2,7 +2,7 @@ import { Router } from "express";
 import user from "./api/users/user.routes";
 import order from "./api/orders/order.routes";
 import product from "./api/products/product.routes";
-import Ops from "./api/orders/orderedproducts.routes";
+import Ops from "./api/orderedProducts/orderedproducts.routes";
 
 export const routes = Router();
 
@@ -24,7 +24,6 @@ routes.use(order.getOrders);
 routes.use(order.getOrderById);
 routes.use(order.updateOrder);
 routes.use(order.deleteOrder);
-routes.use(order.addProductToOrder);
 
 routes.use(Ops.addProductToOrder);
 routes.use(Ops.getOrderedProducts);

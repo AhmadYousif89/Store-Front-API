@@ -39,6 +39,7 @@ describe("Testing product Model functions: \n", () => {
                     brand: appSpec_1.product.brand,
                     maker: appSpec_1.product.maker,
                     price: appSpec_1.product.price,
+                    popular: appSpec_1.product.popular,
                 },
             ]);
             console.log("all products");
@@ -54,12 +55,13 @@ describe("Testing product Model functions: \n", () => {
                     brand: appSpec_1.product.brand,
                     maker: appSpec_1.product.maker,
                     price: appSpec_1.product.price,
+                    popular: appSpec_1.product.popular,
                 },
             });
             console.log("one product");
         });
-        it(`should update the price to = (500) for product by ID`, async () => {
-            const result = await products_1.productModel.updateProduct(pId, 500);
+        it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
+            const result = await products_1.productModel.updateProduct(pId, 500, "yes");
             expect(result).toEqual({
                 msg: "product updated successfully",
                 data: {
@@ -69,6 +71,7 @@ describe("Testing product Model functions: \n", () => {
                     brand: appSpec_1.product.brand,
                     maker: appSpec_1.product.maker,
                     price: 500,
+                    popular: "yes",
                 },
             });
             console.log("update product");
@@ -84,6 +87,7 @@ describe("Testing product Model functions: \n", () => {
                     brand: appSpec_1.product.brand,
                     maker: appSpec_1.product.maker,
                     price: 500,
+                    popular: "yes",
                 },
             });
             console.log("delete product");

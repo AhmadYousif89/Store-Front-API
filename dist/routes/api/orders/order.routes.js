@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orders_1 = require("../../../models/orders");
-const orderedProducts_1 = require("../../../models/orderedProducts");
 let error;
 // method => POST /user/cart/orders
 // desc   => Create new Order data.
@@ -51,17 +50,21 @@ const getOrders = (0, express_1.Router)().get("/user/cart/orders", async (_req, 
         next(error);
     }
 });
-// method => GET /user/cart/orders/id/:id
+// method => GET /user/cart/orders/:id
 // desc   => Return a specific Order.
-const getOrderById = (0, express_1.Router)().get("/user/cart/orders/id/:id", async (req, res, next) => {
-    const id = req.params.id;
-    console.log("data: \n", id);
+const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async (req, res, next) => {
+    const oid = parseInt(req.params.id);
+    console.log("data: \n", oid);
+    if (!oid || oid <= 0) {
+        res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
+        return;
+    }
     try {
-        const data = await orders_1.orderModel.getOrderById(id);
+        const data = await orders_1.orderModel.getOrderById(oid);
         if (!data) {
             res
                 .status(404)
-                .json({ msg: "Request failed !", data: `Order with id (${id}) doesn't Exist !` });
+                .json({ msg: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
             return;
         }
         res.status(200).json(data);
@@ -105,10 +108,10 @@ const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req,
         next(error);
     }
 });
-// method => DELETE /user/cart/order/id
+// method => DELETE /user/cart/order/:id
 // desc   => Delete a specific Order.
-const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/id", async (req, res, next) => {
-    const id = parseInt(req.body.id);
+const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/:id", async (req, res, next) => {
+    const id = parseInt(req.params.id);
     console.log("data: \n", id);
     if (!id || id <= 0) {
         res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
@@ -132,49 +135,10 @@ const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/id", async
         next(error);
     }
 });
-// method => POST /user/cart/orders/:id/products
-// desc   => Add new product to user orders.
-const addProductToOrder = (0, express_1.Router)().post("/user/cart/orders/:id/products", async (req, res, next) => {
-    const oId = parseInt(req.params.id);
-    const pId = req.body.product_id;
-    const quantity = parseInt(req.body.quantity);
-    console.log(`
-    data:
-    ${oId} ${pId} ${quantity}
-    `);
-    if (!pId || !quantity || quantity <= 0) {
-        res
-            .status(400)
-            .json({ status: "Error", message: "Please provide product id and valid quantity !" });
-        return;
-    }
-    try {
-        const data = await orderedProducts_1.PtO.addProductToOrder({
-            order_id: oId,
-            product_id: pId,
-            quantity: quantity,
-        });
-        if (!data) {
-            res.status(404).json({
-                msg: "Request failed !",
-                data: `Order with id (${oId}) doesn't exist`,
-            });
-            return;
-        }
-        res.status(200).json(data);
-    }
-    catch (err) {
-        error = {
-            message: `Request Failed ! ${err.message}`,
-        };
-        next(error);
-    }
-});
 exports.default = {
     createOrders,
     getOrders,
     getOrderById,
     updateOrder,
     deleteOrder,
-    addProductToOrder,
 };

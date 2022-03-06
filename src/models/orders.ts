@@ -35,7 +35,7 @@ class OrdersModel {
       } else if ((err as Error).message?.includes("enum")) {
         errMsg = customErr(
           err as Error,
-          "Please enter value between (active) and (complete) for order status !.",
+          "Please enter value between [ new | active ] for order status !.",
           "."
         );
       } else if ((err as Error).message?.includes("foreign")) {
@@ -78,15 +78,7 @@ class OrdersModel {
       conct.release();
       return null;
     } catch (err) {
-      if ((err as Error).message?.includes("integer")) {
-        errMsg = customErr(
-          err as Error,
-          "Please enter a positive integer value for order id !.",
-          "."
-        );
-      } else {
-        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
-      }
+      errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
       throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
     }
   }
@@ -111,7 +103,7 @@ class OrdersModel {
       if ((err as Error).message?.includes("enum")) {
         errMsg = customErr(
           err as Error,
-          "Please enter value between (active) and (complete) for order status !.",
+          "Please enter value between [ active | complete ] for order status !.",
           "."
         );
       } else {
@@ -138,7 +130,15 @@ class OrdersModel {
       conct.release();
       return null;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      if ((err as Error).message?.includes("foreign")) {
+        errMsg = customErr(
+          err as Error,
+          "Please remove any products related to this order first !.",
+          "."
+        );
+      } else {
+        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      }
       throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
     }
   }

@@ -1,7 +1,7 @@
 /* Create products */
 DROP TYPE IF EXISTS category, popular;
 CREATE TYPE category AS ENUM ('mobiles','electronics');
-CREATE TYPE popular AS ENUM ('true','false');
+CREATE TYPE popular AS ENUM ('no','yes');
 CREATE TABLE IF NOT EXISTS products (
     p_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     category category NOT NULL,

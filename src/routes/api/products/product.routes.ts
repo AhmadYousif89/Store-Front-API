@@ -11,9 +11,10 @@ const createProducts = Router().post(
     const { name, brand, maker } = req.body;
     const category = req.body.category.toLowerCase();
     const price = parseInt(req.body.price);
+    const popular = req.body.popular.toLowerCase();
     console.log(
       `params:
-      ${category} ${name} ${brand}  ${maker} ${price} `
+      ${category} ${name} ${brand}  ${maker} ${price} ${popular}`
     );
     // validating values before submitting.
     if (!category || !name || !brand || !maker || !price || price <= 0) {
@@ -29,6 +30,7 @@ const createProducts = Router().post(
         brand: brand,
         maker: maker,
         price: price,
+        popular: popular,
       });
       res.status(201).json(data);
     } catch (err) {
@@ -61,10 +63,10 @@ const getProducts = Router().get(
   }
 );
 
-// method => GET /products/id/:id
+// method => GET /products/:id
 // desc   => Return a specific product by id.
 const getProductById = Router().get(
-  "/products/id/:id",
+  "/products/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = req.params.id;
     console.log("data: \n", id);
@@ -91,25 +93,27 @@ const getProductById = Router().get(
 const updateProduct = Router().put(
   "/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { id } = req.body;
+    const pid = req.body.id;
     const price = parseInt(req.body.price);
+    const popular = req.body.popular.toLowerCase();
     console.log(
       `data: 
-      ${id} 
-      ${price}`
+      ${pid} 
+      ${price}
+      ${popular}`
     );
-    if (!id || !price || price <= 0) {
+    if (!pid || !price || price <= 0) {
       res
         .status(400)
         .json({ status: "Error", message: "Please provide a valid product id and price !" });
       return;
     }
     try {
-      const data = await productModel.updateProduct(id, price);
+      const data = await productModel.updateProduct(pid, price, popular);
       if (!data) {
         res.status(404).json({
           msg: "Update failed !",
-          data: `Product with id (${id}) doesn't exist`,
+          data: `Product with id (${pid}) doesn't exist`,
         });
         return;
       }
@@ -123,23 +127,23 @@ const updateProduct = Router().put(
   }
 );
 
-// method => DELETE /products/Products
+// method => DELETE /products/:id
 // desc   => Delete a specific Product.
 const deleteProduct = Router().delete(
-  "/products/id",
+  "/products/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { id } = req.body;
-    console.log("data: \n", id);
-    if (!id) {
+    const pid = req.params.id;
+    console.log("data: \n", pid);
+    if (!pid) {
       res.status(400).json({ status: "Error", message: "Please provide product id !" });
       return;
     }
     try {
-      const data = await productModel.delProduct(id);
+      const data = await productModel.delProduct(pid);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",
-          data: `Product with id (${id}) doesn't exist`,
+          data: `Product with id (${pid}) doesn't exist`,
         });
         return;
       }

@@ -21,7 +21,7 @@ const addProductToOrder = (0, express_1.Router)().post("/user/cart/orders/:id/pr
         return;
     }
     try {
-        const data = await orderedProducts_1.PtO.addProductToOrder({
+        const data = await orderedProducts_1.OPT.addProductToOrder({
             order_id: oId,
             product_id: pId,
             quantity: quantity,
@@ -35,11 +35,11 @@ const addProductToOrder = (0, express_1.Router)().post("/user/cart/orders/:id/pr
         next(error);
     }
 });
-// method => GET /user/cart/orders/products
+// method => GET /user/cart/ordered-products
 // desc   => Return all Ordered products.
-const getOrderedProducts = (0, express_1.Router)().get("/user/cart/orders/products", async (_req, res, next) => {
+const getOrderedProducts = (0, express_1.Router)().get("/user/cart/ordered-products", async (_req, res, next) => {
     try {
-        const data = await orderedProducts_1.PtO.getOrderedProducts();
+        const data = await orderedProducts_1.OPT.getOrderedProducts();
         if (data.length === 0) {
             res.status(404).json({ msg: `No Data Were Found !` });
             return;
@@ -53,17 +53,21 @@ const getOrderedProducts = (0, express_1.Router)().get("/user/cart/orders/produc
         next(error);
     }
 });
-// method => GET /user/cart/orders/products/op/:id
+// method => GET /user/cart/ordered-products/:id
 // desc   => Return a specific row from ordered products.
-const getRowByOPid = (0, express_1.Router)().get("/user/cart/orders/products/op/:id", async (req, res, next) => {
+const getRowByOPid = (0, express_1.Router)().get("/user/cart/ordered-products/:id", async (req, res, next) => {
     const opId = parseInt(req.params.id);
     console.log("data: \n", opId);
+    if (!opId || opId <= 0) {
+        res.status(400).json({ status: "Error", message: "Please enter a valid op id !" });
+        return;
+    }
     try {
-        const data = await orderedProducts_1.PtO.getRowByOPid(opId);
+        const data = await orderedProducts_1.OPT.getRowByOPid(opId);
         if (!data) {
             res
                 .status(404)
-                .json({ msg: "Request failed !", data: `No data related to this id (${opId}) !` });
+                .json({ msg: "Request failed !", data: `No products related to this id (${opId}) !` });
             return;
         }
         res.status(200).json(data);
@@ -75,28 +79,26 @@ const getRowByOPid = (0, express_1.Router)().get("/user/cart/orders/products/op/
         next(error);
     }
 });
-// method => PUT /user/cart/orders/:id/products
+// method => PUT /user/cart/ordered-products
 // desc   => Update a specific Order .
-const updateOrderedProduct = (0, express_1.Router)().put("/user/cart/orders/:id/products", async (req, res, next) => {
-    const oId = parseInt(req.params.id);
+const updateOrderedProduct = (0, express_1.Router)().put("/user/cart/ordered-products", async (req, res, next) => {
     const pId = req.body.p_id;
     const quantity = parseInt(req.body.quantity);
     console.log(`data:
-      ${oId}
       ${pId} 
       ${quantity}`);
     if (!pId || quantity <= 0 || !quantity) {
         res
             .status(400)
-            .json({ status: "Error", message: "Please provide a valid order status and id !" });
+            .json({ status: "Error", message: "Please provide missing details before updating !" });
         return;
     }
     try {
-        const data = await orderedProducts_1.PtO.updateOrderedProduct(pId, quantity);
+        const data = await orderedProducts_1.OPT.updateOrderedProduct(pId, quantity);
         if (!data) {
             res.status(404).json({
                 msg: "Update failed !",
-                data: `Order with id (${oId}) doesn't exist`,
+                data: `Product with id (${pId}) doesn't exist`,
             });
             return;
         }
@@ -109,22 +111,21 @@ const updateOrderedProduct = (0, express_1.Router)().put("/user/cart/orders/:id/
         next(error);
     }
 });
-// method => DELETE /user/cart/orders/:id/products/op/id
+// method => DELETE /user/cart/ordered-products/:id
 // desc   => Delete a specific Order.
-const delOrderedProduct = (0, express_1.Router)().delete("/user/cart/orders/:id/products/op/id", async (req, res, next) => {
-    const oId = parseInt(req.params.id);
-    const opId = parseInt(req.body.op_id);
-    console.log("data: \n", oId, opId);
+const delOrderedProduct = (0, express_1.Router)().delete("/user/cart/ordered-products/:id", async (req, res, next) => {
+    const opId = parseInt(req.params.id);
+    console.log("data: \n", opId);
     if (!opId || opId <= 0) {
-        res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
+        res.status(400).json({ status: "Error", message: "Please enter a valid op id !" });
         return;
     }
     try {
-        const data = await orderedProducts_1.PtO.delOrderedProduct(oId, opId);
+        const data = await orderedProducts_1.OPT.delOrderedProduct(opId);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",
-                data: `Order with id (${oId}) doesn't exist`,
+                data: `Order with id (${opId}) doesn't exist`,
             });
             return;
         }

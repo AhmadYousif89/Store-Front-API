@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { orderModel } from "../../../models/orders";
-import { PtO } from "../../../models/orderedProducts";
 import { Error } from "../../../utils/control";
 
 let error: Error;
@@ -59,19 +58,23 @@ const getOrders = Router().get(
   }
 );
 
-// method => GET /user/cart/orders/id/:id
+// method => GET /user/cart/orders/:id
 // desc   => Return a specific Order.
 const getOrderById = Router().get(
-  "/user/cart/orders/id/:id",
+  "/user/cart/orders/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const id = req.params.id;
-    console.log("data: \n", id);
+    const oid = parseInt(req.params.id);
+    console.log("data: \n", oid);
+    if (!oid || oid <= 0) {
+      res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
+      return;
+    }
     try {
-      const data = await orderModel.getOrderById(id as unknown as number);
+      const data = await orderModel.getOrderById(oid);
       if (!data) {
         res
           .status(404)
-          .json({ msg: "Request failed !", data: `Order with id (${id}) doesn't Exist !` });
+          .json({ msg: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
         return;
       }
       res.status(200).json(data);
@@ -121,12 +124,12 @@ const updateOrder = Router().put(
   }
 );
 
-// method => DELETE /user/cart/order/id
+// method => DELETE /user/cart/order/:id
 // desc   => Delete a specific Order.
 const deleteOrder = Router().delete(
-  "/user/cart/orders/id",
+  "/user/cart/orders/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const id = parseInt(req.body.id);
+    const id = parseInt(req.params.id);
     console.log("data: \n", id);
     if (!id || id <= 0) {
       res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
@@ -151,52 +154,10 @@ const deleteOrder = Router().delete(
   }
 );
 
-// method => POST /user/cart/orders/:id/products
-// desc   => Add new product to user orders.
-const addProductToOrder = Router().post(
-  "/user/cart/orders/:id/products",
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const oId = parseInt(req.params.id);
-    const pId = req.body.product_id;
-    const quantity = parseInt(req.body.quantity);
-    console.log(`
-    data:
-    ${oId} ${pId} ${quantity}
-    `);
-    if (!pId || !quantity || quantity <= 0) {
-      res
-        .status(400)
-        .json({ status: "Error", message: "Please provide product id and valid quantity !" });
-      return;
-    }
-    try {
-      const data = await PtO.addProductToOrder({
-        order_id: oId,
-        product_id: pId,
-        quantity: quantity,
-      });
-      if (!data) {
-        res.status(404).json({
-          msg: "Request failed !",
-          data: `Order with id (${oId}) doesn't exist`,
-        });
-        return;
-      }
-      res.status(200).json(data);
-    } catch (err) {
-      error = {
-        message: `Request Failed ! ${(err as Error).message}`,
-      };
-      next(error);
-    }
-  }
-);
-
 export default {
   createOrders,
   getOrders,
   getOrderById,
   updateOrder,
   deleteOrder,
-  addProductToOrder,
 };

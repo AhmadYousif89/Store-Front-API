@@ -18,6 +18,7 @@ class ProductModel {
         values.brand,
         values.maker,
         values.price,
+        values.popular,
       ]);
       // check if row has been created.
       if (result.rows.length) {
@@ -36,12 +37,14 @@ class ProductModel {
     } catch (err) {
       // handling error.
       // making my custom error syntax.
-      if ((err as Error).message?.includes("enum")) {
+      if ((err as Error).message?.includes("enum category")) {
         errMsg = customErr(
           err as Error,
           "Please enter category between (electronics) and (mobiles) !.",
           "."
         );
+      } else if ((err as Error).message?.includes("enum popular")) {
+        errMsg = customErr(err as Error, "Please choose popularity between (yes) or (no) !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (Products)");
       }
@@ -89,11 +92,11 @@ class ProductModel {
     }
   }
   // Update Product
-  async updateProduct(id: string, price: number): Promise<Product | null> {
+  async updateProduct(id: string, price: number, popular: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE Products SET price = ($2) WHERE p_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [id, price]);
+      const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
+      const result = await conct.query(sql, [id, price, popular]);
       if (result.rows.length) {
         const product = result.rows[0];
         console.log(result.command, result.rowCount, product);
@@ -108,6 +111,12 @@ class ProductModel {
     } catch (err) {
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
+      } else if ((err as Error).message?.includes("enum")) {
+        errMsg = customErr(
+          err as Error,
+          "Please enter a value between [ yes | no ] for popular !.",
+          "."
+        );
       } else {
         errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
       }

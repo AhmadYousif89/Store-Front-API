@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
 DROP TABLE users;
 
 DROP TYPE IF EXISTS status;
-CREATE TYPE status AS ENUM ('active','complete');
+CREATE TYPE status AS ENUM ('new','active','complete');
 CREATE TABLE IF NOT EXISTS orders (
     o_id SERIAL PRIMARY KEY,
     order_status status NOT NULL,
@@ -22,15 +22,17 @@ CREATE TABLE IF NOT EXISTS products (
     p_name VARCHAR(100) NOT NULL, 
     brand VARCHAR(100) NOT NULL,
     maker VARCHAR(100) NOT NULL,
-    price INTEGER NOT NULL
+    price INTEGER NOT NULL,
+    popular popular
 );
 DROP TABLE products;
 
 CREATE TABLE IF NOT EXISTS ordered_products (
     op_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES orders(order_id) NOT NULL ,
-    product_id UUID REFERENCES products(p_uid) NOT NULL,
-    p_quantity INTEGER NOT NULL
+    order_id INT REFERENCES orders(o_id) NOT NULL ,
+    product_id UUID REFERENCES products(p_id) NOT NULL,
+    p_quantity INTEGER NOT NULL,
+    created_in TIMESTAMP NOT NULL DEFAULT NOW ()
 );
 DROP TABLE order_products;
 

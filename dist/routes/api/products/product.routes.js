@@ -9,8 +9,9 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
     const { name, brand, maker } = req.body;
     const category = req.body.category.toLowerCase();
     const price = parseInt(req.body.price);
+    const popular = req.body.popular.toLowerCase();
     console.log(`params:
-      ${category} ${name} ${brand}  ${maker} ${price} `);
+      ${category} ${name} ${brand}  ${maker} ${price} ${popular}`);
     // validating values before submitting.
     if (!category || !name || !brand || !maker || !price || price <= 0) {
         res
@@ -25,6 +26,7 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
             brand: brand,
             maker: maker,
             price: price,
+            popular: popular,
         });
         res.status(201).json(data);
     }
@@ -53,9 +55,9 @@ const getProducts = (0, express_1.Router)().get("/products", async (_req, res, n
         next(error);
     }
 });
-// method => GET /products/id/:id
+// method => GET /products/:id
 // desc   => Return a specific product by id.
-const getProductById = (0, express_1.Router)().get("/products/id/:id", async (req, res, next) => {
+const getProductById = (0, express_1.Router)().get("/products/:id", async (req, res, next) => {
     const id = req.params.id;
     console.log("data: \n", id);
     try {
@@ -78,23 +80,25 @@ const getProductById = (0, express_1.Router)().get("/products/id/:id", async (re
 // method => PUT /products
 // desc   => Update a specific product .
 const updateProduct = (0, express_1.Router)().put("/products", async (req, res, next) => {
-    const { id } = req.body;
+    const pid = req.body.id;
     const price = parseInt(req.body.price);
+    const popular = req.body.popular.toLowerCase();
     console.log(`data: 
-      ${id} 
-      ${price}`);
-    if (!id || !price || price <= 0) {
+      ${pid} 
+      ${price}
+      ${popular}`);
+    if (!pid || !price || price <= 0) {
         res
             .status(400)
             .json({ status: "Error", message: "Please provide a valid product id and price !" });
         return;
     }
     try {
-        const data = await products_1.productModel.updateProduct(id, price);
+        const data = await products_1.productModel.updateProduct(pid, price, popular);
         if (!data) {
             res.status(404).json({
                 msg: "Update failed !",
-                data: `Product with id (${id}) doesn't exist`,
+                data: `Product with id (${pid}) doesn't exist`,
             });
             return;
         }
@@ -107,21 +111,21 @@ const updateProduct = (0, express_1.Router)().put("/products", async (req, res, 
         next(error);
     }
 });
-// method => DELETE /products/Products
+// method => DELETE /products/:id
 // desc   => Delete a specific Product.
-const deleteProduct = (0, express_1.Router)().delete("/products/id", async (req, res, next) => {
-    const { id } = req.body;
-    console.log("data: \n", id);
-    if (!id) {
+const deleteProduct = (0, express_1.Router)().delete("/products/:id", async (req, res, next) => {
+    const pid = req.params.id;
+    console.log("data: \n", pid);
+    if (!pid) {
         res.status(400).json({ status: "Error", message: "Please provide product id !" });
         return;
     }
     try {
-        const data = await products_1.productModel.delProduct(id);
+        const data = await products_1.productModel.delProduct(pid);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",
-                data: `Product with id (${id}) doesn't exist`,
+                data: `Product with id (${pid}) doesn't exist`,
             });
             return;
         }

@@ -88,7 +88,7 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
 });
 // method => GET /users/:id
 // desc   => Return a specific user.
-const getUserById = (0, express_1.Router)().get("/users/id/:id", 
+const getUserById = (0, express_1.Router)().get("/users/:id", 
 // authMiddleware,
 async (req, res, next) => {
     const uid = req.params.id;
@@ -169,16 +169,12 @@ const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) 
         next(error);
     }
 });
-// method => DELETE /users/id
+// method => DELETE /users/:id
 // desc   => Delete a specific user.
-const deleteUser = (0, express_1.Router)().delete("/users/id", async (req, res, next) => {
-    const { uid } = req.body;
+const deleteUser = (0, express_1.Router)().delete("/users/:id", async (req, res, next) => {
+    const uid = req.params.id;
     console.log("params: \n", uid);
     try {
-        if (!uid) {
-            res.status(400).json({ status: "Error", message: "Please provide user id !" });
-            return;
-        }
         const data = await users_1.userModel.delUser(uid);
         if (!data) {
             res.status(404).json({

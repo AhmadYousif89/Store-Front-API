@@ -3,7 +3,7 @@ import { OP, Error, customErr } from "../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for products to Orders.
-class PTO {
+class OrderedProducts {
   // Add new product to order.
   async addProductToOrder(values: OP): Promise<OP | null> {
     // check if order is active or not.
@@ -12,14 +12,19 @@ class PTO {
       const conn = await pgDB.connect();
       const result = await conn.query(ordersql, [values.order_id]);
       const order = result.rows[0];
-      if (order.order_status !== "active") {
+      if (order.order_status === "complete") {
         throw new Error(
-          `Could not add product ${values.product_id} to order ${values.order_id} because order status is ${order.order_status}`
+          `Unable to add product (${values.product_id}) to order (${values.order_id}) because order status is (${order.order_status})`
         );
       }
       conn.release();
     } catch (err) {
-      throw new Error(`Unable to add product - ${err}`);
+      if (err) {
+        errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
+      } else {
+        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      }
+      throw new Error(`Unable to add product - ${errMsg}`);
     }
     try {
       // openning connection with db.
@@ -44,17 +49,7 @@ class PTO {
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
-        errMsg = customErr(
-          err as Error,
-          "Incorrect product/order (id) or product/order does not exist !.",
-          "."
-        );
-      } else if ((err as Error).message?.includes("integer")) {
-        errMsg = customErr(
-          err as Error,
-          "Please enter a positive integer value for order id !.",
-          "."
-        );
+        errMsg = customErr(err as Error, "Incorrect product id or product does not exist !.", ".");
       } else {
         errMsg = (err as Error).message?.replace(
           `relation "ordered_products"`,
@@ -75,16 +70,19 @@ class PTO {
       console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+      errMsg = (err as Error).message?.replace(
+        `relation "ordered_products"`,
+        "TABLE (ordered_products)"
+      );
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Get one row from table ordered_products.
-  async getRowByOPid(oId: number): Promise<OP | null> {
+  async getRowByOPid(opId: number): Promise<OP | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT * FROM ordered_products WHERE op_id = ($1)`;
-      const result = await conct.query(sql, [oId]);
+      const result = await conct.query(sql, [opId]);
       if (result.rows.length) {
         const data = result.rows;
         console.log(result.command, result.rowCount, data);
@@ -97,15 +95,18 @@ class PTO {
       conct.release();
       return null;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
-      throw new Error(`Unable to get Product with id (${oId}) - ${errMsg}`);
+      errMsg = (err as Error).message?.replace(
+        `relation "ordered_products"`,
+        "TABLE (ordered_products)"
+      );
+      throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Update quantity of specific Product.
   async updateOrderedProduct(pId: string, quantity: number): Promise<OP | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE ordered_products SET p_quantity = ($2) WHERE p_id = ($1) RETURNING *`;
+      const sql = `UPDATE ordered_products SET p_quantity = ($2) WHERE product_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [pId, quantity]);
       if (result.rows.length) {
         const product = result.rows[0];
@@ -122,13 +123,18 @@ class PTO {
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+        errMsg = (err as Error).message?.replace(
+          `relation "ordered_products"`,
+          "TABLE (ordered_products)"
+        );
       }
-      throw new Error(`Unable to update Product with id (${pId}) - ${errMsg}`);
+      throw new Error(
+        `Unable to update Product with id (${pId}) from (ordered_products) - ${errMsg}`
+      );
     }
   }
   // Delete one row from table ordered_products by id.
-  async delOrderedProduct(oId: number, opId: number): Promise<OP | null> {
+  async delOrderedProduct(opId: number): Promise<OP | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM ordered_products WHERE op_id = ($1) RETURNING *`;
@@ -154,11 +160,14 @@ class PTO {
           "."
         );
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+        errMsg = (err as Error).message?.replace(
+          `relation "ordered_products"`,
+          "TABLE (ordered_products)"
+        );
       }
-      throw new Error(`Unable to delete Product with id (${opId}) - ${errMsg}`);
+      throw new Error(`Unable to delete row with id (${opId}) - ${errMsg}`);
     }
   }
 }
 
-export const PtO = new PTO();
+export const OPT = new OrderedProducts();

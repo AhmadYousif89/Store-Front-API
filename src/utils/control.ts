@@ -1,7 +1,7 @@
 import bCrypt from "bcrypt";
 
 type Users = {
-  u_uid?: string;
+  u_id?: string;
   u_name?: string;
   password?: string;
   msg?: string;
@@ -23,12 +23,13 @@ type OP = {
   data?: string | object;
 };
 type Product = {
-  p_uid?: string;
+  p_id?: string;
   category?: string;
   p_name?: string;
   brand?: string;
   maker?: string;
   price?: number;
+  popular?: string;
   msg?: string;
   data?: string | object;
 };
