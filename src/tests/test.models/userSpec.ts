@@ -1,5 +1,5 @@
 import { userModel } from "../../api/users/users";
-import { user } from "../test.app/appSpec";
+import { user } from "../test.app.routes/appSpec";
 
 let userId = "";
 describe("Testing user Model functions: \n", () => {

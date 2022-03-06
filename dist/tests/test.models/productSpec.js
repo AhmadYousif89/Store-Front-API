@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const appSpec_1 = require("../test.app/appSpec");
+const appSpec_1 = require("../test.app.routes/appSpec");
 const products_1 = require("../../api/products/products");
 let pId = "";
 describe("Testing product Model functions: \n", () => {

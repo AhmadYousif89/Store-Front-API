@@ -1,4 +1,4 @@
-import { product } from "../test.app/appSpec";
+import { product } from "../test.app.routes/appSpec";
 import { productModel } from "../../api/products/products";
 
 let pId = "";

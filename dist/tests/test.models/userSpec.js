@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const users_1 = require("../../api/users/users");
-const appSpec_1 = require("../test.app/appSpec");
+const appSpec_1 = require("../test.app.routes/appSpec");
 let userId = "";
 describe("Testing user Model functions: \n", () => {
     it("should have a get all users method", () => {
