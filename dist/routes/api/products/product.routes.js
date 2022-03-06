@@ -138,10 +138,29 @@ const deleteProduct = (0, express_1.Router)().delete("/products/:id", async (req
         next(error);
     }
 });
+// method => GET /products/most/popular
+// desc   => Return a most popular products.
+const getProductByPopularity = (0, express_1.Router)().get("/products/most/popular", async (_req, res, next) => {
+    try {
+        const data = await products_1.productModel.getProductByPopularity();
+        if (data.length === 0) {
+            res.status(404).json({ msg: `No Products Were Found !` });
+            return;
+        }
+        res.status(200).json({ msg: "Data generated successfully", data });
+    }
+    catch (err) {
+        error = {
+            message: `Request Failed ! ${err.message}`,
+        };
+        next(error);
+    }
+});
 exports.default = {
     createProducts,
     getProducts,
     getProductById,
     updateProduct,
     deleteProduct,
+    getProductByPopularity,
 };

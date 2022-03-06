@@ -157,10 +157,32 @@ const deleteProduct = Router().delete(
   }
 );
 
+// method => GET /products/most/popular
+// desc   => Return a most popular products.
+const getProductByPopularity = Router().get(
+  "/products/most/popular",
+  async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const data = await productModel.getProductByPopularity();
+      if (data.length === 0) {
+        res.status(404).json({ msg: `No Products Were Found !` });
+        return;
+      }
+      res.status(200).json({ msg: "Data generated successfully", data });
+    } catch (err) {
+      error = {
+        message: `Request Failed ! ${(err as Error).message}`,
+      };
+      next(error);
+    }
+  }
+);
+
 export default {
   createProducts,
   getProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  getProductByPopularity,
 };

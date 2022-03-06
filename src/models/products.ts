@@ -155,6 +155,21 @@ class ProductModel {
       throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
     }
   }
+  // Get Popular Products
+  async getProductByPopularity(): Promise<Product[]> {
+    try {
+      const conct = await pgDB.connect();
+      const sql =
+        "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
+      const result = await conct.query(sql);
+      conct.release();
+      console.log(result.command, result.rowCount, result.rows, "\n");
+      return result.rows;
+    } catch (err) {
+      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+      throw new Error(`Unable to get data - ${errMsg}`);
+    }
+  }
 }
 
 export const productModel = new ProductModel();

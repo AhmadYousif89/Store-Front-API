@@ -85,6 +85,31 @@ class UserModel {
             throw new Error(`Unable to get user with id (${uid}) - ${errMsg}`);
         }
     }
+    // Get user own products.
+    async getUserProducts(uid) {
+        try {
+            const conct = await database_1.default.connect();
+            const sql = `SELECT order_id, user_id, order_status, product_id, p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1)`;
+            const result = await conct.query(sql, [uid]);
+            if (result.rows.length) {
+                const user = result.rows;
+                console.log(result.command, result.rowCount, user);
+                conct.release();
+                return user;
+            }
+            conct.release();
+            return null;
+        }
+        catch (err) {
+            if (err.message?.includes("uuid")) {
+                errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
+            }
+            else {
+                errMsg = err.message?.replace(`relation "users"`, "TABLE (users)");
+            }
+            throw new Error(`Unable to get Users - ${errMsg}`);
+        }
+    }
     // Update user
     async updateUser(u_id, password) {
         try {

@@ -10,6 +10,7 @@ routes.use(user.loginUser);
 routes.use(user.createUser);
 routes.use(user.getUsers);
 routes.use(user.getUserById);
+routes.use(user.getUserProducts);
 routes.use(user.updateUser);
 routes.use(user.deleteUser);
 
@@ -18,6 +19,7 @@ routes.use(product.getProducts);
 routes.use(product.getProductById);
 routes.use(product.updateProduct);
 routes.use(product.deleteProduct);
+routes.use(product.getProductByPopularity);
 
 routes.use(order.createOrders);
 routes.use(order.getOrders);
