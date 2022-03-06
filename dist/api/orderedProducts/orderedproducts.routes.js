@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const orderedProducts_1 = require("../../../models/orderedProducts");
+const orderedProducts_1 = require("./orderedProducts");
 let error;
 // method => POST /user/cart/orders/:id/products
 // desc   => add product to order.

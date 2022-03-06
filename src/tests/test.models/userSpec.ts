@@ -1,4 +1,4 @@
-import { userModel } from "../../models/users";
+import { userModel } from "../../api/users/users";
 import { user } from "../test.app/appSpec";
 
 let userId = "";
@@ -35,10 +35,10 @@ describe("Testing user Model functions: \n", () => {
 
     it("should get all data and extract user Id", async () => {
       const result = await userModel.getUsers();
-      userId = result[0].u_uid as string;
+      userId = result[0].u_id as string;
       expect(result).toEqual([
         {
-          u_uid: userId,
+          u_id: userId,
           u_name: user.u_name,
         },
       ]);
@@ -77,7 +77,7 @@ describe("Testing user Model functions: \n", () => {
     it(`should authenticate user by name and password`, async () => {
       const result = await userModel.authenticateUser(user.u_name as string, "123");
       expect(result).toEqual({
-        u_uid: userId,
+        u_id: userId,
         u_name: user.u_name,
       });
       console.log("validate user");

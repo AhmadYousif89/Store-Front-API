@@ -1,5 +1,5 @@
 import { product } from "../test.app/appSpec";
-import { productModel } from "./../../models/products";
+import { productModel } from "../../api/products/products";
 
 let pId = "";
 
@@ -36,10 +36,10 @@ describe("Testing product Model functions: \n", () => {
 
     it("should return a list of all products", async () => {
       const result = await productModel.getProducts();
-      pId = result[0].p_uid as string;
+      pId = result[0].p_id as string;
       expect(result).toEqual([
         {
-          p_uid: pId,
+          p_id: pId,
           category: product.category,
           p_name: product.p_name,
           brand: product.brand,

@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import JWT from "jsonwebtoken";
-import { Error } from "../../../utils/control";
-import { userModel } from "../../../models/users";
+import { Error } from "../../utils/control";
+import { userModel } from "./users";
 // import authMiddleware from "../../middlewares/auth.middleware";
 
 let error: Error;

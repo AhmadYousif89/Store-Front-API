@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const appSpec_1 = require("../test.app/appSpec");
-const products_1 = require("./../../models/products");
+const products_1 = require("../../api/products/products");
 let pId = "";
 describe("Testing product Model functions: \n", () => {
     it("should have a get all products method", () => {
@@ -30,10 +30,10 @@ describe("Testing product Model functions: \n", () => {
         });
         it("should return a list of all products", async () => {
             const result = await products_1.productModel.getProducts();
-            pId = result[0].p_uid;
+            pId = result[0].p_id;
             expect(result).toEqual([
                 {
-                    p_uid: pId,
+                    p_id: pId,
                     category: appSpec_1.product.category,
                     p_name: appSpec_1.product.p_name,
                     brand: appSpec_1.product.brand,

@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userModel = void 0;
-const database_1 = __importDefault(require("../database"));
-const control_1 = require("./../utils/control");
+const database_1 = __importDefault(require("../../database"));
+const control_1 = require("../../utils/control");
 let errMsg;
 // Building CRUD System for Users
 class UserModel {

@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../../database"));
-const users_1 = require("../../models/users");
+const users_1 = require("../../api/users/users");
 const appSpec_1 = require("./appSpec");
 let token = "";
 let userId = "";
@@ -17,8 +17,8 @@ describe("Testing Authentication route: \n", () => {
     it("should extract user Id and password", async () => {
         setTimeout(async () => {
             const user = await users_1.userModel.getUsers();
-            userId = user[0].u_uid;
-            expect(user[0].u_uid).toEqual(userId);
+            userId = user[0].u_id;
+            expect(user[0].u_id).toEqual(userId);
             console.log(`user id extracted: ${userId}`);
         }, 1);
     });

@@ -1,5 +1,5 @@
 import pgDB from "../../database";
-import { userModel } from "../../models/users";
+import { userModel } from "../../api/users/users";
 import { route, user } from "./appSpec";
 
 let token = "";
@@ -15,8 +15,8 @@ describe("Testing Authentication route: \n", () => {
   it("should extract user Id and password", async () => {
     setTimeout(async () => {
       const user = await userModel.getUsers();
-      userId = user[0].u_uid as string;
-      expect(user[0].u_uid).toEqual(userId);
+      userId = user[0].u_id as string;
+      expect(user[0].u_id).toEqual(userId);
       console.log(`user id extracted: ${userId}`);
     }, 1);
   });

@@ -1,5 +1,5 @@
-import pgDB from "../database";
-import { Orders, Error, customErr } from "../utils/control";
+import pgDB from "../../database";
+import { Orders, Error, customErr } from "../../utils/control";
 
 let errMsg: unknown;
 // Building CRUD System for Orders.

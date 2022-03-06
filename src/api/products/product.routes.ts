@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { productModel } from "../../../models/products";
-import { Error } from "../../../utils/control";
+import { productModel } from "./products";
+import { Error } from "../../utils/control";
 
 let error: Error;
 // method => POST /products

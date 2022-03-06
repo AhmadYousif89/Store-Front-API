@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const users_1 = require("../../../models/users");
+const users_1 = require("./users");
 // import authMiddleware from "../../middlewares/auth.middleware";
 let error;
 // method => POST /users/signup

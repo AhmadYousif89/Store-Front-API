@@ -1,8 +1,8 @@
 import { Router } from "express";
-import user from "./api/users/user.routes";
-import order from "./api/orders/order.routes";
-import product from "./api/products/product.routes";
-import Ops from "./api/orderedProducts/orderedproducts.routes";
+import user from "./users/user.routes";
+import order from "./orders/order.routes";
+import product from "./products/product.routes";
+import Ops from "./orderedProducts/orderedproducts.routes";
 
 export const routes = Router();
 

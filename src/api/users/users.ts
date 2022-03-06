@@ -1,5 +1,5 @@
-import pgDB from "../database";
-import { encrypt, Error, isPwValide, Users, customErr } from "./../utils/control";
+import pgDB from "../../database";
+import { encrypt, Error, isPwValide, Users, customErr } from "../../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for Users

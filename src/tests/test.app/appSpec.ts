@@ -1,10 +1,10 @@
 import app from "../../app";
 import supertest from "supertest";
-import { userModel } from "../../models/users";
-import { orderModel } from "../../models/orders";
-import { productModel } from "./../../models/products";
+import { userModel } from "../../api/users/users";
+import { orderModel } from "../../api/orders/orders";
+import { productModel } from "../../api/products/products";
 import { OP, Orders, Product, Users } from "../../utils/control";
-import { OPT } from "../../models/orderedProducts";
+import { OPT } from "../../api/orderedProducts/orderedProducts";
 
 const { SERVER_PORT } = process.env;
 export const route = supertest(app);
