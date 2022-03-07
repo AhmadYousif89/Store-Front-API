@@ -5,23 +5,23 @@ const products_1 = require("../../api/products/products");
 let pId = "";
 describe("Testing product Model functions: \n", () => {
     it("should have a get all products method", () => {
-        expect(products_1.productModel.createProduct).toBeDefined();
+        expect(products_1.productModel.create).toBeDefined();
     });
     it("should have a get product by Id method", () => {
-        expect(products_1.productModel.getProducts).toBeDefined();
+        expect(products_1.productModel.index).toBeDefined();
     });
     it("should have a create method", () => {
-        expect(products_1.productModel.getProductById).toBeDefined();
+        expect(products_1.productModel.show).toBeDefined();
     });
     it("should have an update product method", () => {
-        expect(products_1.productModel.updateProduct).toBeDefined();
+        expect(products_1.productModel.update).toBeDefined();
     });
     it("should have a delete product method", () => {
-        expect(products_1.productModel.delProduct).toBeDefined();
+        expect(products_1.productModel.delete).toBeDefined();
     });
     describe("Testing SQL functions: \n ", () => {
         it(`should create new product`, async () => {
-            const result = await products_1.productModel.createProduct(appSpec_1.product);
+            const result = await products_1.productModel.create(appSpec_1.product);
             expect(result).toEqual({
                 msg: "product created successfully",
                 ...result,
@@ -29,7 +29,7 @@ describe("Testing product Model functions: \n", () => {
             console.log("product has been created");
         });
         it("should return a list of all products", async () => {
-            const result = await products_1.productModel.getProducts();
+            const result = await products_1.productModel.index();
             pId = result[0].p_id;
             expect(result).toEqual([
                 {
@@ -45,7 +45,7 @@ describe("Testing product Model functions: \n", () => {
             console.log("all products");
         });
         it("should return the correct product by id", async () => {
-            const result = await products_1.productModel.getProductById(pId);
+            const result = await products_1.productModel.show(pId);
             expect(result).toEqual({
                 msg: "product generated successfully",
                 data: {
@@ -61,7 +61,7 @@ describe("Testing product Model functions: \n", () => {
             console.log("one product");
         });
         it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
-            const result = await products_1.productModel.updateProduct(pId, 500, "yes");
+            const result = await products_1.productModel.update(pId, 500, "yes");
             expect(result).toEqual({
                 msg: "product updated successfully",
                 data: {
@@ -77,7 +77,7 @@ describe("Testing product Model functions: \n", () => {
             console.log("update product");
         });
         it(`should delete the selected product by ID`, async () => {
-            const result = await products_1.productModel.delProduct(pId);
+            const result = await products_1.productModel.delete(pId);
             expect(result).toEqual({
                 msg: "product deleted successfully",
                 data: {

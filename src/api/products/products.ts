@@ -5,7 +5,7 @@ let errMsg: string | undefined;
 // Building CRUD System for Product.
 class ProductModel {
   // Create Product
-  async createProduct(values: Product): Promise<Product | null> {
+  async create(values: Product): Promise<Product | null> {
     try {
       // openning connection with db.
       const conct = await pgDB.connect();
@@ -46,13 +46,13 @@ class ProductModel {
       } else if ((err as Error).message?.includes("enum popular")) {
         errMsg = customErr(err as Error, "Please choose popularity between (yes) or (no) !.", ".");
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (Products)");
+        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       }
       throw new Error(`Unable to create new Product - ${errMsg}`);
     }
   }
   // Get Products
-  async getProducts(): Promise<Product[]> {
+  async index(): Promise<Product[]> {
     try {
       const conct = await pgDB.connect();
       const sql = "SELECT * FROM products";
@@ -61,12 +61,12 @@ class ProductModel {
       console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+      errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Get one Product
-  async getProductById(id: string): Promise<Product | null> {
+  async show(id: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT * FROM products WHERE p_id = ($1)`;
@@ -86,13 +86,13 @@ class ProductModel {
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       }
       throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
     }
   }
   // Update Product
-  async updateProduct(id: string, price: number, popular: string): Promise<Product | null> {
+  async update(id: string, price: number, popular: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
@@ -118,13 +118,13 @@ class ProductModel {
           "."
         );
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       }
       throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
     }
   }
   // Delete Product
-  async delProduct(id: string): Promise<Product | null> {
+  async delete(id: string): Promise<Product | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
@@ -150,24 +150,9 @@ class ProductModel {
           "."
         );
       } else {
-        errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
+        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       }
       throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
-    }
-  }
-  // Get Popular Products
-  async getProductByPopularity(): Promise<Product[]> {
-    try {
-      const conct = await pgDB.connect();
-      const sql =
-        "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
-      const result = await conct.query(sql);
-      conct.release();
-      console.log(result.command, result.rowCount, result.rows, "\n");
-      return result.rows;
-    } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "products"`, "TABLE (products)");
-      throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
 }

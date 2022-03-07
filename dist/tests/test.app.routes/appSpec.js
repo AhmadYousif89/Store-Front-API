@@ -64,21 +64,21 @@ describe("Testing Application Functionality: \n", () => {
     });
     describe("Testing app end points: \n", () => {
         beforeAll(async () => {
-            const createUser = await users_1.userModel.createUser(exports.user);
+            const createUser = await users_1.userModel.create(exports.user);
             expect(createUser?.msg).toEqual("User created successfully");
             console.log(`user has been created \n`);
-            const createProduct = await products_1.productModel.createProduct(exports.product);
+            const createProduct = await products_1.productModel.create(exports.product);
             expect(createProduct?.msg).toEqual("Product created successfully");
             console.log(`product has been created \n`);
-            const createOrder = await orders_1.orderModel.createOrder(exports.order);
+            const createOrder = await orders_1.orderModel.create(exports.order);
             expect(createOrder?.msg).toEqual("Order created successfully");
             console.log(`order has been created \n`);
-            const userOrder = await orderedProducts_1.OPT.addProductToOrder(exports.ops);
+            const userOrder = await orderedProducts_1.OPT.addProducts(exports.ops);
             expect(userOrder?.msg).toEqual(`Product has been added successfully to order number (${exports.order.o_id})`);
             console.log(`product has been added to order (${exports.order.o_id}) \n`);
         });
         it("should extract user Id ", async () => {
-            const user = await users_1.userModel.getUsers();
+            const user = await users_1.userModel.index();
             userId = user[0].u_id;
             expect(user[0].u_id).toEqual(userId);
             setTimeout(() => {
@@ -86,7 +86,7 @@ describe("Testing Application Functionality: \n", () => {
             }, 1);
         });
         it("should extract product Id", async () => {
-            const product = await products_1.productModel.getProducts();
+            const product = await products_1.productModel.index();
             pId = product[0].p_id;
             expect(product[0].p_id).toEqual(pId);
             setTimeout(() => {

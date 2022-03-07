@@ -2,11 +2,11 @@ import { Router, Request, Response, NextFunction } from "express";
 import { orderModel } from "./orders";
 import { Error } from "../../utils/control";
 
-let error: Error;
-// method => POST /user/cart/orders
+let error;
+// method => POST /user/account/orders
 // desc   => Create new Order data.
 const createOrders = Router().post(
-  "/user/cart/orders",
+  "/user/account/orders",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
@@ -23,7 +23,7 @@ const createOrders = Router().post(
       return;
     }
     try {
-      const data = await orderModel.createOrder({
+      const data = await orderModel.create({
         order_status: status,
         user_id: userId,
       });
@@ -37,13 +37,13 @@ const createOrders = Router().post(
   }
 );
 
-// method => GET /user/cart/orders
+// method => GET /user/account/orders
 // desc   => Return all Orders data.
 const getOrders = Router().get(
-  "/user/cart/orders",
+  "/user/account/orders",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const data = await orderModel.getOrders();
+      const data = await orderModel.index();
       if (data.length === 0) {
         res.status(404).json({ msg: `No Orders Were Found !` });
         return;
@@ -58,10 +58,10 @@ const getOrders = Router().get(
   }
 );
 
-// method => GET /user/cart/orders/:id
+// method => GET /user/account/orders/:id
 // desc   => Return a specific Order.
 const getOrderById = Router().get(
-  "/user/cart/orders/:id",
+  "/user/account/orders/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const oid = parseInt(req.params.id);
     console.log("data: \n", oid);
@@ -70,7 +70,7 @@ const getOrderById = Router().get(
       return;
     }
     try {
-      const data = await orderModel.getOrderById(oid);
+      const data = await orderModel.show(oid);
       if (!data) {
         res
           .status(404)
@@ -87,10 +87,10 @@ const getOrderById = Router().get(
   }
 );
 
-// method => PUT /user/cart/orders
+// method => PUT /user/account/orders
 // desc   => Update a specific Order .
 const updateOrder = Router().put(
-  "/user/cart/orders",
+  "/user/account/orders",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = parseInt(req.body.order_id);
     const status = req.body.status.toLowerCase();
@@ -106,7 +106,8 @@ const updateOrder = Router().put(
       return;
     }
     try {
-      const data = await orderModel.updateOrder(id, status);
+      const data = await orderModel.update(id, status);
+      // safety net
       if (!data) {
         res.status(404).json({
           msg: "Update failed !",
@@ -124,10 +125,10 @@ const updateOrder = Router().put(
   }
 );
 
-// method => DELETE /user/cart/order/:id
+// method => DELETE /user/account/order/:id
 // desc   => Delete a specific Order.
 const deleteOrder = Router().delete(
-  "/user/cart/orders/:id",
+  "/user/account/orders/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = parseInt(req.params.id);
     console.log("data: \n", id);
@@ -136,7 +137,7 @@ const deleteOrder = Router().delete(
       return;
     }
     try {
-      const data = await orderModel.delOrder(id);
+      const data = await orderModel.delete(id);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",

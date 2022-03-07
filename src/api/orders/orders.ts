@@ -5,7 +5,11 @@ let errMsg: unknown;
 // Building CRUD System for Orders.
 class OrdersModel {
   // Create Orders
-  async createOrder(values: Orders): Promise<Orders | null> {
+  async create(values: Orders): Promise<Orders | null> {
+    // don't set new orders as complete.
+    if (values.order_status === "complete") {
+      return { msg: `New orders can not be set as (${values.order_status})` };
+    }
     try {
       // openning connection with db.
       const conct = await pgDB.connect();
@@ -41,13 +45,13 @@ class OrdersModel {
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect user id or user does not exist !.", ".");
       } else {
-        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       }
       throw new Error(`Unable to create new Order - ${errMsg}`);
     }
   }
   // Get orders
-  async getOrders(): Promise<Orders[]> {
+  async index(): Promise<Orders[]> {
     try {
       const conct = await pgDB.connect();
       const sql = "SELECT * FROM orders";
@@ -56,12 +60,12 @@ class OrdersModel {
       console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Get one order
-  async getOrderById(id: number): Promise<Orders | null> {
+  async show(id: number): Promise<Orders | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT * FROM orders WHERE o_id = ($1)`;
@@ -78,42 +82,70 @@ class OrdersModel {
       conct.release();
       return null;
     } catch (err) {
-      errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+      errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
     }
   }
   // Update Orders
-  async updateOrder(id: number, status: string): Promise<Orders | null> {
+  async update(id: number, status: string): Promise<Orders | null> {
+    // check if order status
     try {
-      const conct = await pgDB.connect();
-      const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [id, status]);
-      if (result.rows.length) {
-        const order = result.rows[0];
-        console.log(result.command, result.rowCount, order);
-        conct.release();
+      const sql = "SELECT order_status FROM orders WHERE o_id = ($1) ";
+      const conn = await pgDB.connect();
+      const result = await conn.query(sql, [id]);
+      const order = result.rows[0];
+      // check if the order status is complete
+      if (order.order_status === "complete") {
+        conn.release();
         return {
-          msg: `Order updated successfully`,
-          data: order,
+          msg: `Can not set status of Order number (${id}) because it is already (${order.order_status}) - you may review your order or delete it if you want !`,
         };
       }
-      conct.release();
-      return null;
-    } catch (err) {
-      if ((err as Error).message?.includes("enum")) {
-        errMsg = customErr(
-          err as Error,
-          "Please enter value between [ active | complete ] for order status !.",
-          "."
-        );
+      // check for other status
+      if (order.order_status === status) {
+        conn.release();
+        return { msg: `Order number (${id}) already has a status of (${order.order_status}) ` };
       } else {
-        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+        try {
+          const conct = await pgDB.connect();
+          const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
+          const result = await conct.query(sql, [id, status]);
+          if (result.rows.length) {
+            const order = result.rows[0];
+            console.log(result.command, result.rowCount, order);
+            conct.release();
+            return {
+              msg: `Order updated successfully`,
+              data: order,
+            };
+          }
+          conct.release();
+          return null;
+        } catch (err) {
+          if ((err as Error).message?.includes("enum")) {
+            errMsg = customErr(
+              err as Error,
+              "Please enter value between [ active | complete ] for order status !.",
+              "."
+            );
+          } else {
+            errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
+          }
+          throw new Error(`Unable to update orders with id (${id}) - ${errMsg}`);
+        }
       }
-      throw new Error(`Unable to update orders with id (${id}) - ${errMsg}`);
+    } catch (err) {
+      // if we don't have the order in the table.
+      if ((err as Error).message?.includes("undefined")) {
+        errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
+      } else {
+        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
+      }
+      throw new Error(`Unable to update order number (${id}) - ${errMsg}`);
     }
   }
   // Delete Orders
-  async delOrder(id: number): Promise<Orders | null> {
+  async delete(id: number): Promise<Orders | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM orders WHERE o_id = ($1) RETURNING *`;
@@ -137,7 +169,7 @@ class OrdersModel {
           "."
         );
       } else {
-        errMsg = (err as Error).message?.replace(`relation "orders"`, "TABLE (orders)");
+        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       }
       throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
     }

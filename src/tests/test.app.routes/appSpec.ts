@@ -66,19 +66,19 @@ describe("Testing Application Functionality: \n", () => {
 
   describe("Testing app end points: \n", () => {
     beforeAll(async () => {
-      const createUser = await userModel.createUser(user);
+      const createUser = await userModel.create(user);
       expect(createUser?.msg).toEqual("User created successfully");
       console.log(`user has been created \n`);
 
-      const createProduct = await productModel.createProduct(product);
+      const createProduct = await productModel.create(product);
       expect(createProduct?.msg).toEqual("Product created successfully");
       console.log(`product has been created \n`);
 
-      const createOrder = await orderModel.createOrder(order);
+      const createOrder = await orderModel.create(order);
       expect(createOrder?.msg).toEqual("Order created successfully");
       console.log(`order has been created \n`);
 
-      const userOrder = await OPT.addProductToOrder(ops);
+      const userOrder = await OPT.addProducts(ops);
       expect(userOrder?.msg).toEqual(
         `Product has been added successfully to order number (${order.o_id})`
       );
@@ -86,7 +86,7 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it("should extract user Id ", async () => {
-      const user = await userModel.getUsers();
+      const user = await userModel.index();
       userId = user[0].u_id as string;
       expect(user[0].u_id).toEqual(userId);
       setTimeout(() => {
@@ -95,7 +95,7 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it("should extract product Id", async () => {
-      const product = await productModel.getProducts();
+      const product = await productModel.index();
       pId = product[0].p_id as string;
       expect(product[0].p_id).toEqual(pId);
       setTimeout(() => {

@@ -10,13 +10,13 @@ let token = "";
 let userId = "";
 describe("Testing Authentication route: \n", () => {
     beforeAll(async () => {
-        const result = await users_1.userModel.createUser(appSpec_1.user);
+        const result = await users_1.userModel.create(appSpec_1.user);
         expect(result?.msg).toEqual("User created successfully");
         console.log(`user has been created \n`);
     });
     it("should extract user Id and password", async () => {
         setTimeout(async () => {
-            const user = await users_1.userModel.getUsers();
+            const user = await users_1.userModel.index();
             userId = user[0].u_id;
             expect(user[0].u_id).toEqual(userId);
             console.log(`user id extracted: ${userId}`);

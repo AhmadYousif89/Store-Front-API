@@ -11,7 +11,7 @@ const express_1 = __importDefault(require("express"));
 const error_middleware_1 = __importDefault(require("./middlewares/error.middleware"));
 const app = (0, express_1.default)();
 app.use(express_1.default.urlencoded({ extended: false }));
-// app.use(express.static("public"));
+app.use(express_1.default.static("public"));
 app.use(express_1.default.json());
 exports.corsOptions = {
     origin: process.env.PG_HOST,

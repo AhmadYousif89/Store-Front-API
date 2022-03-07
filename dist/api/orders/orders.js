@@ -10,7 +10,11 @@ let errMsg;
 // Building CRUD System for Orders.
 class OrdersModel {
     // Create Orders
-    async createOrder(values) {
+    async create(values) {
+        // don't set new orders as complete.
+        if (values.order_status === "complete") {
+            return { msg: `New orders can not be set as (${values.order_status})` };
+        }
         try {
             // openning connection with db.
             const conct = await database_1.default.connect();
@@ -46,13 +50,13 @@ class OrdersModel {
                 errMsg = (0, control_1.customErr)(err, "Incorrect user id or user does not exist !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
             throw new Error(`Unable to create new Order - ${errMsg}`);
         }
     }
     // Get orders
-    async getOrders() {
+    async index() {
         try {
             const conct = await database_1.default.connect();
             const sql = "SELECT * FROM orders";
@@ -62,12 +66,12 @@ class OrdersModel {
             return result.rows;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+            errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one order
-    async getOrderById(id) {
+    async show(id) {
         try {
             const conct = await database_1.default.connect();
             const sql = `SELECT * FROM orders WHERE o_id = ($1)`;
@@ -85,40 +89,71 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+            errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
         }
     }
     // Update Orders
-    async updateOrder(id, status) {
+    async update(id, status) {
+        // check if order status
         try {
-            const conct = await database_1.default.connect();
-            const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
-            const result = await conct.query(sql, [id, status]);
-            if (result.rows.length) {
-                const order = result.rows[0];
-                console.log(result.command, result.rowCount, order);
-                conct.release();
+            const sql = "SELECT order_status FROM orders WHERE o_id = ($1) ";
+            const conn = await database_1.default.connect();
+            const result = await conn.query(sql, [id]);
+            const order = result.rows[0];
+            // check if the order status is complete
+            if (order.order_status === "complete") {
+                conn.release();
                 return {
-                    msg: `Order updated successfully`,
-                    data: order,
+                    msg: `Can not set status of Order number (${id}) because it is already (${order.order_status}) - you may review your order or delete it if you want !`,
                 };
             }
-            conct.release();
-            return null;
-        }
-        catch (err) {
-            if (err.message?.includes("enum")) {
-                errMsg = (0, control_1.customErr)(err, "Please enter value between [ active | complete ] for order status !.", ".");
+            // check for other status
+            if (order.order_status === status) {
+                conn.release();
+                return { msg: `Order number (${id}) already has a status of (${order.order_status}) ` };
             }
             else {
-                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+                try {
+                    const conct = await database_1.default.connect();
+                    const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
+                    const result = await conct.query(sql, [id, status]);
+                    if (result.rows.length) {
+                        const order = result.rows[0];
+                        console.log(result.command, result.rowCount, order);
+                        conct.release();
+                        return {
+                            msg: `Order updated successfully`,
+                            data: order,
+                        };
+                    }
+                    conct.release();
+                    return null;
+                }
+                catch (err) {
+                    if (err.message?.includes("enum")) {
+                        errMsg = (0, control_1.customErr)(err, "Please enter value between [ active | complete ] for order status !.", ".");
+                    }
+                    else {
+                        errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+                    }
+                    throw new Error(`Unable to update orders with id (${id}) - ${errMsg}`);
+                }
             }
-            throw new Error(`Unable to update orders with id (${id}) - ${errMsg}`);
+        }
+        catch (err) {
+            // if we don't have the order in the table.
+            if (err.message?.includes("undefined")) {
+                errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
+            }
+            else {
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+            }
+            throw new Error(`Unable to update order number (${id}) - ${errMsg}`);
         }
     }
     // Delete Orders
-    async delOrder(id) {
+    async delete(id) {
         try {
             const conct = await database_1.default.connect();
             const sql = `DELETE FROM orders WHERE o_id = ($1) RETURNING *`;
@@ -140,7 +175,7 @@ class OrdersModel {
                 errMsg = (0, control_1.customErr)(err, "Please remove any products related to this order first !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
             throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
         }

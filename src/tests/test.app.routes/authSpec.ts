@@ -7,14 +7,14 @@ let userId = "";
 
 describe("Testing Authentication route: \n", () => {
   beforeAll(async () => {
-    const result = await userModel.createUser(user);
+    const result = await userModel.create(user);
     expect(result?.msg).toEqual("User created successfully");
     console.log(`user has been created \n`);
   });
 
   it("should extract user Id and password", async () => {
     setTimeout(async () => {
-      const user = await userModel.getUsers();
+      const user = await userModel.index();
       userId = user[0].u_id as string;
       expect(user[0].u_id).toEqual(userId);
       console.log(`user id extracted: ${userId}`);

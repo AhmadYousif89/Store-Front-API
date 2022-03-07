@@ -10,24 +10,26 @@ let errMsg;
 // Building CRUD System for products to Orders.
 class OrderedProducts {
     // Add new product to order.
-    async addProductToOrder(values) {
-        // check if order is active or not.
+    async addProducts(values) {
+        // accessing orders table first
         try {
-            const ordersql = "SELECT * FROM orders WHERE o_id = ($1)";
+            const sql = "SELECT * FROM orders WHERE o_id = ($1)";
             const conn = await database_1.default.connect();
-            const result = await conn.query(ordersql, [values.order_id]);
+            const result = await conn.query(sql, [values.order_id]);
             const order = result.rows[0];
+            // check if order is complete or not.
             if (order.order_status === "complete") {
                 throw new Error(`Unable to add product (${values.product_id}) to order (${values.order_id}) because order status is (${order.order_status})`);
             }
             conn.release();
         }
         catch (err) {
-            if (err) {
+            // handling errors
+            if (err.message?.includes("undefined")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "orders"`, "TABLE (orders)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
             throw new Error(`Unable to add product - ${errMsg}`);
         }
@@ -59,13 +61,13 @@ class OrderedProducts {
                 errMsg = (0, control_1.customErr)(err, "Incorrect product id or product does not exist !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
             }
             throw new Error(`Unable to add product to order - ${errMsg}`);
         }
     }
     // Get all data from ordered_products table.
-    async getOrderedProducts() {
+    async index() {
         try {
             const conct = await database_1.default.connect();
             const sql = "SELECT * FROM ordered_products";
@@ -75,18 +77,18 @@ class OrderedProducts {
             return result.rows;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+            errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one row from table ordered_products.
-    async getRowByOPid(opId) {
+    async show(opId) {
         try {
             const conct = await database_1.default.connect();
             const sql = `SELECT * FROM ordered_products WHERE op_id = ($1)`;
             const result = await conct.query(sql, [opId]);
             if (result.rows.length) {
-                const data = result.rows;
+                const data = result.rows[0];
                 console.log(result.command, result.rowCount, data);
                 conct.release();
                 return {
@@ -98,12 +100,12 @@ class OrderedProducts {
             return null;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+            errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Update quantity of specific Product.
-    async updateOrderedProduct(pId, quantity) {
+    async update(pId, quantity) {
         try {
             const conct = await database_1.default.connect();
             const sql = `UPDATE ordered_products SET p_quantity = ($2) WHERE product_id = ($1) RETURNING *`;
@@ -125,13 +127,13 @@ class OrderedProducts {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
             }
-            throw new Error(`Unable to update Product with id (${pId}) from (ordered_products) - ${errMsg}`);
+            throw new Error(`Unable to update Product with id (${pId}) - ${errMsg}`);
         }
     }
     // Delete one row from table ordered_products by id.
-    async delOrderedProduct(opId) {
+    async delete(opId) {
         try {
             const conct = await database_1.default.connect();
             const sql = `DELETE FROM ordered_products WHERE op_id = ($1) RETURNING *`;
@@ -156,7 +158,7 @@ class OrderedProducts {
                 errMsg = (0, control_1.customErr)(err, "Product can not be deleted - remove this product from any related orders !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "ordered_products"`, "TABLE (ordered_products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
             }
             throw new Error(`Unable to delete row with id (${opId}) - ${errMsg}`);
         }

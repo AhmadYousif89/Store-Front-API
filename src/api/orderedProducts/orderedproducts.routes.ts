@@ -2,11 +2,11 @@ import { Router, Request, Response, NextFunction } from "express";
 import { OPT } from "./orderedProducts";
 import { Error } from "../../utils/control";
 
-let error: Error;
-// method => POST /user/cart/orders/:id/products
+let error;
+// method => POST /user/account/orders/:id/products
 // desc   => add product to order.
 const addProductToOrder = Router().post(
-  "/user/cart/orders/:id/products",
+  "/user/account/orders/:id/products",
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     const oId = parseInt(req.params.id);
     const pId = req.body.p_id;
@@ -25,7 +25,7 @@ const addProductToOrder = Router().post(
       return;
     }
     try {
-      const data = await OPT.addProductToOrder({
+      const data = await OPT.addProducts({
         order_id: oId,
         product_id: pId,
         quantity: quantity,
@@ -40,13 +40,13 @@ const addProductToOrder = Router().post(
   }
 );
 
-// method => GET /user/cart/ordered-products
+// method => GET /user/account/ordered-products
 // desc   => Return all Ordered products.
 const getOrderedProducts = Router().get(
-  "/user/cart/ordered-products",
+  "/user/account/ordered-products",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const data = await OPT.getOrderedProducts();
+      const data = await OPT.index();
       if (data.length === 0) {
         res.status(404).json({ msg: `No Data Were Found !` });
         return;
@@ -61,10 +61,10 @@ const getOrderedProducts = Router().get(
   }
 );
 
-// method => GET /user/cart/ordered-products/:id
+// method => GET /user/account/ordered-products/:id
 // desc   => Return a specific row from ordered products.
 const getRowByOPid = Router().get(
-  "/user/cart/ordered-products/:id",
+  "/user/account/ordered-products/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const opId = parseInt(req.params.id);
     console.log("data: \n", opId);
@@ -73,7 +73,7 @@ const getRowByOPid = Router().get(
       return;
     }
     try {
-      const data = await OPT.getRowByOPid(opId);
+      const data = await OPT.show(opId);
       if (!data) {
         res
           .status(404)
@@ -90,10 +90,10 @@ const getRowByOPid = Router().get(
   }
 );
 
-// method => PUT /user/cart/ordered-products
+// method => PUT /user/account/ordered-products
 // desc   => Update a specific Order .
 const updateOrderedProduct = Router().put(
-  "/user/cart/ordered-products",
+  "/user/account/ordered-products",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const pId = req.body.p_id;
     const quantity = parseInt(req.body.quantity);
@@ -105,11 +105,11 @@ const updateOrderedProduct = Router().put(
     if (!pId || quantity <= 0 || !quantity) {
       res
         .status(400)
-        .json({ status: "Error", message: "Please provide missing details before updating !" });
+        .json({ status: "Error", message: "Please provide correct details before updating !" });
       return;
     }
     try {
-      const data = await OPT.updateOrderedProduct(pId, quantity);
+      const data = await OPT.update(pId, quantity);
       if (!data) {
         res.status(404).json({
           msg: "Update failed !",
@@ -127,10 +127,10 @@ const updateOrderedProduct = Router().put(
   }
 );
 
-// method => DELETE /user/cart/ordered-products/:id
+// method => DELETE /user/account/ordered-products/:id
 // desc   => Delete a specific Order.
 const delOrderedProduct = Router().delete(
-  "/user/cart/ordered-products/:id",
+  "/user/account/ordered-products/:id",
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const opId = parseInt(req.params.id);
     console.log("data: \n", opId);
@@ -139,7 +139,7 @@ const delOrderedProduct = Router().delete(
       return;
     }
     try {
-      const data = await OPT.delOrderedProduct(opId);
+      const data = await OPT.delete(opId);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",

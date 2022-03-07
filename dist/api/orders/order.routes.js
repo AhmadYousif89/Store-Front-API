@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orders_1 = require("./orders");
 let error;
-// method => POST /user/cart/orders
+// method => POST /user/account/orders
 // desc   => Create new Order data.
-const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (req, res, next) => {
+const createOrders = (0, express_1.Router)().post("/user/account/orders", async (req, res, next) => {
     const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
     console.log(`params:
@@ -19,7 +19,7 @@ const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (re
         return;
     }
     try {
-        const data = await orders_1.orderModel.createOrder({
+        const data = await orders_1.orderModel.create({
             order_status: status,
             user_id: userId,
         });
@@ -32,11 +32,11 @@ const createOrders = (0, express_1.Router)().post("/user/cart/orders", async (re
         next(error);
     }
 });
-// method => GET /user/cart/orders
+// method => GET /user/account/orders
 // desc   => Return all Orders data.
-const getOrders = (0, express_1.Router)().get("/user/cart/orders", async (_req, res, next) => {
+const getOrders = (0, express_1.Router)().get("/user/account/orders", async (_req, res, next) => {
     try {
-        const data = await orders_1.orderModel.getOrders();
+        const data = await orders_1.orderModel.index();
         if (data.length === 0) {
             res.status(404).json({ msg: `No Orders Were Found !` });
             return;
@@ -50,9 +50,9 @@ const getOrders = (0, express_1.Router)().get("/user/cart/orders", async (_req, 
         next(error);
     }
 });
-// method => GET /user/cart/orders/:id
+// method => GET /user/account/orders/:id
 // desc   => Return a specific Order.
-const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async (req, res, next) => {
+const getOrderById = (0, express_1.Router)().get("/user/account/orders/:id", async (req, res, next) => {
     const oid = parseInt(req.params.id);
     console.log("data: \n", oid);
     if (!oid || oid <= 0) {
@@ -60,7 +60,7 @@ const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async 
         return;
     }
     try {
-        const data = await orders_1.orderModel.getOrderById(oid);
+        const data = await orders_1.orderModel.show(oid);
         if (!data) {
             res
                 .status(404)
@@ -76,9 +76,9 @@ const getOrderById = (0, express_1.Router)().get("/user/cart/orders/:id", async 
         next(error);
     }
 });
-// method => PUT /user/cart/orders
+// method => PUT /user/account/orders
 // desc   => Update a specific Order .
-const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req, res, next) => {
+const updateOrder = (0, express_1.Router)().put("/user/account/orders", async (req, res, next) => {
     const id = parseInt(req.body.order_id);
     const status = req.body.status.toLowerCase();
     console.log(`data: 
@@ -91,7 +91,8 @@ const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req,
         return;
     }
     try {
-        const data = await orders_1.orderModel.updateOrder(id, status);
+        const data = await orders_1.orderModel.update(id, status);
+        // safety net
         if (!data) {
             res.status(404).json({
                 msg: "Update failed !",
@@ -108,9 +109,9 @@ const updateOrder = (0, express_1.Router)().put("/user/cart/orders", async (req,
         next(error);
     }
 });
-// method => DELETE /user/cart/order/:id
+// method => DELETE /user/account/order/:id
 // desc   => Delete a specific Order.
-const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/:id", async (req, res, next) => {
+const deleteOrder = (0, express_1.Router)().delete("/user/account/orders/:id", async (req, res, next) => {
     const id = parseInt(req.params.id);
     console.log("data: \n", id);
     if (!id || id <= 0) {
@@ -118,7 +119,7 @@ const deleteOrder = (0, express_1.Router)().delete("/user/cart/orders/:id", asyn
         return;
     }
     try {
-        const data = await orders_1.orderModel.delOrder(id);
+        const data = await orders_1.orderModel.delete(id);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",

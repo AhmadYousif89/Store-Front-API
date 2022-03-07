@@ -4,28 +4,28 @@ import { user } from "../test.app.routes/appSpec";
 let userId = "";
 describe("Testing user Model functions: \n", () => {
   it("should have a get all users method", () => {
-    expect(userModel.getUsers).toBeDefined();
+    expect(userModel.index).toBeDefined();
   });
 
   it("should have a get user by Id method", () => {
-    expect(userModel.getUserById).toBeDefined();
+    expect(userModel.show).toBeDefined();
   });
 
   it("should have a create method", () => {
-    expect(userModel.createUser).toBeDefined();
+    expect(userModel.create).toBeDefined();
   });
 
   it("should have an update user method", () => {
-    expect(userModel.updateUser).toBeDefined();
+    expect(userModel.update).toBeDefined();
   });
 
   it("should have a delete user method", () => {
-    expect(userModel.delUser).toBeDefined();
+    expect(userModel.delete).toBeDefined();
   });
 
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
-      const result = await userModel.createUser(user);
+      const result = await userModel.create(user);
       expect(result).toEqual({
         msg: "User created successfuly",
         ...result,
@@ -34,7 +34,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should get all data and extract user Id", async () => {
-      const result = await userModel.getUsers();
+      const result = await userModel.index();
       userId = result[0].u_id as string;
       expect(result).toEqual([
         {
@@ -46,12 +46,12 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should get the count of rows in users table to equal (1) user", async () => {
-      const result = await userModel.getUsers();
+      const result = await userModel.index();
       expect(result.length).toEqual(1);
     });
 
     it("should return the correct user by ID", async () => {
-      const result = await userModel.getUserById(userId);
+      const result = await userModel.show(userId);
       expect(result).toEqual({
         msg: "User generated successfully",
         data: {
@@ -63,7 +63,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it(`should update the password to = 123 for specific user by ID`, async () => {
-      const result = await userModel.updateUser(userId, "123");
+      const result = await userModel.update(userId, "123");
       expect(result).toEqual({
         msg: "User updated successfully",
         data: {
@@ -89,7 +89,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should delete the selected user by ID", async () => {
-      const result = await userModel.delUser(userId);
+      const result = await userModel.delete(userId);
       expect(result).toEqual({
         msg: "User deleted successfully",
         data: {

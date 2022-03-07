@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { productModel } from "./products";
 import { Error } from "../../utils/control";
 
-let error: Error;
+let error;
 // method => POST /products
 // desc   => Create new product data.
 const createProducts = Router().post(
@@ -20,11 +20,11 @@ const createProducts = Router().post(
     if (!category || !name || !brand || !maker || !price || price <= 0) {
       res
         .status(400)
-        .json({ status: "Error", message: "Please enter valid details before submiting !" });
+        .json({ status: "Error", message: "Please enter a valid details before submiting !" });
       return;
     }
     try {
-      const data = await productModel.createProduct({
+      const data = await productModel.create({
         category: category,
         p_name: name,
         brand: brand,
@@ -48,7 +48,7 @@ const getProducts = Router().get(
   "/products",
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const data = await productModel.getProducts();
+      const data = await productModel.index();
       if (data.length === 0) {
         res.status(404).json({ msg: `No Products Were Found !` });
         return;
@@ -71,7 +71,7 @@ const getProductById = Router().get(
     const id = req.params.id;
     console.log("data: \n", id);
     try {
-      const data = await productModel.getProductById(id);
+      const data = await productModel.show(id);
       if (!data) {
         res
           .status(404)
@@ -105,11 +105,11 @@ const updateProduct = Router().put(
     if (!pid || !price || price <= 0) {
       res
         .status(400)
-        .json({ status: "Error", message: "Please provide a valid product id and price !" });
+        .json({ status: "Error", message: "Please provide a valid details before updating !" });
       return;
     }
     try {
-      const data = await productModel.updateProduct(pid, price, popular);
+      const data = await productModel.update(pid, price, popular);
       if (!data) {
         res.status(404).json({
           msg: "Update failed !",
@@ -139,7 +139,7 @@ const deleteProduct = Router().delete(
       return;
     }
     try {
-      const data = await productModel.delProduct(pid);
+      const data = await productModel.delete(pid);
       if (!data) {
         res.status(404).json({
           msg: "Delete failed !",
@@ -157,32 +157,10 @@ const deleteProduct = Router().delete(
   }
 );
 
-// method => GET /products/most/popular
-// desc   => Return a most popular products.
-const getProductByPopularity = Router().get(
-  "/products/most/popular",
-  async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const data = await productModel.getProductByPopularity();
-      if (data.length === 0) {
-        res.status(404).json({ msg: `No Products Were Found !` });
-        return;
-      }
-      res.status(200).json({ msg: "Data generated successfully", data });
-    } catch (err) {
-      error = {
-        message: `Request Failed ! ${(err as Error).message}`,
-      };
-      next(error);
-    }
-  }
-);
-
 export default {
   createProducts,
   getProducts,
   getProductById,
   updateProduct,
   deleteProduct,
-  getProductByPopularity,
 };

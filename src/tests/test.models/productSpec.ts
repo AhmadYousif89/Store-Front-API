@@ -5,28 +5,28 @@ let pId = "";
 
 describe("Testing product Model functions: \n", () => {
   it("should have a get all products method", () => {
-    expect(productModel.createProduct).toBeDefined();
+    expect(productModel.create).toBeDefined();
   });
 
   it("should have a get product by Id method", () => {
-    expect(productModel.getProducts).toBeDefined();
+    expect(productModel.index).toBeDefined();
   });
 
   it("should have a create method", () => {
-    expect(productModel.getProductById).toBeDefined();
+    expect(productModel.show).toBeDefined();
   });
 
   it("should have an update product method", () => {
-    expect(productModel.updateProduct).toBeDefined();
+    expect(productModel.update).toBeDefined();
   });
 
   it("should have a delete product method", () => {
-    expect(productModel.delProduct).toBeDefined();
+    expect(productModel.delete).toBeDefined();
   });
 
   describe("Testing SQL functions: \n ", () => {
     it(`should create new product`, async () => {
-      const result = await productModel.createProduct(product);
+      const result = await productModel.create(product);
       expect(result).toEqual({
         msg: "product created successfully",
         ...result,
@@ -35,7 +35,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it("should return a list of all products", async () => {
-      const result = await productModel.getProducts();
+      const result = await productModel.index();
       pId = result[0].p_id as string;
       expect(result).toEqual([
         {
@@ -52,7 +52,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it("should return the correct product by id", async () => {
-      const result = await productModel.getProductById(pId as string);
+      const result = await productModel.show(pId as string);
       expect(result).toEqual({
         msg: "product generated successfully",
         data: {
@@ -69,7 +69,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
-      const result = await productModel.updateProduct(pId as string, 500, "yes");
+      const result = await productModel.update(pId as string, 500, "yes");
       expect(result).toEqual({
         msg: "product updated successfully",
         data: {
@@ -86,7 +86,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it(`should delete the selected product by ID`, async () => {
-      const result = await productModel.delProduct(pId as string);
+      const result = await productModel.delete(pId as string);
       expect(result).toEqual({
         msg: "product deleted successfully",
         data: {

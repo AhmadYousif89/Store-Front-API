@@ -10,7 +10,7 @@ let errMsg;
 // Building CRUD System for Product.
 class ProductModel {
     // Create Product
-    async createProduct(values) {
+    async create(values) {
         try {
             // openning connection with db.
             const conct = await database_1.default.connect();
@@ -50,13 +50,13 @@ class ProductModel {
                 errMsg = (0, control_1.customErr)(err, "Please choose popularity between (yes) or (no) !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "products"`, "TABLE (Products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             }
             throw new Error(`Unable to create new Product - ${errMsg}`);
         }
     }
     // Get Products
-    async getProducts() {
+    async index() {
         try {
             const conct = await database_1.default.connect();
             const sql = "SELECT * FROM products";
@@ -66,12 +66,12 @@ class ProductModel {
             return result.rows;
         }
         catch (err) {
-            errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
+            errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one Product
-    async getProductById(id) {
+    async show(id) {
         try {
             const conct = await database_1.default.connect();
             const sql = `SELECT * FROM products WHERE p_id = ($1)`;
@@ -93,13 +93,13 @@ class ProductModel {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             }
             throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
         }
     }
     // Update Product
-    async updateProduct(id, price, popular) {
+    async update(id, price, popular) {
         try {
             const conct = await database_1.default.connect();
             const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
@@ -124,13 +124,13 @@ class ProductModel {
                 errMsg = (0, control_1.customErr)(err, "Please enter a value between [ yes | no ] for popular !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             }
             throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
         }
     }
     // Delete Product
-    async delProduct(id) {
+    async delete(id) {
         try {
             const conct = await database_1.default.connect();
             const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
@@ -155,24 +155,9 @@ class ProductModel {
                 errMsg = (0, control_1.customErr)(err, "Product can not be deleted - remove this product from any related orders !.", ".");
             }
             else {
-                errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
+                errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             }
             throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
-        }
-    }
-    // Get Popular Products
-    async getProductByPopularity() {
-        try {
-            const conct = await database_1.default.connect();
-            const sql = "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
-            const result = await conct.query(sql);
-            conct.release();
-            console.log(result.command, result.rowCount, result.rows, "\n");
-            return result.rows;
-        }
-        catch (err) {
-            errMsg = err.message?.replace(`relation "products"`, "TABLE (products)");
-            throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
 }

@@ -16,11 +16,11 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
     if (!category || !name || !brand || !maker || !price || price <= 0) {
         res
             .status(400)
-            .json({ status: "Error", message: "Please enter valid details before submiting !" });
+            .json({ status: "Error", message: "Please enter a valid details before submiting !" });
         return;
     }
     try {
-        const data = await products_1.productModel.createProduct({
+        const data = await products_1.productModel.create({
             category: category,
             p_name: name,
             brand: brand,
@@ -41,7 +41,7 @@ const createProducts = (0, express_1.Router)().post("/products", async (req, res
 // desc   => Return all products data.
 const getProducts = (0, express_1.Router)().get("/products", async (_req, res, next) => {
     try {
-        const data = await products_1.productModel.getProducts();
+        const data = await products_1.productModel.index();
         if (data.length === 0) {
             res.status(404).json({ msg: `No Products Were Found !` });
             return;
@@ -61,7 +61,7 @@ const getProductById = (0, express_1.Router)().get("/products/:id", async (req, 
     const id = req.params.id;
     console.log("data: \n", id);
     try {
-        const data = await products_1.productModel.getProductById(id);
+        const data = await products_1.productModel.show(id);
         if (!data) {
             res
                 .status(404)
@@ -90,11 +90,11 @@ const updateProduct = (0, express_1.Router)().put("/products", async (req, res, 
     if (!pid || !price || price <= 0) {
         res
             .status(400)
-            .json({ status: "Error", message: "Please provide a valid product id and price !" });
+            .json({ status: "Error", message: "Please provide a valid details before updating !" });
         return;
     }
     try {
-        const data = await products_1.productModel.updateProduct(pid, price, popular);
+        const data = await products_1.productModel.update(pid, price, popular);
         if (!data) {
             res.status(404).json({
                 msg: "Update failed !",
@@ -121,7 +121,7 @@ const deleteProduct = (0, express_1.Router)().delete("/products/:id", async (req
         return;
     }
     try {
-        const data = await products_1.productModel.delProduct(pid);
+        const data = await products_1.productModel.delete(pid);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",
@@ -138,29 +138,10 @@ const deleteProduct = (0, express_1.Router)().delete("/products/:id", async (req
         next(error);
     }
 });
-// method => GET /products/most/popular
-// desc   => Return a most popular products.
-const getProductByPopularity = (0, express_1.Router)().get("/products/most/popular", async (_req, res, next) => {
-    try {
-        const data = await products_1.productModel.getProductByPopularity();
-        if (data.length === 0) {
-            res.status(404).json({ msg: `No Products Were Found !` });
-            return;
-        }
-        res.status(200).json({ msg: "Data generated successfully", data });
-    }
-    catch (err) {
-        error = {
-            message: `Request Failed ! ${err.message}`,
-        };
-        next(error);
-    }
-});
 exports.default = {
     createProducts,
     getProducts,
     getProductById,
     updateProduct,
     deleteProduct,
-    getProductByPopularity,
 };

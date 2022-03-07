@@ -21,7 +21,7 @@ const createUser = (0, express_1.Router)().post("/users/signup", async (req, res
         return;
     }
     try {
-        const data = await users_1.userModel.createUser({ u_name: name, password: password });
+        const data = await users_1.userModel.create({ u_name: name, password: password });
         res.status(201).json(data);
     }
     catch (err) {
@@ -72,7 +72,7 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
 // desc   => Return all users data.
 const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) => {
     try {
-        const data = await users_1.userModel.getUsers();
+        const data = await users_1.userModel.index();
         if (data.length === 0) {
             res.status(404).json({ msg: `No Users Were Found !` });
             return;
@@ -94,7 +94,7 @@ async (req, res, next) => {
     const uid = req.params.id;
     console.log("data: \n", uid);
     try {
-        const data = await users_1.userModel.getUserById(uid);
+        const data = await users_1.userModel.show(uid);
         if (!data) {
             res.status(404).json({
                 msg: "Request failed !",
@@ -103,32 +103,6 @@ async (req, res, next) => {
             return;
         }
         res.status(200).json(data);
-        return;
-    }
-    catch (err) {
-        error = {
-            message: `Request Failed ! ${err.message}`,
-        };
-        next(error);
-    }
-});
-// method => GET /users/:userId/ordered-products
-// desc   => Return user own products.
-const getUserProducts = (0, express_1.Router)().get("/users/:userId/ordered-products", 
-// authMiddleware,
-async (req, res, next) => {
-    const uid = req.params.userId;
-    console.log("data: \n", uid);
-    try {
-        const data = await users_1.userModel.getUserProducts(uid);
-        if (!data) {
-            res.status(404).json({
-                msg: "Request failed !",
-                data: `User with id (${uid}) doesn't have products`,
-            });
-            return;
-        }
-        res.status(200).json({ msg: "Data generated successfully", data: data });
         return;
     }
     catch (err) {
@@ -150,7 +124,7 @@ const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) 
             res.status(400).json({ status: "Error", message: "Please provide user id and password !" });
             return;
         }
-        const data = await users_1.userModel.updateUser(uid, password);
+        const data = await users_1.userModel.update(uid, password);
         if (!data) {
             res.status(404).json({
                 msg: "Update failed !",
@@ -173,7 +147,7 @@ const deleteUser = (0, express_1.Router)().delete("/users/:id", async (req, res,
     const uid = req.params.id;
     console.log("params: \n", uid);
     try {
-        const data = await users_1.userModel.delUser(uid);
+        const data = await users_1.userModel.delete(uid);
         if (!data) {
             res.status(404).json({
                 msg: "Delete failed !",
@@ -195,7 +169,6 @@ exports.default = {
     loginUser,
     getUsers,
     getUserById,
-    getUserProducts,
     updateUser,
     deleteUser,
 };
