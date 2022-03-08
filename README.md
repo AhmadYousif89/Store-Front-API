@@ -25,11 +25,14 @@
     o_id of type SERIAL - order_status - user_id REFERENCES (users.u_id)
 
   - products :
-    p_id of type UUID - category of type ENUM - p_name - brand - maker - price - popular type ENUM
+    p_id of type UUID - category of type ENUM - p_name - brand - maker - price - popular of type ENUM
   - ordered_products :
     op_id of type SERIAL - order_id REFERENCES (orders.o_id) | product_id REFERENCES (products.p_id) | p_quantity | created_in of type DATE
 
 - ENUMs are as follow :
+  - column order_status ('new','active','complete')
+  - column category ('mobiles','electronics')
+  - column popular ('no','yes')
 
 ##### ENV
 
