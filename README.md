@@ -14,7 +14,7 @@
 
 -
 
-#### How to
+#### DB Schema
 
 -
 
