@@ -4,23 +4,23 @@ import { productModel } from "../../api/products/products";
 let pId = "";
 
 describe("Testing product Model functions: \n", () => {
-  it("should have a get all products method", () => {
+  it("should be a method to get all products", () => {
     expect(productModel.create).toBeDefined();
   });
 
-  it("should have a get product by Id method", () => {
+  it("should be a method to get a product by id", () => {
     expect(productModel.index).toBeDefined();
   });
 
-  it("should have a create method", () => {
+  it("should be a method to create a new product", () => {
     expect(productModel.show).toBeDefined();
   });
 
-  it("should have an update product method", () => {
+  it("should be a method to update a product", () => {
     expect(productModel.update).toBeDefined();
   });
 
-  it("should have a delete product method", () => {
+  it("should be a method to delete a product", () => {
     expect(productModel.delete).toBeDefined();
   });
 
@@ -28,7 +28,7 @@ describe("Testing product Model functions: \n", () => {
     it(`should create new product`, async () => {
       const result = await productModel.create(product);
       expect(result).toEqual({
-        msg: "product created successfully",
+        msg: "Product created successfully",
         ...result,
       });
       console.log("product has been created");
@@ -54,9 +54,9 @@ describe("Testing product Model functions: \n", () => {
     it("should return the correct product by id", async () => {
       const result = await productModel.show(pId as string);
       expect(result).toEqual({
-        msg: "product generated successfully",
+        msg: "Product generated successfully",
         data: {
-          p_uid: pId,
+          p_id: pId,
           category: product.category,
           p_name: product.p_name,
           brand: product.brand,
@@ -68,12 +68,12 @@ describe("Testing product Model functions: \n", () => {
       console.log("one product");
     });
 
-    it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
+    it(`should update the price to = (500) and popular = 'yes' for product by id`, async () => {
       const result = await productModel.update(pId as string, 500, "yes");
       expect(result).toEqual({
-        msg: "product updated successfully",
+        msg: "Product updated successfully",
         data: {
-          p_uid: pId,
+          p_id: pId,
           category: product.category,
           p_name: product.p_name,
           brand: product.brand,
@@ -88,9 +88,9 @@ describe("Testing product Model functions: \n", () => {
     it(`should delete the selected product by ID`, async () => {
       const result = await productModel.delete(pId as string);
       expect(result).toEqual({
-        msg: "product deleted successfully",
+        msg: "Product deleted successfully",
         data: {
-          p_uid: pId,
+          p_id: pId,
           category: product.category,
           p_name: product.p_name,
           brand: product.brand,

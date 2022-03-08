@@ -94,30 +94,30 @@ class OrdersModel {
         }
     }
     // Update Orders
-    async update(id, status) {
+    async update(oid, status) {
         // check if order status
         try {
-            const sql = "SELECT order_status FROM orders WHERE o_id = ($1) ";
+            const sql = "SELECT * FROM orders WHERE o_id = ($1) ";
             const conn = await database_1.default.connect();
-            const result = await conn.query(sql, [id]);
+            const result = await conn.query(sql, [oid]);
             const order = result.rows[0];
             // check if the order status is complete
             if (order.order_status === "complete") {
                 conn.release();
                 return {
-                    msg: `Can not set status of Order number (${id}) because it is already (${order.order_status}) - you may review your order or delete it if you want !`,
+                    msg: `Can not set status of Order number (${oid}) to (${status}) because it is already (${order.order_status}) - you may review your order or delete it if you want !`,
                 };
             }
             // check for other status
             if (order.order_status === status) {
                 conn.release();
-                return { msg: `Order number (${id}) already has a status of (${order.order_status}) ` };
+                return { msg: `Order number (${oid}) already has a status of (${order.order_status}) ` };
             }
             else {
                 try {
                     const conct = await database_1.default.connect();
                     const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
-                    const result = await conct.query(sql, [id, status]);
+                    const result = await conct.query(sql, [oid, status]);
                     if (result.rows.length) {
                         const order = result.rows[0];
                         console.log(result.command, result.rowCount, order);
@@ -137,7 +137,7 @@ class OrdersModel {
                     else {
                         errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
                     }
-                    throw new Error(`Unable to update orders with id (${id}) - ${errMsg}`);
+                    throw new Error(`Unable to update orders with id (${oid}) - ${errMsg}`);
                 }
             }
         }
@@ -147,9 +147,9 @@ class OrdersModel {
                 errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
             }
             else {
-                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+                errMsg = err;
             }
-            throw new Error(`Unable to update order number (${id}) - ${errMsg}`);
+            throw new Error(`Unable to update order number (${oid}) - ${errMsg}`);
         }
     }
     // Delete Orders
@@ -177,7 +177,7 @@ class OrdersModel {
             else {
                 errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
-            throw new Error(`Unable to delete orders with id (${id}) - ${errMsg}`);
+            throw new Error(`Unable to delete order with id (${id}) - ${errMsg}`);
         }
     }
 }

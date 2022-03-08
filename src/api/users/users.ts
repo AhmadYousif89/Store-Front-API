@@ -9,13 +9,13 @@ class UserModel {
     try {
       // openning connection with db.
       const conct = await pgDB.connect();
-      // making query.
+      // making sql query.
       const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_id , u_name`;
       // encrypting password.
       const hash = encrypt(values.password as string);
       // retrieving query result.
       const result = await conct.query(sql, [values.u_name, hash]);
-      // check if row has been created.
+      // check for data.
       if (result.rows.length) {
         const user = result.rows[0];
         console.log(result.command, result.rows);
@@ -65,7 +65,6 @@ class UserModel {
           data: user,
         };
       }
-      conct.release();
       return null;
     } catch (err) {
       if ((err as Error).message?.includes("uuid")) {
@@ -92,7 +91,6 @@ class UserModel {
           data: user,
         };
       }
-      conct.release();
       return null;
     } catch (err) {
       if ((err as Error).message?.includes("uuid")) {
@@ -118,7 +116,6 @@ class UserModel {
           data: user,
         };
       }
-      conct.release();
       return null;
     } catch (err) {
       if ((err as Error).message?.includes("uuid")) {
@@ -148,10 +145,10 @@ class UserModel {
         if (isPwValide(password, user.password)) {
           const sql = `SELECT u_id, u_name FROM users WHERE u_name = ($1)`;
           const data = await conct.query(sql, [u_name]);
+          conct.release();
           return data.rows[0];
         }
       }
-      conct.release();
       return null;
     } catch (err) {
       // handling error

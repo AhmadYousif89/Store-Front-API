@@ -4,26 +4,26 @@ const appSpec_1 = require("../test.app.routes/appSpec");
 const products_1 = require("../../api/products/products");
 let pId = "";
 describe("Testing product Model functions: \n", () => {
-    it("should have a get all products method", () => {
+    it("should be a method to get all products", () => {
         expect(products_1.productModel.create).toBeDefined();
     });
-    it("should have a get product by Id method", () => {
+    it("should be a method to get a product by id", () => {
         expect(products_1.productModel.index).toBeDefined();
     });
-    it("should have a create method", () => {
+    it("should be a method to create a new product", () => {
         expect(products_1.productModel.show).toBeDefined();
     });
-    it("should have an update product method", () => {
+    it("should be a method to update a product", () => {
         expect(products_1.productModel.update).toBeDefined();
     });
-    it("should have a delete product method", () => {
+    it("should be a method to delete a product", () => {
         expect(products_1.productModel.delete).toBeDefined();
     });
     describe("Testing SQL functions: \n ", () => {
         it(`should create new product`, async () => {
             const result = await products_1.productModel.create(appSpec_1.product);
             expect(result).toEqual({
-                msg: "product created successfully",
+                msg: "Product created successfully",
                 ...result,
             });
             console.log("product has been created");
@@ -47,9 +47,9 @@ describe("Testing product Model functions: \n", () => {
         it("should return the correct product by id", async () => {
             const result = await products_1.productModel.show(pId);
             expect(result).toEqual({
-                msg: "product generated successfully",
+                msg: "Product generated successfully",
                 data: {
-                    p_uid: pId,
+                    p_id: pId,
                     category: appSpec_1.product.category,
                     p_name: appSpec_1.product.p_name,
                     brand: appSpec_1.product.brand,
@@ -60,12 +60,12 @@ describe("Testing product Model functions: \n", () => {
             });
             console.log("one product");
         });
-        it(`should update the price to = (500) and popular = 'yes' for product by ID`, async () => {
+        it(`should update the price to = (500) and popular = 'yes' for product by id`, async () => {
             const result = await products_1.productModel.update(pId, 500, "yes");
             expect(result).toEqual({
-                msg: "product updated successfully",
+                msg: "Product updated successfully",
                 data: {
-                    p_uid: pId,
+                    p_id: pId,
                     category: appSpec_1.product.category,
                     p_name: appSpec_1.product.p_name,
                     brand: appSpec_1.product.brand,
@@ -79,9 +79,9 @@ describe("Testing product Model functions: \n", () => {
         it(`should delete the selected product by ID`, async () => {
             const result = await products_1.productModel.delete(pId);
             expect(result).toEqual({
-                msg: "product deleted successfully",
+                msg: "Product deleted successfully",
                 data: {
-                    p_uid: pId,
+                    p_id: pId,
                     category: appSpec_1.product.category,
                     p_name: appSpec_1.product.p_name,
                     brand: appSpec_1.product.brand,

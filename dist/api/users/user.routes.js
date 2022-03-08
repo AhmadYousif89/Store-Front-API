@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const users_1 = require("./users");
-// import authMiddleware from "../../middlewares/auth.middleware";
+const auth_middleware_1 = __importDefault(require("../../middlewares/auth.middleware"));
 let error;
 // method => POST /users/signup
 // desc   => Create new user data.
-const createUser = (0, express_1.Router)().post("/users/signup", async (req, res, next) => {
+const createUser = (0, express_1.Router)().post("/users/signup", 
+// Authentication, can't put auth here because it will be impossible to create users !!
+async (req, res, next) => {
     const { name, password } = req.body;
     console.log(`data:
       ${name}
@@ -70,7 +72,7 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
 });
 // method => GET /users
 // desc   => Return all users data.
-const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) => {
+const getUsers = (0, express_1.Router)().get("/users", auth_middleware_1.default, async (_req, res, next) => {
     try {
         const data = await users_1.userModel.index();
         if (data.length === 0) {
@@ -88,9 +90,7 @@ const getUsers = (0, express_1.Router)().get("/users", async (_req, res, next) =
 });
 // method => GET /users/:id
 // desc   => Return a specific user.
-const getUserById = (0, express_1.Router)().get("/users/:id", 
-// authMiddleware,
-async (req, res, next) => {
+const getUserById = (0, express_1.Router)().get("/users/:id", auth_middleware_1.default, async (req, res, next) => {
     const uid = req.params.id;
     console.log("data: \n", uid);
     try {
@@ -114,7 +114,7 @@ async (req, res, next) => {
 });
 // method => PUT /users
 // desc   => Update a specific user .
-const updateUser = (0, express_1.Router)().put("/users", async (req, res, next) => {
+const updateUser = (0, express_1.Router)().put("/users", auth_middleware_1.default, async (req, res, next) => {
     const { uid, password } = req.body;
     console.log(`data: 
       ${uid} 

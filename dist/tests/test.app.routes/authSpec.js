@@ -31,22 +31,18 @@ describe("Testing Authentication route: \n", () => {
         const { msg, data, token: userToken } = response.body;
         expect(msg).toEqual("User authenticated successfully");
         expect(data).toEqual({
-            u_uid: userId,
+            u_id: userId,
             u_name: appSpec_1.user.u_name,
         });
         token = userToken;
     });
     it("should authenticate and allow access to one user route", async () => {
-        const result = await appSpec_1.route
-            .get("/users/id")
-            .set("Content-type", "application/json")
-            .set("Authorization", `Bearer ${token}`)
-            .send({ uid: userId });
+        const result = await appSpec_1.route.get(`/users/${userId}`).set("Authorization", `Bearer ${token}`);
         expect(result.status).toBe(200);
         expect(result.body).toEqual({
             msg: "User generated successfully",
             data: {
-                u_uid: userId,
+                u_id: userId,
                 u_name: appSpec_1.user.u_name,
             },
         });

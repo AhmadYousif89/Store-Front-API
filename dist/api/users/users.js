@@ -14,13 +14,13 @@ class UserModel {
         try {
             // openning connection with db.
             const conct = await database_1.default.connect();
-            // making query.
+            // making sql query.
             const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_id , u_name`;
             // encrypting password.
             const hash = (0, control_1.encrypt)(values.password);
             // retrieving query result.
             const result = await conct.query(sql, [values.u_name, hash]);
-            // check if row has been created.
+            // check for data.
             if (result.rows.length) {
                 const user = result.rows[0];
                 console.log(result.command, result.rows);
@@ -72,7 +72,6 @@ class UserModel {
                     data: user,
                 };
             }
-            conct.release();
             return null;
         }
         catch (err) {
@@ -101,7 +100,6 @@ class UserModel {
                     data: user,
                 };
             }
-            conct.release();
             return null;
         }
         catch (err) {
@@ -129,7 +127,6 @@ class UserModel {
                     data: user,
                 };
             }
-            conct.release();
             return null;
         }
         catch (err) {
@@ -158,10 +155,10 @@ class UserModel {
                 if ((0, control_1.isPwValide)(password, user.password)) {
                     const sql = `SELECT u_id, u_name FROM users WHERE u_name = ($1)`;
                     const data = await conct.query(sql, [u_name]);
+                    conct.release();
                     return data.rows[0];
                 }
             }
-            conct.release();
             return null;
         }
         catch (err) {

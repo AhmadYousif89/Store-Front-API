@@ -1,13 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const auth_middleware_1 = __importDefault(require("../../middlewares/auth.middleware"));
 const dashboard_1 = require("./dashboard");
 let error;
 // method => GET /users/:uId/account/review/ordered-products
 // desc   => Return a list of all ordered products for a user.
-const getUserProducts = (0, express_1.Router)().get("/users/:id/account/review/ordered-products", 
-// authMiddleware,
-async (req, res, next) => {
+const getUserProducts = (0, express_1.Router)().get("/users/:id/account/review/ordered-products", auth_middleware_1.default, async (req, res, next) => {
     const uid = req.params.id;
     console.log("data: \n", uid);
     try {
@@ -31,9 +33,7 @@ async (req, res, next) => {
 });
 // method => GET /users/:uId/orders/:oId/account/review/ordered-products
 // desc   => Return specific ordered products for a user by order id.
-const getUserProductsByOid = (0, express_1.Router)().get("/users/:uid/orders/:oid/account/review/ordered-products", 
-// authMiddleware,
-async (req, res, next) => {
+const getUserProductsByOid = (0, express_1.Router)().get("/users/:uid/orders/:oid/account/review/ordered-products", auth_middleware_1.default, async (req, res, next) => {
     const uid = req.params.uid;
     const oid = parseInt(req.params.oid);
     console.log("data: \n", uid, oid);
@@ -67,9 +67,7 @@ async (req, res, next) => {
 });
 // method => GET /users/:id/account/most-recent/purchases
 // desc   => Return a list of all purchases a user made sorted by most recent.
-const getUserMostPurchases = (0, express_1.Router)().get("/users/:id/account/most-recent/purchases", 
-// authMiddleware,
-async (req, res, next) => {
+const getUserMostPurchases = (0, express_1.Router)().get("/users/:id/account/most-recent/purchases", auth_middleware_1.default, async (req, res, next) => {
     const uid = req.params.id;
     console.log("data: \n", uid);
     try {

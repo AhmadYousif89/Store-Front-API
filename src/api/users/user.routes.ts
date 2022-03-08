@@ -2,13 +2,14 @@ import { Router, Request, Response, NextFunction } from "express";
 import JWT from "jsonwebtoken";
 import { Error } from "../../utils/control";
 import { userModel } from "./users";
-// import authMiddleware from "../../middlewares/auth.middleware";
+import Authentication from "../../middlewares/auth.middleware";
 
 let error;
 // method => POST /users/signup
 // desc   => Create new user data.
 const createUser = Router().post(
   "/users/signup",
+  // Authentication, can't put auth here because it will be impossible to create users !!
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, password } = req.body;
     console.log(
@@ -79,6 +80,7 @@ const loginUser = Router().post(
 // desc   => Return all users data.
 const getUsers = Router().get(
   "/users",
+  Authentication,
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const data = await userModel.index();
@@ -100,7 +102,7 @@ const getUsers = Router().get(
 // desc   => Return a specific user.
 const getUserById = Router().get(
   "/users/:id",
-  // authMiddleware,
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const uid = req.params.id;
     console.log("data: \n", uid);
@@ -128,6 +130,7 @@ const getUserById = Router().get(
 // desc   => Update a specific user .
 const updateUser = Router().put(
   "/users",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { uid, password } = req.body;
     console.log(

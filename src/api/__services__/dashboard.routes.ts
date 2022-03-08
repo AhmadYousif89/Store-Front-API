@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
+import Authentication from "../../middlewares/auth.middleware";
 import { dashBoard } from "./dashboard";
 
 let error;
@@ -6,7 +7,7 @@ let error;
 // desc   => Return a list of all ordered products for a user.
 const getUserProducts = Router().get(
   "/users/:id/account/review/ordered-products",
-  // authMiddleware,
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const uid = req.params.id;
     console.log("data: \n", uid);
@@ -33,7 +34,7 @@ const getUserProducts = Router().get(
 // desc   => Return specific ordered products for a user by order id.
 const getUserProductsByOid = Router().get(
   "/users/:uid/orders/:oid/account/review/ordered-products",
-  // authMiddleware,
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const uid = req.params.uid;
     const oid = parseInt(req.params.oid);
@@ -71,7 +72,7 @@ const getUserProductsByOid = Router().get(
 // desc   => Return a list of all purchases a user made sorted by most recent.
 const getUserMostPurchases = Router().get(
   "/users/:id/account/most-recent/purchases",
-  // authMiddleware,
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const uid = req.params.id;
     console.log("data: \n", uid);

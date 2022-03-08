@@ -12,11 +12,8 @@
     "start": "tsc && db-migrate db:create tech_store && node dist/app.js",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "lint": "eslint src/**/*.ts",
-    "migrate-up": "db-migrate up",
-    "migrate-down": "db-migrate reset",
-    "test:migrate-up": "SET ENV=test && db-migrate -e test up",
-    "test:migrate-down": "SET ENV=test && db-migrate -e test reset",
-    "test": "SET ENV=test && db-migrate db:create tech_store_test && db-migrate -e test up && tsc && jasmine && db-migrate db:drop tech_store_test"
+    "test": "SET ENV=test && db-migrate -e test up && jasmine && db-migrate -e test reset",
+    "test-2": "SET ENV=test && db-migrate db:create tech_store_test && jasmine && db-migrate db:drop tech_store_test"
   },
   "keywords": [],
   "author": "Ahmad Yousif",

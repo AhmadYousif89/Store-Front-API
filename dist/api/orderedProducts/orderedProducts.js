@@ -143,7 +143,7 @@ class OrderedProducts {
                 console.log(result.command, result.rowCount, product);
                 conct.release();
                 return {
-                    msg: `Product deleted successfully`,
+                    msg: `Row number ${opId} was deleted successfully`,
                     data: product,
                 };
             }

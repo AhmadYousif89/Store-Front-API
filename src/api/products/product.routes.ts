@@ -1,12 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { productModel } from "./products";
 import { Error } from "../../utils/control";
+import Authentication from "../../middlewares/auth.middleware";
 
 let error;
 // method => POST /products
 // desc   => Create new product data.
 const createProducts = Router().post(
   "/products",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, brand, maker } = req.body;
     const category = req.body.category.toLowerCase();
