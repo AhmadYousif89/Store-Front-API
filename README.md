@@ -18,14 +18,14 @@
 
 - Tables are as follow :
 
-  - users
-  - u_id of type UUID, u_name, password
-  - orders
-  - o_id of type serial, order_status, user_id REFERENCES (users.u_id)
-  - products
-  - p_id of type UUID, category of type ENUM, p_name, brand, maker, price, popular type ENUM
-  - ordered_products
-  - op_id of type serial, order_id REFERENCES (orders.o_id), product_id REFERENCES (products.p_id), p_quantity, created_in of type DATE
+  - users :
+    u_id of type UUID, u_name, password
+  - orders :
+    o_id of type serial, order_status, user_id REFERENCES (users.u_id)
+  - products :
+    p_id of type UUID, category of type ENUM, p_name, brand, maker, price, popular type ENUM
+  - ordered_products :
+    op_id of type serial, order_id REFERENCES (orders.o_id), product_id REFERENCES (products.p_id), p_quantity, created_in of type DATE
 
 - ENUMs are as follow :
 
