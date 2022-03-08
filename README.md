@@ -26,7 +26,7 @@
   -- ordered_products
   --- op_id of type serial, order_id REFERENCES (orders.o_id), product_id REFERENCES (products.p_id), p_quantity, created_in of type DATE
 
-- ## ENUMs are as follow :
+- ENUMs are as follow :
 
 ##### ENV
 
