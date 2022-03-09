@@ -2,24 +2,24 @@
 
 - This a backend API build in Nodejs for an online store. Its main goal is to create a RESTful API that will be used by the frontend developer on the frontend.
 
-- The database schema and and API route information can be found in the REQUIREMENT.md
+- The database schema and and API route information are in the REQUIREMENT.md
 
 ### Usage
 
 - To use our API properly please follow these steps :
 
   - connect to the default postgres database as the server's root user postgres
-    -- psql -U postgres
+    - psql -U postgres
   - In psql run the following to create a user
-    -- CREATE USER udacity WITH PASSWORD '123';
+    - CREATE USER udacity WITH PASSWORD '123';
   - run the following to create the dev and test database
-    -- CREATE DATABASE tech_store;
-    -- CREATE DATABASE tech_store_test;
+    - CREATE DATABASE tech_store;
+    - CREATE DATABASE tech_store_test;
   - Connect to the databases and grant all privileges to our user
-    -- \c tech_store
-    -- GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
-    -- \c tech_store_test
-    -- GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+    - \c tech_store
+    - GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
+    - \c tech_store_test
+    - GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
 
 ### Packages
 
