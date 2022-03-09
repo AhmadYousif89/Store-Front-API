@@ -70,6 +70,10 @@
   - this script will run the es-lint dependency.
 - npm run test :
   - this script will start our unit testing scenario.
+- npm run test:m-up :
+  - this script will run migration up command but in test environment.
+- npm run test:m-down :
+  - this script will run migration down command but in test environment.
 
 ##### ENV
 

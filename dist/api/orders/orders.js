@@ -33,8 +33,6 @@ class OrdersModel {
                     data: orders,
                 };
             }
-            // colsing connection with db.
-            conct.release();
             return null;
         }
         catch (err) {
@@ -127,7 +125,6 @@ class OrdersModel {
                             data: order,
                         };
                     }
-                    conct.release();
                     return null;
                 }
                 catch (err) {
@@ -149,7 +146,7 @@ class OrdersModel {
             else {
                 errMsg = err;
             }
-            throw new Error(`Unable to update order number (${oid}) - ${errMsg}`);
+            throw new Error(`${errMsg}`);
         }
     }
     // Delete Orders

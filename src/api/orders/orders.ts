@@ -28,8 +28,6 @@ class OrdersModel {
           data: orders,
         };
       }
-      // colsing connection with db.
-      conct.release();
       return null;
     } catch (err) {
       // handling error.
@@ -119,7 +117,6 @@ class OrdersModel {
               data: order,
             };
           }
-          conct.release();
           return null;
         } catch (err) {
           if ((err as Error).message?.includes("enum")) {
@@ -141,7 +138,7 @@ class OrdersModel {
       } else {
         errMsg = err;
       }
-      throw new Error(`Unable to update order number (${oid}) - ${errMsg}`);
+      throw new Error(`${errMsg}`);
     }
   }
   // Delete Orders
