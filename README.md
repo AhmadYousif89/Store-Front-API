@@ -8,20 +8,20 @@
 
 - To use our API properly please follow these steps :
 
-  1- connect to the default postgres database as the server's root user postgres
-  -- psql -U postgres
-  2- In psql run the following to create a user
-  -- CREATE USER udacity WITH PASSWORD '123';
-  3- run the following to create the dev and test database
-  -- CREATE DATABASE tech_store;
-  -- CREATE DATABASE tech_store_test;
-  4- Connect to the databases and grant all privileges to our user
-  -- \c tech_store
-  -- GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
-  -- \c tech_store_test
-  -- GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+  - connect to the default postgres database as the server's root user postgres
+    -- psql -U postgres
+  - In psql run the following to create a user
+    -- CREATE USER udacity WITH PASSWORD '123';
+  - run the following to create the dev and test database
+    -- CREATE DATABASE tech_store;
+    -- CREATE DATABASE tech_store_test;
+  - Connect to the databases and grant all privileges to our user
+    -- \c tech_store
+    -- GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
+    -- \c tech_store_test
+    -- GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
 
-## Packages
+### Packages
 
 - express
   - npm i express
