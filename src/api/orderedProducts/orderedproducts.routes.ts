@@ -33,7 +33,7 @@ const addProductToOrder = Router().post(
       res.status(201).json(data);
     } catch (err) {
       error = {
-        message: `Request Failed ! ${(err as Error).message}`,
+        message: `${(err as Error).message}`,
       };
       next(error);
     }

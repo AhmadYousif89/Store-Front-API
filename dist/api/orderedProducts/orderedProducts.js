@@ -19,9 +19,8 @@ class OrderedProducts {
             const order = result.rows[0];
             // check if order is complete or not.
             if (order.order_status === "complete") {
-                throw new Error(`Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is (${order.order_status})`);
+                throw new Error(`Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is already (${order.order_status})`);
             }
-            conn.release();
         }
         catch (err) {
             // handling errors
@@ -29,9 +28,9 @@ class OrderedProducts {
                 errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
             }
             else {
-                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+                errMsg = err;
             }
-            throw new Error(`Unable to add product - ${errMsg}`);
+            throw new Error(`${errMsg}`);
         }
         try {
             // openning connection with db.

@@ -15,18 +15,17 @@ class OrderedProducts {
       // check if order is complete or not.
       if (order.order_status === "complete") {
         throw new Error(
-          `Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is (${order.order_status})`
+          `Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is already (${order.order_status})`
         );
       }
-      conn.release();
     } catch (err) {
       // handling errors
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
       } else {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
+        errMsg = err as unknown as string;
       }
-      throw new Error(`Unable to add product - ${errMsg}`);
+      throw new Error(`${errMsg}`);
     }
     try {
       // openning connection with db.

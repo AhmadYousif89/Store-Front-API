@@ -30,7 +30,7 @@ const addProductToOrder = (0, express_1.Router)().post("/user/account/orders/:id
     }
     catch (err) {
         error = {
-            message: `Request Failed ! ${err.message}`,
+            message: `${err.message}`,
         };
         next(error);
     }
