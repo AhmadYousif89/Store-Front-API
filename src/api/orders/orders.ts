@@ -1,11 +1,11 @@
 import pgDB from "../../database";
-import { Orders, Error, customErr } from "../../utils/control";
+import { Error, customErr, DbSchema } from "../../utils/control";
 
 let errMsg: unknown;
 // Building CRUD System for Orders.
 class OrdersModel {
   // Create Orders
-  async create(values: Orders): Promise<Orders | null> {
+  async create(values: DbSchema): Promise<DbSchema | null> {
     // don't set new orders as complete.
     if (values.order_status === "complete") {
       return { msg: `New orders can not be set as (${values.order_status})` };
@@ -16,7 +16,7 @@ class OrdersModel {
       // making query.
       const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
       // retrieving query result.
-      const result = await conct.query(sql, [values.order_status, values.user_id]);
+      const result = await conct.query(sql, [values.order_status, values.u_id]);
       // check if row has been created.
       if (result.rows.length) {
         const orders = result.rows[0];
@@ -49,7 +49,7 @@ class OrdersModel {
     }
   }
   // Get orders
-  async index(): Promise<Orders[]> {
+  async index(): Promise<DbSchema[]> {
     try {
       const conct = await pgDB.connect();
       const sql = "SELECT * FROM orders";
@@ -63,7 +63,7 @@ class OrdersModel {
     }
   }
   // Get one order
-  async show(id: number): Promise<Orders | null> {
+  async show(id: number): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT * FROM orders WHERE o_id = ($1)`;
@@ -85,7 +85,7 @@ class OrdersModel {
     }
   }
   // Update Orders
-  async update(oid: number, status: string): Promise<Orders | null> {
+  async update(oid: number, status: string): Promise<DbSchema | null> {
     // check if order status
     try {
       const sql = "SELECT * FROM orders WHERE o_id = ($1) ";
@@ -142,7 +142,7 @@ class OrdersModel {
     }
   }
   // Delete Orders
-  async delete(id: number): Promise<Orders | null> {
+  async delete(id: number): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM orders WHERE o_id = ($1) RETURNING *`;

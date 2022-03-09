@@ -1,5 +1,5 @@
 import { userModel } from "../../api/users/users";
-import { user } from "../test.app.routes/appSpec";
+import { schema } from "../test.app.routes/appSpec";
 
 let userId = "";
 describe("Testing user Model functions: \n", () => {
@@ -29,7 +29,7 @@ describe("Testing user Model functions: \n", () => {
 
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
-      const result = await userModel.create(user);
+      const result = await userModel.create(schema);
       expect(result).toEqual({
         msg: "User created successfuly",
         ...result,
@@ -43,7 +43,7 @@ describe("Testing user Model functions: \n", () => {
       expect(result).toEqual([
         {
           u_id: userId,
-          u_name: user.u_name,
+          u_name: schema.u_name,
         },
       ]);
       console.log("all users");
@@ -55,7 +55,7 @@ describe("Testing user Model functions: \n", () => {
         msg: "User generated successfully",
         data: {
           u_id: userId,
-          u_name: user.u_name,
+          u_name: schema.u_name,
         },
       });
       console.log("one user");
@@ -67,23 +67,23 @@ describe("Testing user Model functions: \n", () => {
         msg: "User updated successfully",
         data: {
           u_id: userId,
-          u_name: user.u_name,
+          u_name: schema.u_name,
         },
       });
       console.log("update user");
     });
 
     it(`should authenticate user by name and password`, async () => {
-      const result = await userModel.authenticateUser(user.u_name as string, "123");
+      const result = await userModel.authenticateUser(schema.u_name as string, "123");
       expect(result).toEqual({
         u_id: userId,
-        u_name: user.u_name,
+        u_name: schema.u_name,
       });
       console.log("validate user");
     });
 
     it(`should not authenticate user and return null`, async () => {
-      const result = await userModel.authenticateUser(user.u_name as string, "abc");
+      const result = await userModel.authenticateUser(schema.u_name as string, "abc");
       expect(result).toBeNull();
     });
 
@@ -93,7 +93,7 @@ describe("Testing user Model functions: \n", () => {
         msg: "User deleted successfully",
         data: {
           u_id: userId,
-          u_name: user.u_name,
+          u_name: schema.u_name,
         },
       });
       console.log("delete user");

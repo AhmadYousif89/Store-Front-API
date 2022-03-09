@@ -21,7 +21,7 @@ class OrdersModel {
             // making query.
             const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
             // retrieving query result.
-            const result = await conct.query(sql, [values.order_status, values.user_id]);
+            const result = await conct.query(sql, [values.order_status, values.u_id]);
             // check if row has been created.
             if (result.rows.length) {
                 const orders = result.rows[0];

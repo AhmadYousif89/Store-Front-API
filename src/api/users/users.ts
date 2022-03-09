@@ -1,11 +1,11 @@
 import pgDB from "../../database";
-import { encrypt, Error, isPwValide, Users, customErr } from "../../utils/control";
+import { encrypt, Error, isPwValide, customErr, DbSchema } from "../../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for Users
 class UserModel {
   // Create user
-  async create(values: Users): Promise<Users | null> {
+  async create(values: DbSchema): Promise<DbSchema | null> {
     try {
       // openning connection with db.
       const conct = await pgDB.connect();
@@ -37,7 +37,7 @@ class UserModel {
   - Get users => (without retrieving user password as it consider sensitive information)
   - If we want to control how much of data to be received when calling this route we could use keyword (LIMIT) like = LIMIT 5.
   */
-  async index(): Promise<Users[]> {
+  async index(): Promise<DbSchema[]> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT u_id, u_name FROM users`;
@@ -51,7 +51,7 @@ class UserModel {
     }
   }
   // Get one user
-  async show(uid: string): Promise<Users | null> {
+  async show(uid: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT u_id, u_name FROM users WHERE u_id = ($1) `;
@@ -76,7 +76,7 @@ class UserModel {
     }
   }
   // Update user
-  async update(u_id: string, password: string): Promise<Users | null> {
+  async update(u_id: string, password: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name`;
@@ -102,7 +102,7 @@ class UserModel {
     }
   }
   // Delete user
-  async delete(u_id: string): Promise<Users | null> {
+  async delete(u_id: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM users WHERE u_id = ($1) RETURNING u_id , u_name`;
@@ -133,7 +133,7 @@ class UserModel {
     }
   }
   // Authenticate user.
-  async authenticateUser(u_name: string, password: string): Promise<Users | null> {
+  async authenticateUser(u_name: string, password: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT password FROM users WHERE u_name = ($1)`;

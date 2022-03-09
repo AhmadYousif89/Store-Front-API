@@ -26,8 +26,8 @@ const addProductToOrder = Router().post(
     }
     try {
       const data = await OPT.addProducts({
-        order_id: oId,
-        product_id: pId,
+        o_id: oId,
+        p_id: pId,
         quantity: quantity,
       });
       res.status(201).json(data);

@@ -1,11 +1,11 @@
 import pgDB from "../../database";
-import { Product, Error, customErr } from "../../utils/control";
+import { Error, customErr, DbSchema } from "../../utils/control";
 
 let errMsg: string | undefined;
 // Building CRUD System for Product.
 class ProductModel {
   // Create Product
-  async create(values: Product): Promise<Product | null> {
+  async create(values: DbSchema): Promise<DbSchema | null> {
     try {
       // openning connection with db.
       const conct = await pgDB.connect();
@@ -52,7 +52,7 @@ class ProductModel {
     }
   }
   // Get Products
-  async index(): Promise<Product[]> {
+  async index(): Promise<DbSchema[]> {
     try {
       const conct = await pgDB.connect();
       const sql = "SELECT * FROM products";
@@ -66,7 +66,7 @@ class ProductModel {
     }
   }
   // Get one Product
-  async show(id: string): Promise<Product | null> {
+  async show(id: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT * FROM products WHERE p_id = ($1)`;
@@ -92,7 +92,7 @@ class ProductModel {
     }
   }
   // Update Product
-  async update(id: string, price: number, popular: string): Promise<Product | null> {
+  async update(id: string, price: number, popular: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
@@ -124,7 +124,7 @@ class ProductModel {
     }
   }
   // Delete Product
-  async delete(id: string): Promise<Product | null> {
+  async delete(id: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;

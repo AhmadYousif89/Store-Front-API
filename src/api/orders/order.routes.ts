@@ -25,7 +25,7 @@ const createOrders = Router().post(
     try {
       const data = await orderModel.create({
         order_status: status,
-        user_id: userId,
+        u_id: userId,
       });
       res.status(201).json(data);
     } catch (err) {

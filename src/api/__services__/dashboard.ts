@@ -1,11 +1,11 @@
 import pgDB from "../../database";
-import { Users, customErr, Product } from "../../utils/control";
+import { customErr, DbSchema } from "../../utils/control";
 
 let errMsg;
 // Business logic functions.
 class Dashboard {
   // Get ordered products for specific user.
-  async getUserProducts(uid: string): Promise<Users[] | null> {
+  async getUserProducts(uid: string): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT op_id, order_id, order_status, product_id, p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1)`;
@@ -31,7 +31,7 @@ class Dashboard {
   }
 
   // Get ordered products for specific user by order id.
-  async getUserProductsByOid(uid: string, oid: number): Promise<Users[] | null> {
+  async getUserProductsByOid(uid: string, oid: number): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT op_id, order_status, product_id, p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.o_id = ($2)`;
@@ -59,7 +59,7 @@ class Dashboard {
   }
 
   // Get user most recent purchases .
-  async getUserMostPurchases(uid: string): Promise<Users[] | null> {
+  async getUserMostPurchases(uid: string): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
       const sql = `SELECT op_id, order_id, order_status, product_id, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.order_status = 'complete' ORDER BY created_in DESC`;
@@ -85,7 +85,7 @@ class Dashboard {
   }
 
   // Get Popular Products
-  async getProductByPopularity(): Promise<Product[]> {
+  async getProductByPopularity(): Promise<DbSchema[]> {
     try {
       const conct = await pgDB.connect();
       const sql =

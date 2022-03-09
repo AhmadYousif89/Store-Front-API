@@ -21,7 +21,7 @@ const createOrders = (0, express_1.Router)().post("/user/account/orders", async 
     try {
         const data = await orders_1.orderModel.create({
             order_status: status,
-            user_id: userId,
+            u_id: userId,
         });
         res.status(201).json(data);
     }

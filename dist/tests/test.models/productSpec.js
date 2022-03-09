@@ -21,7 +21,7 @@ describe("Testing product Model functions: \n", () => {
     });
     describe("Testing SQL functions: \n ", () => {
         it(`should create new product`, async () => {
-            const result = await products_1.productModel.create(appSpec_1.product);
+            const result = await products_1.productModel.create(appSpec_1.schema);
             expect(result).toEqual({
                 msg: "Product created successfully",
                 ...result,
@@ -34,12 +34,12 @@ describe("Testing product Model functions: \n", () => {
             expect(result).toEqual([
                 {
                     p_id: pId,
-                    category: appSpec_1.product.category,
-                    p_name: appSpec_1.product.p_name,
-                    brand: appSpec_1.product.brand,
-                    maker: appSpec_1.product.maker,
-                    price: appSpec_1.product.price,
-                    popular: appSpec_1.product.popular,
+                    category: appSpec_1.schema.category,
+                    p_name: appSpec_1.schema.p_name,
+                    brand: appSpec_1.schema.brand,
+                    maker: appSpec_1.schema.maker,
+                    price: appSpec_1.schema.price,
+                    popular: appSpec_1.schema.popular,
                 },
             ]);
             console.log("all products");
@@ -50,12 +50,12 @@ describe("Testing product Model functions: \n", () => {
                 msg: "Product generated successfully",
                 data: {
                     p_id: pId,
-                    category: appSpec_1.product.category,
-                    p_name: appSpec_1.product.p_name,
-                    brand: appSpec_1.product.brand,
-                    maker: appSpec_1.product.maker,
-                    price: appSpec_1.product.price,
-                    popular: appSpec_1.product.popular,
+                    category: appSpec_1.schema.category,
+                    p_name: appSpec_1.schema.p_name,
+                    brand: appSpec_1.schema.brand,
+                    maker: appSpec_1.schema.maker,
+                    price: appSpec_1.schema.price,
+                    popular: appSpec_1.schema.popular,
                 },
             });
             console.log("one product");
@@ -66,10 +66,10 @@ describe("Testing product Model functions: \n", () => {
                 msg: "Product updated successfully",
                 data: {
                     p_id: pId,
-                    category: appSpec_1.product.category,
-                    p_name: appSpec_1.product.p_name,
-                    brand: appSpec_1.product.brand,
-                    maker: appSpec_1.product.maker,
+                    category: appSpec_1.schema.category,
+                    p_name: appSpec_1.schema.p_name,
+                    brand: appSpec_1.schema.brand,
+                    maker: appSpec_1.schema.maker,
                     price: 500,
                     popular: "yes",
                 },
@@ -82,10 +82,10 @@ describe("Testing product Model functions: \n", () => {
                 msg: "Product deleted successfully",
                 data: {
                     p_id: pId,
-                    category: appSpec_1.product.category,
-                    p_name: appSpec_1.product.p_name,
-                    brand: appSpec_1.product.brand,
-                    maker: appSpec_1.product.maker,
+                    category: appSpec_1.schema.category,
+                    p_name: appSpec_1.schema.p_name,
+                    brand: appSpec_1.schema.brand,
+                    maker: appSpec_1.schema.maker,
                     price: 500,
                     popular: "yes",
                 },

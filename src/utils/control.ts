@@ -1,39 +1,25 @@
 import bCrypt from "bcrypt";
 
-type Users = {
+type DbSchema = {
   u_id?: string;
+  p_id?: string;
+  o_id?: number;
+  op_id?: number;
   u_name?: string;
   password?: string;
-  msg?: string;
-  data?: string | object;
-};
-type Orders = {
-  o_id?: number;
   order_status?: string;
-  user_id?: string;
-  msg?: string;
-  data?: string | object;
-};
-type OP = {
-  op_id?: number;
-  order_id?: number;
-  quantity?: number;
-  product_id?: string;
   created_in?: string;
-  msg?: string;
-  data?: string | object;
-};
-type Product = {
-  p_id?: string;
   category?: string;
   p_name?: string;
   brand?: string;
   maker?: string;
   price?: number;
   popular?: string;
+  quantity?: number;
   msg?: string;
   data?: string | object;
 };
+
 type Error = {
   name?: string;
   message?: string;
@@ -57,4 +43,4 @@ const customErr = (err: Error, msg: string, spliter: string) => {
   return str;
 };
 
-export { Users, Orders, Product, OP, Error, encrypt, isPwValide, customErr };
+export { DbSchema, Error, encrypt, isPwValide, customErr };

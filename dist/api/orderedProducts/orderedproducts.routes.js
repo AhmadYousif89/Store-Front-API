@@ -22,8 +22,8 @@ const addProductToOrder = (0, express_1.Router)().post("/user/account/orders/:id
     }
     try {
         const data = await orderedProducts_1.OPT.addProducts({
-            order_id: oId,
-            product_id: pId,
+            o_id: oId,
+            p_id: pId,
             quantity: quantity,
         });
         res.status(201).json(data);

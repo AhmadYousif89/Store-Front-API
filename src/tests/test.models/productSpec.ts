@@ -1,4 +1,4 @@
-import { product } from "../test.app.routes/appSpec";
+import { schema } from "../test.app.routes/appSpec";
 import { productModel } from "../../api/products/products";
 
 let pId = "";
@@ -26,7 +26,7 @@ describe("Testing product Model functions: \n", () => {
 
   describe("Testing SQL functions: \n ", () => {
     it(`should create new product`, async () => {
-      const result = await productModel.create(product);
+      const result = await productModel.create(schema);
       expect(result).toEqual({
         msg: "Product created successfully",
         ...result,
@@ -40,12 +40,12 @@ describe("Testing product Model functions: \n", () => {
       expect(result).toEqual([
         {
           p_id: pId,
-          category: product.category,
-          p_name: product.p_name,
-          brand: product.brand,
-          maker: product.maker,
-          price: product.price,
-          popular: product.popular,
+          category: schema.category,
+          p_name: schema.p_name,
+          brand: schema.brand,
+          maker: schema.maker,
+          price: schema.price,
+          popular: schema.popular,
         },
       ]);
       console.log("all products");
@@ -57,12 +57,12 @@ describe("Testing product Model functions: \n", () => {
         msg: "Product generated successfully",
         data: {
           p_id: pId,
-          category: product.category,
-          p_name: product.p_name,
-          brand: product.brand,
-          maker: product.maker,
-          price: product.price,
-          popular: product.popular,
+          category: schema.category,
+          p_name: schema.p_name,
+          brand: schema.brand,
+          maker: schema.maker,
+          price: schema.price,
+          popular: schema.popular,
         },
       });
       console.log("one product");
@@ -74,10 +74,10 @@ describe("Testing product Model functions: \n", () => {
         msg: "Product updated successfully",
         data: {
           p_id: pId,
-          category: product.category,
-          p_name: product.p_name,
-          brand: product.brand,
-          maker: product.maker,
+          category: schema.category,
+          p_name: schema.p_name,
+          brand: schema.brand,
+          maker: schema.maker,
           price: 500,
           popular: "yes",
         },
@@ -91,10 +91,10 @@ describe("Testing product Model functions: \n", () => {
         msg: "Product deleted successfully",
         data: {
           p_id: pId,
-          category: product.category,
-          p_name: product.p_name,
-          brand: product.brand,
-          maker: product.maker,
+          category: schema.category,
+          p_name: schema.p_name,
+          brand: schema.brand,
+          maker: schema.maker,
           price: 500,
           popular: "yes",
         },

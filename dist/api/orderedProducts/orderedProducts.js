@@ -15,11 +15,11 @@ class OrderedProducts {
         try {
             const sql = "SELECT * FROM orders WHERE o_id = ($1)";
             const conn = await database_1.default.connect();
-            const result = await conn.query(sql, [values.order_id]);
+            const result = await conn.query(sql, [values.o_id]);
             const order = result.rows[0];
             // check if order is complete or not.
             if (order.order_status === "complete") {
-                throw new Error(`Unable to add product (${values.product_id}) to order (${values.order_id}) because order status is (${order.order_status})`);
+                throw new Error(`Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is (${order.order_status})`);
             }
             conn.release();
         }
@@ -39,14 +39,14 @@ class OrderedProducts {
             // making query.
             const sql = `INSERT INTO ordered_products (order_id, product_id, p_quantity) VALUES ($1, $2, $3) RETURNING *`;
             // retrieving query result.
-            const result = await conct.query(sql, [values.order_id, values.product_id, values.quantity]);
+            const result = await conct.query(sql, [values.o_id, values.p_id, values.quantity]);
             // check if row has been created.
             if (result.rows.length) {
                 const product = result.rows[0];
                 console.log(result.command, result.rows);
                 conct.release();
                 return {
-                    msg: `Product has been added successfully to order number (${values.order_id})`,
+                    msg: `Product has been added successfully to order number (${values.o_id})`,
                     data: product,
                 };
             }
