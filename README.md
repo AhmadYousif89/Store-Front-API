@@ -16,11 +16,10 @@
   -- CREATE DATABASE tech_store;
   -- CREATE DATABASE tech_store_test;
   4- Connect to the databases and grant all privileges to our user
-  -- \c shopping
-  -- GRANT ALL PRIVILEGES ON DATABASE shopping TO shopping_user;
-  -- Grant for test database
-  -- \c shopping_test
-  -- GRANT ALL PRIVILEGES ON DATABASE shopping_test TO shopping_user;
+  -- \c tech_store
+  -- GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
+  -- \c tech_store_test
+  -- GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
 
 ## Packages
 

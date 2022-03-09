@@ -78,16 +78,16 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Tables are as follow :
 
   - users :
-    u_id of type UUID - u_name - password
+    u_id of type UUID - u_name of type VARCHAR- password of type VARCHAR
     .
   - orders :
-    o_id of type SERIAL - order_status - user_id REFERENCES (users.u_id)
+    o_id of type SERIAL - order_status of type VARCHAR- user_id REFERENCES (users.u_id)
     .
   - products :
-    p_id of type UUID - category of type ENUM - p_name - brand - maker - price - popular of type ENUM
+    p_id of type UUID - category of type ENUM - p_name of type VARCHAR - brand of type VARCHAR - maker of type VARCHAR - price of type INT - popular of type ENUM
     .
   - ordered_products :
-    op_id of type SERIAL - order_id REFERENCES (orders.o_id) | product_id REFERENCES (products.p_id) | p_quantity | created_in of type DATE
+    op_id of type SERIAL - order_id REFERENCES (orders.o_id) | product_id REFERENCES (products.p_id) | p_quantity of type INT | created_in of type DATE
 
 - ENUMs are as follow :
 
