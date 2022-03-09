@@ -75,6 +75,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### DB Schema
 
+- For better readability i provided sql fil with the schema / db-schema.sql
 - Tables are as follow :
 
   - users :
