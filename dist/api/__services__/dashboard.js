@@ -62,7 +62,7 @@ class Dashboard {
     async getUserMostPurchases(uid) {
         try {
             const conct = await database_1.default.connect();
-            const sql = `SELECT op_id, order_id, order_status, product_id, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.order_status = 'complete' ORDER BY created_in DESC`;
+            const sql = `SELECT op_id, order_id, order_status, product_id,p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.order_status = 'complete' ORDER BY created_in DESC`;
             const result = await conct.query(sql, [uid]);
             if (result.rows.length) {
                 console.log(result.command, result.rowCount, result.rows);

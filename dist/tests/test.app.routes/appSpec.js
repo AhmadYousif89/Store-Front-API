@@ -406,6 +406,16 @@ describe("Testing Application Functionality: \n", () => {
                 message: `Request Failed ! Unable to update Product with id (any id) - Please enter a valid product id !`,
             });
         });
+        it(`should not add products to order number ${exports.schema.op_id}`, async () => {
+            const result = await exports.route
+                .post(`/user/account/orders/${exports.schema.o_id}/products`)
+                .set("Content-type", "application/json")
+                .send({ p_id: pId, quantity: 10 });
+            expect(result.status).toBe(500);
+            expect(result.body).toEqual({
+                message: `Error: Unable to add product (${pId}) to order (${exports.schema.o_id}) because order status is already (complete)`,
+            });
+        });
         it(`should update quantity of ordered product number ${exports.schema.op_id} to (20)`, async () => {
             const result = await exports.route
                 .put(`/user/account/ordered-products`)

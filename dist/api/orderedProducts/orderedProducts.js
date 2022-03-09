@@ -14,13 +14,14 @@ class OrderedProducts {
         // accessing orders table first
         try {
             const sql = "SELECT * FROM orders WHERE o_id = ($1)";
-            const conn = await database_1.default.connect();
-            const result = await conn.query(sql, [values.o_id]);
+            const conct = await database_1.default.connect();
+            const result = await conct.query(sql, [values.o_id]);
             const order = result.rows[0];
             // check if order is complete or not.
             if (order.order_status === "complete") {
                 throw new Error(`Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is already (${order.order_status})`);
             }
+            conct.release();
         }
         catch (err) {
             // handling errors

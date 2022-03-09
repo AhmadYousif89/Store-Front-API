@@ -449,6 +449,17 @@ describe("Testing Application Functionality: \n", () => {
       });
     });
 
+    it(`should not add products to order number ${schema.op_id}`, async () => {
+      const result = await route
+        .post(`/user/account/orders/${schema.o_id}/products`)
+        .set("Content-type", "application/json")
+        .send({ p_id: pId, quantity: 10 });
+      expect(result.status).toBe(500);
+      expect(result.body).toEqual({
+        message: `Error: Unable to add product (${pId}) to order (${schema.o_id}) because order status is already (complete)`,
+      });
+    });
+
     it(`should update quantity of ordered product number ${schema.op_id} to (20)`, async () => {
       const result = await route
         .put(`/user/account/ordered-products`)
