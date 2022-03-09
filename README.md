@@ -1,38 +1,76 @@
 # Tech Store API
 
--
+- This a backend API build in Nodejs for an online store. Its main goal is to create a RESTful API that will be used by the frontend developer on the frontend.
 
-## Getting started
-
--
-
-### Scripts
-
--
+- The database schema and and API route information can be found in the REQUIREMENT.md
 
 ### Usage
 
--
+- To use our API properly please follow these steps :
 
-#### DB Schema
+  1- connect to the default postgres database as the server's root user postgres
+  -- psql -U postgres
+  2- In psql run the following to create a user
+  -- CREATE USER udacity WITH PASSWORD '123';
+  3- run the following to create the dev and test database
+  -- CREATE DATABASE tech_store;
+  -- CREATE DATABASE tech_store_test;
+  4- Connect to the databases and grant all privileges to our user
+  -- \c shopping
+  -- GRANT ALL PRIVILEGES ON DATABASE shopping TO shopping_user;
+  -- Grant for test database
+  -- \c shopping_test
+  -- GRANT ALL PRIVILEGES ON DATABASE shopping_test TO shopping_user;
 
-- Tables are as follow :
+## Packages
 
-  - users :
-    u_id of type UUID - u_name - password
+- express
+  - npm i express
+  - npm i -D @types/express
+- typescript
+  - npm i -D typescript
+  - npm i -D ts-node
+  - npm i -D @types/node
+- db-migrate
+  - npm i -g db-migrate
+  - npm i db-migrate-pg
+  - npm i -D @types/pg
+- cors
+  - npm i cors
+  - npm i -D @types/cors
+- bcrypt
+  - npm -i -D bcrypt
+  - npm -i -D @types/bcrypt
+- jsonwebtoken
+  - npm i jsonwebtoken
+  - npm i -D @types/jsonwebtoken
+- prettier
+  - npm i -D prettier
+- eslint
+  - npm i -D eslint
+- jasmine
+  - npm i -D jasmine
+  - npm i -D jasmine-ts
+  - npm i -D @types/jasmine
+  - npm i -D jasmine-spec-reporter
+- supertest
+  - npm i supertest
+  - npm i -D @types/supertest
 
-  - orders :
-    o_id of type SERIAL - order_status - user_id REFERENCES (users.u_id)
+### Scripts
 
-  - products :
-    p_id of type UUID - category of type ENUM - p_name - brand - maker - price - popular of type ENUM
-  - ordered_products :
-    op_id of type SERIAL - order_id REFERENCES (orders.o_id) | product_id REFERENCES (products.p_id) | p_quantity | created_in of type DATE
-
-- ENUMs are as follow :
-  - column order_status ('new','active','complete')
-  - column category ('mobiles','electronics')
-  - column popular ('no','yes')
+- npm run start :
+  - this script will start our server on localhost on port 3000 as default and build and complie our code.
+- npm run m-up :
+  - this script will start migration proccess which will create our database schema.
+- npm run m-down :
+  - this script will start migration proccess which will drop all of our table.
+- npm run prettier :
+  - this script will run the prettier dependency.
+- npm run lint :
+  - this script will run the es-lint dependency.
+- npm run test :
+  - this script will start our unit testing scenario.
 
 ##### ENV
 

@@ -1,4 +1,2 @@
 node_modules
 .env
-REQUIREMENTS.md
-pgClient.session.sql
