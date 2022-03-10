@@ -1,12 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { OPT } from "./orderedProducts";
 import { Error } from "../../utils/control";
+import Authentication from "../../middlewares/auth.middleware";
 
 let error;
 // method => POST /user/account/orders/:id/products
 // desc   => add product to order.
 const addProductToOrder = Router().post(
   "/user/account/orders/:id/products",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     const oId = parseInt(req.params.id);
     const pId = req.body.p_id;

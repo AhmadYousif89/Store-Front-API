@@ -82,11 +82,6 @@ describe("Testing user Model functions: \n", () => {
       console.log("validate user");
     });
 
-    it(`should not authenticate user and return null`, async () => {
-      const result = await userModel.authenticateUser(schema.u_name as string, "abc");
-      expect(result).toBeNull();
-    });
-
     it("should delete the selected user by id", async () => {
       const result = await userModel.delete(userId);
       expect(result).toEqual({

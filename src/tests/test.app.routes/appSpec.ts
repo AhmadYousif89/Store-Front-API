@@ -1,4 +1,5 @@
 import app from "../../app";
+import pgDB from "../../database";
 import supertest from "supertest";
 import { userModel } from "../../api/users/users";
 import { orderModel } from "../../api/orders/orders";
@@ -30,9 +31,6 @@ export const schema = {
 } as DbSchema;
 
 describe("Testing Application Functionality: \n", () => {
-  it("test", () => {
-    expect(1).toBe(1);
-  });
   it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
     const response = await route.get("/");
     expect(response.statusCode).toBe(200);
@@ -58,8 +56,8 @@ describe("Testing Application Functionality: \n", () => {
 
   it(`should get end point /user/account/orders with status code 404 and error message`, async () => {
     const response = await route.get("/user/account/orders");
-    expect(response.statusCode).toBe(404);
-    expect(response.body.msg).toEqual("No Orders Were Found !");
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toEqual({ message: "Access denied, Faild to authenticate !" });
   });
 
   it(`should get end point /user/account/ordered-products with status code 404 and error message`, async () => {
@@ -68,50 +66,43 @@ describe("Testing Application Functionality: \n", () => {
     expect(response.body.msg).toEqual("No Data Were Found !");
   });
 
-  it(`should get end point /users/:uid/account/most-recent/purchases with status code 404 and error message`, async () => {
-    const response = await route.get(`/user/${userId}/account/ordered-products`);
-    expect(response.statusCode).toBe(404);
+  it(`should get end point /users/:id/account/review/ordered-products with status code 401 and error message`, async () => {
+    const response = await route.get(`/users/(any user)/account/review/ordered-products`);
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toEqual({ message: "Access denied, Faild to authenticate !" });
   });
 
-  it(`should get end point /users/:id/account/review/ordered-products with status code 404 and error message`, async () => {
-    const response = await route.get(`/users/${userId}/account/review/ordered-products`);
-    expect(response.statusCode).toBe(404);
-  });
-
-  it(`should get end point /users/:uid/orders/:oid/account/review/ordered-products with status code 404 and error message`, async () => {
+  it(`should get end point /users/:uid/orders/:oid/account/review/ordered-products with status code 401 and error message`, async () => {
     const response = await route.get(
-      `/users/${userId}/orders/${schema.o_id}/account/review/ordered-products`
+      `/users/(any user)/orders/${schema.o_id}/account/review/ordered-products`
     );
-    expect(response.statusCode).toBe(404);
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toEqual({ message: "Access denied, Faild to authenticate !" });
+  });
+
+  it(`should get end point /users/:uid/account/most-recent/purchases with status code 401 and error message`, async () => {
+    const response = await route.get(`/users/(any user)/account/most-recent/purchases`);
+    expect(response.statusCode).toBe(401);
+    expect(response.body).toEqual({ message: "Access denied, Faild to authenticate !" });
   });
 
   describe("Testing app end points: \n", () => {
-    beforeAll(async () => {
+    it("should create user and extract id", async () => {
       const createUser = await userModel.create(schema);
       expect(createUser?.msg).toEqual("User created successfully");
       console.log(`user has been created \n`);
+      const user = await userModel.index();
+      userId = user[0].u_id as string;
+      console.log(`user id extracted: ${userId}`);
+    });
 
+    it(`should create product and extract id`, async () => {
       const createProduct = await productModel.create(schema);
       expect(createProduct?.msg).toEqual("Product created successfully");
       console.log(`product has been created \n`);
-    });
-
-    it("should extract user Id ", async () => {
-      const user = await userModel.index();
-      userId = user[0].u_id as string;
-      expect(user[0].u_id).toEqual(userId);
-      setTimeout(() => {
-        console.log(`user id extracted: ${userId}`);
-      }, 1);
-    });
-
-    it("should extract product Id", async () => {
       const product = await productModel.index();
       pId = product[0].p_id as string;
-      expect(product[0].p_id).toEqual(pId);
-      setTimeout(() => {
-        console.log(`product id extracted: ${pId} \n`);
-      }, 1);
+      console.log(`product id extracted: ${pId} \n`);
     });
 
     it(`should create new order for user ${userId}`, async () => {
@@ -134,7 +125,6 @@ describe("Testing Application Functionality: \n", () => {
       );
       console.log(`product added to order \n`);
     });
-
     it("should extract time of creation of ordered product", async () => {
       const op = await OPT.index();
       time = JSON.stringify(op[0].created_in).replaceAll(`"`, "");
@@ -297,7 +287,9 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it("should get all orders", async () => {
-      const result = await route.get("/user/account/orders");
+      const result = await route
+        .get("/user/account/orders")
+        .set("Authorization", `Bearer ${token}`);
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
         msg: "Data generated successfully",
@@ -312,7 +304,9 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it("should get one order", async () => {
-      const result = await route.get(`/user/account/orders/${schema.o_id}`);
+      const result = await route
+        .get(`/user/account/orders/${schema.o_id}`)
+        .set("Authorization", `Bearer ${token}`);
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
         msg: "Order generated successfully",
@@ -327,6 +321,7 @@ describe("Testing Application Functionality: \n", () => {
     it("should not update order status", async () => {
       const result = await route
         .put(`/user/account/orders`)
+        .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ order_id: 0, status: "" });
       expect(result.status).toBe(400);
@@ -339,6 +334,7 @@ describe("Testing Application Functionality: \n", () => {
     it(`should not update order status if its already (${schema.order_status})`, async () => {
       const result = await route
         .put(`/user/account/orders`)
+        .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ order_id: schema.o_id, status: schema.order_status });
       expect(result.status).toBe(200);
@@ -350,6 +346,7 @@ describe("Testing Application Functionality: \n", () => {
     it("should update order status to (complete)", async () => {
       const result = await route
         .put(`/user/account/orders`)
+        .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ order_id: schema.o_id, status: "complete" });
       expect(result.status).toBe(200);
@@ -366,6 +363,7 @@ describe("Testing Application Functionality: \n", () => {
     it("should not update order status to any other status if it's already (complete)", async () => {
       const result = await route
         .put(`/user/account/orders`)
+        .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ order_id: schema.o_id, status: schema.order_status });
       expect(result.status).toBe(200);
@@ -375,7 +373,9 @@ describe("Testing Application Functionality: \n", () => {
     });
 
     it(`should not delete order because of foregin key constrain`, async () => {
-      const response = await route.delete(`/user/account/orders/${schema.o_id}`);
+      const response = await route
+        .delete(`/user/account/orders/${schema.o_id}`)
+        .set("Authorization", `Bearer ${token}`);
       expect(response.status).toBe(500);
       expect(response.body).toEqual({
         message: `Request Failed ! Unable to delete order with id (${schema.o_id}) - Please remove any products related to this order first !`,
@@ -452,6 +452,7 @@ describe("Testing Application Functionality: \n", () => {
     it(`should not add products to order number ${schema.op_id}`, async () => {
       const result = await route
         .post(`/user/account/orders/${schema.o_id}/products`)
+        .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ p_id: pId, quantity: 10 });
       expect(result.status).toBe(500);
@@ -524,22 +525,31 @@ describe("Testing Application Functionality: \n", () => {
       expect(result.body.msg).toEqual(`Row number ${schema.op_id} was deleted successfully`);
     });
 
-    it(`should delete product with id ${pId}`, async () => {
-      const result = await route.delete(`/products/${pId}`);
+    it(`should delete one product`, async () => {
+      const result = await route.delete(`/products/${pId}`).set("Authorization", `Bearer ${token}`);
       expect(result.status).toBe(200);
       expect(result.body.msg).toEqual(`Product deleted successfully`);
     });
 
     it(`should delete order number ${schema.o_id}`, async () => {
-      const response = await route.delete(`/user/account/orders/${schema.o_id}`);
+      const response = await route
+        .delete(`/user/account/orders/${schema.o_id}`)
+        .set("Authorization", `Bearer ${token}`);
       expect(response.status).toBe(200);
       expect(response.body.msg).toEqual(`Order deleted successfully`);
     });
 
-    it(`should delete user with id ${userId}`, async () => {
+    it(`should delete one user`, async () => {
       const response = await route.delete(`/users/${userId}`);
       expect(response.status).toBe(200);
       expect(response.body.msg).toEqual(`User deleted successfully`);
+    });
+
+    afterAll(async () => {
+      const conct = await pgDB.connect();
+      await conct.query(`ALTER SEQUENCE orders_o_id_seq RESTART WITH 1`);
+      await conct.query(`ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1`);
+      conct.release();
     });
   });
 });

@@ -1,11 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orders_1 = require("./orders");
+const auth_middleware_1 = __importDefault(require("../../middlewares/auth.middleware"));
 let error;
 // method => POST /user/account/orders
 // desc   => Create new Order data.
-const createOrders = (0, express_1.Router)().post("/user/account/orders", async (req, res, next) => {
+const createOrders = (0, express_1.Router)().post("/user/account/orders", auth_middleware_1.default, async (req, res, next) => {
     const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
     console.log(`params:
@@ -34,7 +38,7 @@ const createOrders = (0, express_1.Router)().post("/user/account/orders", async 
 });
 // method => GET /user/account/orders
 // desc   => Return all Orders data.
-const getOrders = (0, express_1.Router)().get("/user/account/orders", async (_req, res, next) => {
+const getOrders = (0, express_1.Router)().get("/user/account/orders", auth_middleware_1.default, async (_req, res, next) => {
     try {
         const data = await orders_1.orderModel.index();
         if (data.length === 0) {
@@ -52,7 +56,7 @@ const getOrders = (0, express_1.Router)().get("/user/account/orders", async (_re
 });
 // method => GET /user/account/orders/:id
 // desc   => Return a specific Order.
-const getOrderById = (0, express_1.Router)().get("/user/account/orders/:id", async (req, res, next) => {
+const getOrderById = (0, express_1.Router)().get("/user/account/orders/:id", auth_middleware_1.default, async (req, res, next) => {
     const oid = parseInt(req.params.id);
     console.log("data: \n", oid);
     if (!oid || oid <= 0) {
@@ -78,7 +82,7 @@ const getOrderById = (0, express_1.Router)().get("/user/account/orders/:id", asy
 });
 // method => PUT /user/account/orders
 // desc   => Update a specific Order .
-const updateOrder = (0, express_1.Router)().put("/user/account/orders", async (req, res, next) => {
+const updateOrder = (0, express_1.Router)().put("/user/account/orders", auth_middleware_1.default, async (req, res, next) => {
     const id = parseInt(req.body.order_id);
     const status = req.body.status.toLowerCase();
     console.log(`data: 
@@ -111,7 +115,7 @@ const updateOrder = (0, express_1.Router)().put("/user/account/orders", async (r
 });
 // method => DELETE /user/account/order/:id
 // desc   => Delete a specific Order.
-const deleteOrder = (0, express_1.Router)().delete("/user/account/orders/:id", async (req, res, next) => {
+const deleteOrder = (0, express_1.Router)().delete("/user/account/orders/:id", auth_middleware_1.default, async (req, res, next) => {
     const id = parseInt(req.params.id);
     console.log("data: \n", id);
     if (!id || id <= 0) {

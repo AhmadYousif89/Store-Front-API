@@ -1,12 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { orderModel } from "./orders";
 import { Error } from "../../utils/control";
+import Authentication from "../../middlewares/auth.middleware";
 
 let error;
 // method => POST /user/account/orders
 // desc   => Create new Order data.
 const createOrders = Router().post(
   "/user/account/orders",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     const userId = req.body.user_id;
     const status = req.body.status.toLowerCase();
@@ -41,6 +43,7 @@ const createOrders = Router().post(
 // desc   => Return all Orders data.
 const getOrders = Router().get(
   "/user/account/orders",
+  Authentication,
   async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const data = await orderModel.index();
@@ -62,6 +65,7 @@ const getOrders = Router().get(
 // desc   => Return a specific Order.
 const getOrderById = Router().get(
   "/user/account/orders/:id",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const oid = parseInt(req.params.id);
     console.log("data: \n", oid);
@@ -91,6 +95,7 @@ const getOrderById = Router().get(
 // desc   => Update a specific Order .
 const updateOrder = Router().put(
   "/user/account/orders",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = parseInt(req.body.order_id);
     const status = req.body.status.toLowerCase();
@@ -129,6 +134,7 @@ const updateOrder = Router().put(
 // desc   => Delete a specific Order.
 const deleteOrder = Router().delete(
   "/user/account/orders/:id",
+  Authentication,
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const id = parseInt(req.params.id);
     console.log("data: \n", id);
