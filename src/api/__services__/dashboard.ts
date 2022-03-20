@@ -8,7 +8,11 @@ class Dashboard {
   async getUserProducts(uid: string): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT op_id, order_id, order_status, product_id, p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1)`;
+      const sql = `
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_in FROM orders 
+      JOIN ordered_products 
+      ON orders.order_id = ordered_products.order_id 
+      WHERE orders.user_id = ($1)`;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         console.log(result.command, result.rowCount, result.rows);
@@ -34,7 +38,11 @@ class Dashboard {
   async getUserProductsByOid(uid: string, oid: number): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT op_id, order_status, product_id, p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.o_id = ($2)`;
+      const sql = `
+        SELECT op_id, order_status, product_id, quantity, created_in FROM orders
+        JOIN ordered_products
+        ON orders.order_id = ordered_products.order_id 
+        WHERE orders.user_id = ($1) AND orders.order_id = ($2)`;
       const result = await conct.query(sql, [uid, oid]);
       if (result.rows.length) {
         console.log(result.command, result.rowCount, result.rows);
@@ -62,7 +70,12 @@ class Dashboard {
   async getUserMostPurchases(uid: string): Promise<DbSchema[] | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT op_id, order_id, order_status, product_id,p_quantity, created_in FROM orders JOIN ordered_products ON orders.o_id = ordered_products.order_id WHERE orders.user_id = ($1) AND orders.order_status = 'complete' ORDER BY created_in DESC`;
+      const sql = `
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_in FROM orders 
+      JOIN ordered_products 
+      ON orders.order_id = ordered_products.order_id 
+      WHERE orders.user_id = ($1) AND orders.order_status = 'complete' 
+      ORDER BY created_in DESC`;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         console.log(result.command, result.rowCount, result.rows);

@@ -30,10 +30,7 @@ describe("Testing user Model functions: \n", () => {
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
       const result = await userModel.create(schema);
-      expect(result).toEqual({
-        msg: "User created successfuly",
-        ...result,
-      });
+      expect(result?.msg).toEqual("User created successfully");
       console.log("user has been created");
     });
 
@@ -51,12 +48,9 @@ describe("Testing user Model functions: \n", () => {
 
     it("should return the correct user by id", async () => {
       const result = await userModel.show(userId);
-      expect(result).toEqual({
-        msg: "User generated successfully",
-        data: {
-          u_id: userId,
-          u_name: schema.u_name,
-        },
+      expect(result?.data).toEqual({
+        u_id: userId,
+        u_name: schema.u_name,
       });
       console.log("one user");
     });

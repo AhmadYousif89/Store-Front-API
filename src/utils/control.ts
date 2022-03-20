@@ -4,12 +4,11 @@ type DbSchema = {
   msg?: string;
   u_id?: string;
   p_id?: string;
-  o_id?: number;
   op_id?: number;
   u_name?: string;
   user_id?: string;
-  password?: string;
   order_id?: number;
+  password?: string;
   product_id?: string;
   order_status?: string;
   created_in?: string;
@@ -20,7 +19,6 @@ type DbSchema = {
   price?: number;
   popular?: string;
   quantity?: number;
-  p_quantity?: number;
   data?: string | object;
 };
 

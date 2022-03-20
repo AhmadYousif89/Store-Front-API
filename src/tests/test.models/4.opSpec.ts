@@ -52,19 +52,20 @@ describe("OrderedProducts Model functions: \n", () => {
     it(`should add product to order`, async () => {
       const op = await OPT.addProducts({
         p_id: pId,
-        ...schema,
+        order_id: schema.order_id,
+        quantity: schema.quantity,
       });
       expect(op?.msg).toEqual(
-        `Product has been added successfully to order number (${schema.o_id})`
+        `Product has been added successfully to order number (${schema.order_id})`
       );
     });
 
     it(`should get all ordered products`, async () => {
       const op = await OPT.index();
       expect(op[0].op_id).toEqual(schema.op_id);
-      expect(op[0].order_id).toEqual(schema.o_id);
+      expect(op[0].order_id).toEqual(schema.order_id);
       expect(op[0].product_id).toEqual(pId);
-      expect(op[0].p_quantity).toEqual(schema.quantity);
+      expect(op[0].quantity).toEqual(schema.quantity);
     });
 
     it(`should get one ordered product by id`, async () => {
@@ -88,7 +89,7 @@ describe("OrderedProducts Model functions: \n", () => {
       await conct.query("DELETE FROM orders");
       await conct.query("DELETE FROM products");
       await conct.query("DELETE FROM users");
-      await conct.query("ALTER SEQUENCE orders_o_id_seq RESTART WITH 1");
+      await conct.query("ALTER SEQUENCE orders_order_id_seq RESTART WITH 1");
       await conct.query("ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1");
       conct.release();
     });

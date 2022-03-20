@@ -54,11 +54,11 @@ class UserModel {
   async show(uid: string): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT u_id, u_name FROM users WHERE u_id = ($1) `;
+      const sql = `SELECT u_id, u_name FROM users WHERE u_id = $1 `;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(result.command, result.rowCount, user);
+        console.log("show: ", result.command, result.rowCount, user);
         conct.release();
         return {
           msg: `User generated successfully`,
@@ -159,3 +159,4 @@ class UserModel {
 }
 
 export const userModel = new UserModel();
+userModel.show("bc91295b-9ee8-46a1-a4df-fc8de1d6f57c");

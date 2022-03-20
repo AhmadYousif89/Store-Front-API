@@ -8,14 +8,14 @@ class OrderedProducts {
   async addProducts(values: DbSchema): Promise<DbSchema | null> {
     // accessing orders table first
     try {
-      const sql = "SELECT * FROM orders WHERE o_id = ($1)";
+      const sql = "SELECT * FROM orders WHERE order_id = ($1)";
       const conct = await pgDB.connect();
-      const result = await conct.query(sql, [values.o_id]);
+      const result = await conct.query(sql, [values.order_id]);
       const order = result.rows[0];
       // check if order is complete or not.
       if (order.order_status === "complete") {
         throw new Error(
-          `Unable to add product (${values.p_id}) to order (${values.o_id}) because order status is already (${order.order_status})`
+          `Unable to add product (${values.p_id}) to order (${values.order_id}) because order status is already (${order.order_status})`
         );
       }
       conct.release();
@@ -32,16 +32,16 @@ class OrderedProducts {
       // openning connection with db.
       const conct = await pgDB.connect();
       // making query.
-      const sql = `INSERT INTO ordered_products (order_id, product_id, p_quantity) VALUES ($1, $2, $3) RETURNING *`;
+      const sql = `INSERT INTO ordered_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *`;
       // retrieving query result.
-      const result = await conct.query(sql, [values.o_id, values.p_id, values.quantity]);
+      const result = await conct.query(sql, [values.order_id, values.p_id, values.quantity]);
       // check if row has been created.
       if (result.rows.length) {
         const product = result.rows[0];
         console.log(result.command, result.rows);
         conct.release();
         return {
-          msg: `Product has been added successfully to order number (${values.o_id})`,
+          msg: `Product has been added successfully to order number (${values.order_id})`,
           data: product,
         };
       }
@@ -99,7 +99,7 @@ class OrderedProducts {
   async update(pId: string, quantity: number): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `UPDATE ordered_products SET p_quantity = ($2) WHERE product_id = ($1) RETURNING *`;
+      const sql = `UPDATE ordered_products SET quantity = ($2) WHERE product_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [pId, quantity]);
       if (result.rows.length) {
         const product = result.rows[0];

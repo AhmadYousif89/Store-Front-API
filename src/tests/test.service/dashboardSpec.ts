@@ -53,12 +53,12 @@ xdescribe("Testing dashboard Model functions: \n", () => {
         p_id: pId,
       });
       expect(op?.msg).toEqual(
-        `Product has been added successfully to order number (${schema.o_id})`
+        `Product has been added successfully to order number (${schema.order_id})`
       );
     });
 
     it(`should update order status`, async () => {
-      const order = await orderModel.update(schema.o_id as number, "complete");
+      const order = await orderModel.update(schema.order_id as number, "complete");
       expect(order?.msg).toEqual("Order updated successfully");
     });
 
@@ -68,7 +68,10 @@ xdescribe("Testing dashboard Model functions: \n", () => {
     });
 
     it("should get all products related to a user for specific order id", async () => {
-      const result = await dashBoard.getUserProductsByOid(userId as string, schema.o_id as number);
+      const result = await dashBoard.getUserProductsByOid(
+        userId as string,
+        schema.order_id as number
+      );
       expect(result).not.toBeNull();
     });
 

@@ -18,7 +18,7 @@ let token = "";
 export const schema = {
   u_name: "Ali",
   password: "123",
-  o_id: 1,
+  order_id: 1,
   order_status: "new",
   category: "mobiles",
   p_name: "S20",
@@ -74,7 +74,7 @@ describe("Testing Application Functionality: \n", () => {
 
   it(`should get end point /users/:uid/orders/:oid/account/review/ordered-products with status code 401 and error message`, async () => {
     const response = await route.get(
-      `/users/(any user)/orders/${schema.o_id}/account/review/ordered-products`
+      `/users/(any user)/orders/${schema.order_id}/account/review/ordered-products`
     );
     expect(response.statusCode).toBe(401);
     expect(response.body).toEqual({ message: "Access denied, Faild to authenticate !" });
@@ -114,14 +114,14 @@ describe("Testing Application Functionality: \n", () => {
       console.log(`order has been created \n`);
     });
 
-    it(`should add product to order number (${schema.o_id})`, async () => {
+    it(`should add product to order number (${schema.order_id})`, async () => {
       const createOrder = await OPT.addProducts({
-        o_id: schema.o_id,
         p_id: pId,
+        order_id: schema.order_id,
         quantity: schema.quantity,
       });
       expect(createOrder?.msg).toEqual(
-        `Product has been added successfully to order number (${schema.o_id})`
+        `Product has been added successfully to order number (${schema.order_id})`
       );
       console.log(`product added to order \n`);
     });
@@ -295,7 +295,7 @@ describe("Testing Application Functionality: \n", () => {
         msg: "Data generated successfully",
         data: [
           {
-            o_id: schema.o_id,
+            order_id: schema.order_id,
             order_status: schema.order_status,
             user_id: userId,
           },
@@ -305,13 +305,13 @@ describe("Testing Application Functionality: \n", () => {
 
     it("should get one order", async () => {
       const result = await route
-        .get(`/user/account/orders/${schema.o_id}`)
+        .get(`/user/account/orders/${schema.order_id}`)
         .set("Authorization", `Bearer ${token}`);
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
         msg: "Order generated successfully",
         data: {
-          o_id: schema.o_id,
+          order_id: schema.order_id,
           order_status: schema.order_status,
           user_id: userId,
         },
@@ -336,10 +336,10 @@ describe("Testing Application Functionality: \n", () => {
         .put(`/user/account/orders`)
         .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
-        .send({ order_id: schema.o_id, status: schema.order_status });
+        .send({ order_id: schema.order_id, status: schema.order_status });
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
-        msg: `Order number (${schema.o_id}) already has a status of (${schema.order_status}) `,
+        msg: `Order number (${schema.order_id}) already has a status of (${schema.order_status}) `,
       });
     });
 
@@ -348,12 +348,12 @@ describe("Testing Application Functionality: \n", () => {
         .put(`/user/account/orders`)
         .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
-        .send({ order_id: schema.o_id, status: "complete" });
+        .send({ order_id: schema.order_id, status: "complete" });
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
         msg: "Order updated successfully",
         data: {
-          o_id: schema.o_id,
+          order_id: schema.order_id,
           order_status: "complete",
           user_id: userId,
         },
@@ -365,20 +365,20 @@ describe("Testing Application Functionality: \n", () => {
         .put(`/user/account/orders`)
         .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
-        .send({ order_id: schema.o_id, status: schema.order_status });
+        .send({ order_id: schema.order_id, status: schema.order_status });
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
-        msg: `Can not set status of Order number (${schema.o_id}) to (${schema.order_status}) because it is already (complete) - you may review your order or delete it if you want !`,
+        msg: `Can not set status of Order number (${schema.order_id}) to (${schema.order_status}) because it is already (complete) - you may review your order or delete it if you want !`,
       });
     });
 
     it(`should not delete order because of foregin key constrain`, async () => {
       const response = await route
-        .delete(`/user/account/orders/${schema.o_id}`)
+        .delete(`/user/account/orders/${schema.order_id}`)
         .set("Authorization", `Bearer ${token}`);
       expect(response.status).toBe(500);
       expect(response.body).toEqual({
-        message: `Request Failed ! Unable to delete order with id (${schema.o_id}) - Please remove any products related to this order first !`,
+        message: `Request Failed ! Unable to delete order with id (${schema.order_id}) - Please remove any products related to this order first !`,
       });
     });
 
@@ -390,9 +390,9 @@ describe("Testing Application Functionality: \n", () => {
         data: [
           {
             op_id: schema.op_id,
-            order_id: schema.o_id,
+            order_id: schema.order_id,
             product_id: pId,
-            p_quantity: schema.quantity,
+            quantity: schema.quantity,
             created_in: time,
           },
         ],
@@ -406,9 +406,9 @@ describe("Testing Application Functionality: \n", () => {
         msg: "Data generated successfully",
         data: {
           op_id: schema.op_id,
-          order_id: schema.o_id,
+          order_id: schema.order_id,
           product_id: pId,
-          p_quantity: schema.quantity,
+          quantity: schema.quantity,
           created_in: time,
         },
       });
@@ -451,13 +451,13 @@ describe("Testing Application Functionality: \n", () => {
 
     it(`should not add products to order number ${schema.op_id}`, async () => {
       const result = await route
-        .post(`/user/account/orders/${schema.o_id}/products`)
+        .post(`/user/account/orders/${schema.order_id}/products`)
         .set("Authorization", `Bearer ${token}`)
         .set("Content-type", "application/json")
         .send({ p_id: pId, quantity: 10 });
       expect(result.status).toBe(500);
       expect(result.body).toEqual({
-        message: `Error: Unable to add product (${pId}) to order (${schema.o_id}) because order status is already (complete)`,
+        message: `Error: Unable to add product (${pId}) to order (${schema.order_id}) because order status is already (complete)`,
       });
     });
 
@@ -471,9 +471,9 @@ describe("Testing Application Functionality: \n", () => {
         msg: "Product quantity updated successfully",
         data: {
           op_id: schema.op_id,
-          order_id: schema.o_id,
+          order_id: schema.order_id,
           product_id: pId,
-          p_quantity: 20,
+          quantity: 20,
           created_in: time,
         },
       });
@@ -489,10 +489,10 @@ describe("Testing Application Functionality: \n", () => {
         data: [
           {
             op_id: schema.op_id,
-            order_id: schema.o_id,
+            order_id: schema.order_id,
             order_status: "complete",
             product_id: pId,
-            p_quantity: 20,
+            quantity: 20,
             created_in: time,
           },
         ],
@@ -507,7 +507,7 @@ describe("Testing Application Functionality: \n", () => {
 
     it(`should get end point /users/:uid/orders/:oid/account/review/ordered-products `, async () => {
       const response = await route
-        .get(`/users/${userId}/orders/${schema.o_id}/account/review/ordered-products`)
+        .get(`/users/${userId}/orders/${schema.order_id}/account/review/ordered-products`)
         .set("Authorization", `Bearer ${token}`);
       expect(response.statusCode).toBe(200);
     });
@@ -531,9 +531,9 @@ describe("Testing Application Functionality: \n", () => {
       expect(result.body.msg).toEqual(`Product deleted successfully`);
     });
 
-    it(`should delete order number ${schema.o_id}`, async () => {
+    it(`should delete order number ${schema.order_id}`, async () => {
       const response = await route
-        .delete(`/user/account/orders/${schema.o_id}`)
+        .delete(`/user/account/orders/${schema.order_id}`)
         .set("Authorization", `Bearer ${token}`);
       expect(response.status).toBe(200);
       expect(response.body.msg).toEqual(`Order deleted successfully`);
@@ -547,7 +547,7 @@ describe("Testing Application Functionality: \n", () => {
 
     afterAll(async () => {
       const conct = await pgDB.connect();
-      await conct.query(`ALTER SEQUENCE orders_o_id_seq RESTART WITH 1`);
+      await conct.query(`ALTER SEQUENCE orders_order_id_seq RESTART WITH 1`);
       await conct.query(`ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1`);
       conct.release();
     });

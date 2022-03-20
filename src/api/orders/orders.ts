@@ -20,7 +20,7 @@ class OrdersModel {
       // check if row has been created.
       if (result.rows.length) {
         const orders = result.rows[0];
-        console.log(result.command, result.rows);
+        console.log(result.command, orders);
         // colsing connection with db.
         conct.release();
         return {
@@ -43,7 +43,7 @@ class OrdersModel {
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect user id or user does not exist !.", ".");
       } else {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
+        errMsg = err;
       }
       throw new Error(`Unable to create new Order - ${errMsg}`);
     }
@@ -66,7 +66,7 @@ class OrdersModel {
   async show(id: number): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `SELECT * FROM orders WHERE o_id = ($1)`;
+      const sql = `SELECT * FROM orders WHERE order_id = ($1)`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const orders = result.rows[0];
@@ -80,15 +80,14 @@ class OrdersModel {
       conct.release();
       return null;
     } catch (err) {
-      errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
-      throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to get order with id (${id}) - ${err}`);
     }
   }
   // Update Orders
   async update(oid: number, status: string): Promise<DbSchema | null> {
     // check if order status
     try {
-      const sql = "SELECT * FROM orders WHERE o_id = ($1) ";
+      const sql = "SELECT * FROM orders WHERE order_id = ($1) ";
       const conn = await pgDB.connect();
       const result = await conn.query(sql, [oid]);
       const order = result.rows[0];
@@ -106,7 +105,7 @@ class OrdersModel {
       } else {
         try {
           const conct = await pgDB.connect();
-          const sql = `UPDATE orders SET order_status = ($2) WHERE o_id = ($1) RETURNING *`;
+          const sql = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
           const result = await conct.query(sql, [oid, status]);
           if (result.rows.length) {
             const order = result.rows[0];
@@ -145,7 +144,7 @@ class OrdersModel {
   async delete(id: number): Promise<DbSchema | null> {
     try {
       const conct = await pgDB.connect();
-      const sql = `DELETE FROM orders WHERE o_id = ($1) RETURNING *`;
+      const sql = `DELETE FROM orders WHERE order_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const orders = result.rows[0];
