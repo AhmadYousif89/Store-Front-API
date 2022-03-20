@@ -12,7 +12,7 @@ jobs:
       - image: cimg/base:stable
     # Add steps to the job
     steps:
-      # - node/install
+      - node/install
       - checkout
       - run:
           name: NPM Install
