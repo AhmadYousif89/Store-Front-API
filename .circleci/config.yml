@@ -26,15 +26,15 @@ jobs:
           command: |
             npm run prettier
       - run:
-          name: Build
+          name: Build and run server
           command: |
-            npm run build
+            npm run start
       - run:
           name: "Done"
           command: "echo Job Done"
 
 # Invoke jobs via workflows
 workflows:
-  say-hello-workflow:
+  project-workflow:
     jobs:
       - say-done
