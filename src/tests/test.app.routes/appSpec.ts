@@ -331,7 +331,7 @@ describe("Testing Application Functionality: \n", () => {
       });
     });
 
-    it(`should not update order status if its already (${schema.order_status})`, async () => {
+    it(`should not update order status to it's current status`, async () => {
       const result = await route
         .put(`/user/account/orders`)
         .set("Authorization", `Bearer ${token}`)
@@ -339,7 +339,7 @@ describe("Testing Application Functionality: \n", () => {
         .send({ order_id: schema.order_id, status: schema.order_status });
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
-        msg: `Order number (${schema.order_id}) already has a status of (${schema.order_status}) `,
+        msg: `Order number (${schema.order_id}) already has a status of (${schema.order_status}) !`,
       });
     });
 
@@ -368,7 +368,7 @@ describe("Testing Application Functionality: \n", () => {
         .send({ order_id: schema.order_id, status: schema.order_status });
       expect(result.status).toBe(200);
       expect(result.body).toEqual({
-        msg: `Can not set status of Order number (${schema.order_id}) to (${schema.order_status}) because it is already (complete) - you may review your order or delete it if you want !`,
+        msg: `Order number (${schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
       });
     });
 
@@ -549,6 +549,7 @@ describe("Testing Application Functionality: \n", () => {
       const conct = await pgDB.connect();
       await conct.query(`ALTER SEQUENCE orders_order_id_seq RESTART WITH 1`);
       await conct.query(`ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1`);
+      console.log("seq altered");
       conct.release();
     });
   });

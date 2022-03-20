@@ -37,7 +37,7 @@ class OrdersModel {
       } else if ((err as Error).message?.includes("enum")) {
         errMsg = customErr(
           err as Error,
-          "Please enter value between [ new | active ] for order status !.",
+          "Please enter a value between [ new | active ] for order status !.",
           "."
         );
       } else if ((err as Error).message?.includes("foreign")) {
@@ -85,59 +85,47 @@ class OrdersModel {
   }
   // Update Orders
   async update(oid: number, status: string): Promise<DbSchema | null> {
-    // check if order status
     try {
-      const sql = "SELECT * FROM orders WHERE order_id = ($1) ";
-      const conn = await pgDB.connect();
-      const result = await conn.query(sql, [oid]);
-      const order = result.rows[0];
-      // check if the order status is complete
-      if (order.order_status === "complete") {
-        conn.release();
+      const conct = await pgDB.connect();
+      const sql1 = `SELECT * FROM orders WHERE order_id = ($1)`;
+      const rowResult = await conct.query(sql1, [oid]);
+      const order_status = rowResult.rows[0].order_status;
+      if (order_status === "complete") {
+        conct.release();
         return {
-          msg: `Can not set status of Order number (${oid}) to (${status}) because it is already (${order.order_status}) - you may review your order or delete it if you want !`,
+          msg: `Order number (${oid}) already has a status of (complete) - you may review your order or delete it if you want !`,
+        };
+      } else if (order_status === status) {
+        conct.release();
+        return {
+          msg: `Order number (${oid}) already has a status of (${order_status}) !`,
         };
       }
-      // check for other status
-      if (order.order_status === status) {
-        conn.release();
-        return { msg: `Order number (${oid}) already has a status of (${order.order_status}) ` };
-      } else {
-        try {
-          const conct = await pgDB.connect();
-          const sql = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
-          const result = await conct.query(sql, [oid, status]);
-          if (result.rows.length) {
-            const order = result.rows[0];
-            console.log(result.command, result.rowCount, order);
-            conct.release();
-            return {
-              msg: `Order updated successfully`,
-              data: order,
-            };
-          }
-          return null;
-        } catch (err) {
-          if ((err as Error).message?.includes("enum")) {
-            errMsg = customErr(
-              err as Error,
-              "Please enter value between [ active | complete ] for order status !.",
-              "."
-            );
-          } else {
-            errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
-          }
-          throw new Error(`Unable to update orders with id (${oid}) - ${errMsg}`);
-        }
+      const sql2 = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
+      const updateResult = await conct.query(sql2, [oid, status]);
+      if (updateResult.rows.length) {
+        const order = updateResult.rows[0];
+        console.log(updateResult.command, updateResult.rowCount, order);
+        conct.release();
+        return {
+          msg: `Order updated successfully`,
+          data: order,
+        };
       }
+      return null;
     } catch (err) {
-      // if we don't have the order in the table.
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
+      } else if ((err as Error).message?.includes("enum")) {
+        errMsg = customErr(
+          err as Error,
+          "Please enter value between [ active | complete ] for order status !.",
+          "."
+        );
       } else {
         errMsg = err;
       }
-      throw new Error(`${errMsg}`);
+      throw new Error(`Unable to update orders with id (${oid}) - ${errMsg}`);
     }
   }
   // Delete Orders

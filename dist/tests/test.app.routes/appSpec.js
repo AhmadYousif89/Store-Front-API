@@ -300,7 +300,7 @@ describe("Testing Application Functionality: \n", () => {
                 message: "Please provide a valid order status and id !",
             });
         });
-        it(`should not update order status if its already (${exports.schema.order_status})`, async () => {
+        it(`should not update order status to it's current status`, async () => {
             const result = await exports.route
                 .put(`/user/account/orders`)
                 .set("Authorization", `Bearer ${token}`)
@@ -308,7 +308,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ order_id: exports.schema.order_id, status: exports.schema.order_status });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: `Order number (${exports.schema.order_id}) already has a status of (${exports.schema.order_status}) `,
+                msg: `Order number (${exports.schema.order_id}) already has a status of (${exports.schema.order_status}) !`,
             });
         });
         it("should update order status to (complete)", async () => {
@@ -335,7 +335,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ order_id: exports.schema.order_id, status: exports.schema.order_status });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: `Can not set status of Order number (${exports.schema.order_id}) to (${exports.schema.order_status}) because it is already (complete) - you may review your order or delete it if you want !`,
+                msg: `Order number (${exports.schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
             });
         });
         it(`should not delete order because of foregin key constrain`, async () => {
@@ -499,6 +499,7 @@ describe("Testing Application Functionality: \n", () => {
             const conct = await database_1.default.connect();
             await conct.query(`ALTER SEQUENCE orders_order_id_seq RESTART WITH 1`);
             await conct.query(`ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1`);
+            console.log("seq altered");
             conct.release();
         });
     });

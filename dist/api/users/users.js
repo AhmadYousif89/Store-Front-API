@@ -65,7 +65,7 @@ class UserModel {
             const result = await conct.query(sql, [uid]);
             if (result.rows.length) {
                 const user = result.rows[0];
-                console.log("show: ", result.command, result.rowCount, user);
+                console.log(result.command, result.rowCount, user);
                 conct.release();
                 return {
                     msg: `User generated successfully`,
@@ -169,4 +169,3 @@ class UserModel {
     }
 }
 exports.userModel = new UserModel();
-exports.userModel.show("bc91295b-9ee8-46a1-a4df-fc8de1d6f57c");

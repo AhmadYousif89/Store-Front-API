@@ -7,9 +7,8 @@ import { dashBoard } from "./../../api/__services__/dashboard";
 
 let pId: string | undefined;
 let userId: string | undefined;
-// this spec works fine alone but when i run it with rest specs it just freezes the whole test!!
-// i don't know what to do here.
-xdescribe("Testing dashboard Model functions: \n", () => {
+
+describe("Testing dashboard Model functions: \n", () => {
   it("should be a method to get all products related to a user", () => {
     expect(dashBoard.getUserProducts).toBeDefined();
   });

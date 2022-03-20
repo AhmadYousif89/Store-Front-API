@@ -8,9 +8,7 @@ const appSpec_1 = require("../test.app.routes/appSpec");
 const dashboard_1 = require("./../../api/__services__/dashboard");
 let pId;
 let userId;
-// this spec works fine alone but when i run it with rest specs it just freezes the whole test!!
-// i don't know what to do here.
-xdescribe("Testing dashboard Model functions: \n", () => {
+describe("Testing dashboard Model functions: \n", () => {
     it("should be a method to get all products related to a user", () => {
         expect(dashboard_1.dashBoard.getUserProducts).toBeDefined();
     });

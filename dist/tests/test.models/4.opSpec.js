@@ -80,6 +80,7 @@ describe("OrderedProducts Model functions: \n", () => {
             await conct.query("DELETE FROM users");
             await conct.query("ALTER SEQUENCE orders_order_id_seq RESTART WITH 1");
             await conct.query("ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1");
+            console.log("seq altered");
             conct.release();
         });
     });
