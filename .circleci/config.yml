@@ -26,9 +26,9 @@ jobs:
           command: |
             npm run prettier
       - run:
-          name: Build and run server
+          name: Build
           command: |
-            npm run start
+            npm run build
       - run:
           name: "Done"
           command: "echo Job Done"

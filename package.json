@@ -7,7 +7,8 @@
     "url": "https://github.com/AhmadYousif89/Store-Front-API.git"
   },
   "scripts": {
-    "start": "tsc && node dist/app.js",
+    "start": "node dist/app.js",
+    "build": "tsc",
     "watch": "tsc -w",
     "dev": "npx nodemon src/app.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
