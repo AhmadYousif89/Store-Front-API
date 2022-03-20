@@ -3,7 +3,7 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 jobs:
-  say-hello:
+  say-hey:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     docker:
       - image: cimg/base:stable
