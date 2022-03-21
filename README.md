@@ -1,8 +1,10 @@
 # Tech Store API
 
-- This is a backend API build in Nodejs for an online store company. It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
+- This API project built on Nodejs framework for an online store company, It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
 
 - The database schema and and API route information are in the [REQUIREMENT.md](https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
+
+
 
 ## Getting started
 
@@ -23,11 +25,11 @@
   ### Step 3: run the following to create the dev and test database
 
      ```
-     CREATE DATABASE `tech_store`;
+     CREATE DATABASE tech_store;
      ```
 
      ```
-     CREATE DATABASE `tech_store_test`;
+     CREATE DATABASE tech_store_test;
      ```
 
   ### Step 4: Connect to the databases and grant all privileges to the user you just created
