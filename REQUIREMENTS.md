@@ -6,7 +6,7 @@
 
 - home : `http://localhost:3000`
 ### users  :
-*
+-
   - `GET` /users ==> all users `token`
   - `GET` /users/:id ==> one user `token`
   - `POST` /users/signup ==> create user
@@ -16,7 +16,6 @@
   - `GET` /users/:id/account/review/ordered-products ==> all user's ordered products `token`
   - `GET` /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
   - `GET` /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
-*
 ### products :
   - `GET` /products ==> all products
   - `GET` /products/:id ==> one product
