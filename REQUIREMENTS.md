@@ -45,7 +45,7 @@
 - Show
 - Create
 - Update
-- `Delete`
+- Delete
 
 #### Products
 
@@ -53,7 +53,7 @@
 - Show
 - Create
 - Update
-- `Delete`
+- Delete
 - Top 5 most popular products
 - Products by category
 
@@ -63,7 +63,7 @@
 - Show
 - Create
 - Update
-- `Delete`
+- Delete
 - Current Order by user
 - Completed Orders by user
 
@@ -73,4 +73,4 @@
 - Show
 - Create
 - Update
-- `Delete`
+- Delete
