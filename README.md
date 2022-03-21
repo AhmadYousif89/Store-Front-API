@@ -50,11 +50,11 @@
 
 ### Packages
 
-- some of the packages used in this project.
+#### some of the packages used in this project.
 
 - express
 
-```bash
+```
 npm i express
 ```
 
@@ -198,3 +198,7 @@ npm i -D @types/supertest
 - `SALT = 10`
 - `PEPPER = pass-$1$2$3$-word`
 - `SECRET_TOKEN = secret-$1$2$3$-token`
+
+### License
+
+[MIT](https://choosealicense.com/licenses/mit/)
