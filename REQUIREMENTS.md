@@ -41,7 +41,7 @@
 
 ### CRUD Functions :
 
-    - Users :
+    ## Users :
 
     - Index
     - Show
@@ -49,7 +49,7 @@
     - Update
     - Delete
 
-    # Products :
+    ## Products :
 
     - Index
     - Show
@@ -57,7 +57,7 @@
     - Update
     - Delete
 
-    # Orders :
+    ## Orders :
 
     - Index
     - Show
@@ -65,7 +65,7 @@
     - Update
     - Delete
 
-    # Ordered_products :
+    ## Ordered_products :
 
     - Index
     - Show
@@ -73,7 +73,7 @@
     - Update
     - Delete
     
-    # Services :
+    ## Services :
     
     - Top 5 most popular products
     - List of all user's products
