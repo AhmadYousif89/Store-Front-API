@@ -168,22 +168,32 @@ npm i -D @types/supertest
 
 ### Scripts
 
-- npm run start :
-  - `this script will start our server on localhost on port 3000 as default and build and complie our code.`
-- npm run m-up :
-  - `this script will start migration proccess which will create our database schema.`
-- npm run m-down :
-  - `this script will start migration proccess which will drop all of our table.`
+- `to start the server on localhost:3000 as default.`
+
+```
+npm start
+```
+
+- `to build and complie the project code.`
+
+```
+npm run build :
+```
+
 - npm run prettier :
-  - `this script will run the prettier dependency.`
+  - `to run the prettier dependency.`
 - npm run lint :
-  - `this script will run the es-lint dependency.`
-- npm run test :
-  - `this script will start our unit testing scenario.`
+  - `to run the es-lint dependency.`
+- npm run m-up :
+  - `to start migration proccess which will create our database schema.`
+- npm run m-down :
+  - `to start migration proccess which will drop all of our table.`
+- npm test :
+  - `to start unit testing scenario.`
 - npm run test:m-up :
-  - `this script will run migration up command but in test environment.`
+  - `to run migration up command but in test environment.`
 - npm run test:m-down :
-  - `this script will run migration down command but in test environment.`
+  - `to run migration down command but in test environment.`
 
 ##### ENV
 
