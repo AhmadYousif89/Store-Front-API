@@ -4,8 +4,6 @@
 
 - The database schema and and API route information are in the [REQUIREMENT.md](https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
 
-
-
 ## Getting started
 
 - To use the API properly please follow these steps :
