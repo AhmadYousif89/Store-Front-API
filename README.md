@@ -51,37 +51,112 @@
 ### Packages
 
 - express
-  - npm i express
-  - npm i -D @types/express
+
+```
+npm i express
+```
+
+```
+npm i -D @types/express
+```
+
 - typescript
-  - npm i -D typescript
-  - npm i -D ts-node
-  - npm i -D @types/node
+
+```
+npm i -D typescript
+```
+
+```
+-npm i -D ts-node
+```
+
+```
+npm i -D @types/node
+```
+
 - db-migrate
-  - npm i -g db-migrate
-  - npm i db-migrate-pg
-  - npm i -D @types/pg
+
+```
+npm i -g db-migrat
+```
+
+```
+npm i db-migrate-p
+```
+
+```
+npm i -D @types/p
+```
+
 - cors
-  - npm i cors
-  - npm i -D @types/cors
+
+```
+npm i cor
+```
+
+```
+npm i -D @types/cor
+```
+
 - bcrypt
-  - npm -i -D bcrypt
-  - npm -i -D @types/bcrypt
+
+```
+npm -i -D bcryp
+```
+
+```
+npm -i -D @types/bcrypt
+```
+
 - jsonwebtoken
-  - npm i jsonwebtoken
-  - npm i -D @types/jsonwebtoken
+
+```
+npm i jsonwebtoken
+```
+
+```
+npm i -D @types/jsonwebtoken
+```
+
 - prettier
-  - npm i -D prettier
+
+```
+npm i -D prettier
+```
+
 - eslint
-  - npm i -D eslint
+
+```
+npm i -D eslint
+```
+
 - jasmine
-  - npm i -D jasmine
-  - npm i -D jasmine-ts
-  - npm i -D @types/jasmine
-  - npm i -D jasmine-spec-reporter
+
+```
+npm i -D jasmin
+```
+
+```
+npm i -D jasmine-t
+```
+
+```
+npm i -D @types/jasmin
+```
+
+```
+npm i -D jasmine-spec-reporte
+```
+
 - supertest
-  - npm i supertest
-  - npm i -D @types/supertest
+
+```
+npm i supertes
+```
+
+```
+npm i -D @types/supertest
+```
 
 ### Scripts
 

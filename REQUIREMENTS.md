@@ -37,7 +37,7 @@ These are the notes from a meeting with the frontend developer that describe wha
   - PUT /user/account/ordered-products/ ==> update ordered-product
   - DELETE /user/account/ordered-products/:id ==> delete ordered-product
 
-#### DB Schema
+## DB Schema
 
 - For better readability i have provided sql file with the schema | [db-schema.sql](https://github.com/AhmadYousif89/Tech_Store/blob/main/db-schema.sql)
 
