@@ -6,7 +6,7 @@
 
 ---
 
-### Getting started
+## Getting started
 
 - To use the API properly please follow these steps :
 
@@ -52,9 +52,9 @@
 
 ---
 
-### Packages
+## Packages
 
-#### some of the packages used in this project.
+### some of the packages used in this project.
 
 - express
 
@@ -172,7 +172,7 @@
 
 ---
 
-### Scripts
+## Scripts
 
 - `to start the server on localhost:3000 as default.`
 
@@ -219,7 +219,7 @@
 
 ---
 
-##### ENV
+### ENV
 
 - `ENV = dev`
 - `PG_DB = tech_store`
