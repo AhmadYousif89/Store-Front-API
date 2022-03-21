@@ -54,7 +54,7 @@
 
 - express
 
-```
+```bash
 npm i express
 ```
 
