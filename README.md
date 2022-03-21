@@ -177,23 +177,50 @@ npm start
 - `to build and complie the project code.`
 
 ```
-npm run build :
+npm run build
 ```
 
-- npm run prettier :
-  - `to run the prettier dependency.`
-- npm run lint :
-  - `to run the es-lint dependency.`
-- npm run m-up :
-  - `to start migration proccess which will create our database schema.`
-- npm run m-down :
-  - `to start migration proccess which will drop all of our table.`
-- npm test :
-  - `to start unit testing scenario.`
-- npm run test:m-up :
-  - `to run migration up command but in test environment.`
-- npm run test:m-down :
-  - `to run migration down command but in test environment.`
+- `to run prettier and format project code.`
+
+```
+npm run prettier
+```
+
+- `to run es-lint and check for programmatic errors.`
+
+```
+npm run lint
+```
+
+- `to start migration proccess and create our database schema.`
+
+```
+npm run m-up
+```
+
+- `to start migration proccess and drop all tables.`
+
+```
+npm run m-down
+```
+
+- `to start unit testing scenario.`
+
+```
+npm test
+```
+
+- `to run migration up command but in test environment.`
+
+```
+npm run test:m-up
+```
+
+- `to run migration down command but in test environment.`
+
+```
+ npm run test:m-down
+```
 
 ##### ENV
 
