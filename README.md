@@ -50,6 +50,8 @@
 
 ### Packages
 
+- some of the packages used in this project.
+
 - express
 
 ```
@@ -67,7 +69,7 @@ npm i -D typescript
 ```
 
 ```
--npm i -D ts-node
+npm i -D ts-node
 ```
 
 ```
@@ -77,35 +79,41 @@ npm i -D @types/node
 - db-migrate
 
 ```
-npm i -g db-migrat
+npm i -g db-migrate
 ```
 
 ```
-npm i db-migrate-p
+npm i db-migrate-pg
 ```
 
 ```
-npm i -D @types/p
+npm i -D @types/pg
 ```
 
 - cors
 
 ```
-npm i cor
+npm i cors
 ```
 
 ```
-npm i -D @types/cor
+npm i -D @types/cors
 ```
 
 - bcrypt
 
 ```
-npm -i -D bcryp
+npm -i -D bcrypt
 ```
 
 ```
 npm -i -D @types/bcrypt
+```
+
+- dotenv
+
+```
+npm -i -D dotenv
 ```
 
 - jsonwebtoken
@@ -133,25 +141,25 @@ npm i -D eslint
 - jasmine
 
 ```
-npm i -D jasmin
+npm i -D jasmine
 ```
 
 ```
-npm i -D jasmine-t
+npm i -D jasmine-ts
 ```
 
 ```
-npm i -D @types/jasmin
+npm i -D @types/jasmine
 ```
 
 ```
-npm i -D jasmine-spec-reporte
+npm i -D jasmine-spec-reporter
 ```
 
 - supertest
 
 ```
-npm i supertes
+npm i supertest
 ```
 
 ```
