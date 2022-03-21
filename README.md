@@ -4,8 +4,6 @@
 
 - The database schema and and API route information are in the [REQUIREMENT.md](https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
 
----
-
 ## Getting started
 
 - To use the API properly please follow these steps :
@@ -49,8 +47,6 @@
      ```
      GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
      ```
-
----
 
 ## Packages
 
@@ -168,8 +164,6 @@
   ```
   npm i -D @types/supertest
   ```
-
----
 
 ## Scripts
 
