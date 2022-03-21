@@ -23,14 +23,14 @@
   ### Step 3: run the following to create the dev and test database
 
      ```
-     CREATE DATABASE tech_store;
+     CREATE DATABASE `tech_store`;
      ```
 
      ```
-     CREATE DATABASE tech_store_test;
+     CREATE DATABASE `tech_store_test`;
      ```
 
-  ### Step 4: Connect to the databases and grant all privileges to our user `udacity`
+  ### Step 4: Connect to the databases and grant all privileges to the user you just created
 
      ```
      \c tech_store
