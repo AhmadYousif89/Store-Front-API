@@ -54,7 +54,7 @@
 
 - express
 
-```python
+```
 import foobar
 
 # returns 'words'
