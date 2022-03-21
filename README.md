@@ -2,7 +2,7 @@
 
 - This a backend API build in Nodejs for an online store. Its main goal is to create a RESTful API that will be used by the frontend developer on the frontend.
 
-- The database schema and and API route information are in the [REQUIREMENT.md]
+- The database schema and and API route information are in the [REQUIREMENT.md] (https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
 
 ### Usage
 
@@ -30,7 +30,7 @@
   CREATE DATABASE tech_store_test;
   ```
 
-  4. Connect to the databases and grant all privileges to our user
+  4. Connect to the databases and grant all privileges to our user `udacity`
 
   ```
   \c tech_store
