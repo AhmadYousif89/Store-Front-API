@@ -169,7 +169,7 @@ npm i -D @types/supertest
 ### Scripts
 
 - npm run start :
-  - this script will start our server on localhost on port 3000 as default and build and complie our code.
+  `this script will start our server on localhost on port 3000 as default and build and complie our code.`
 - npm run m-up :
   - this script will start migration proccess which will create our database schema.
 - npm run m-down :
