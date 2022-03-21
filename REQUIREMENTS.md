@@ -56,8 +56,6 @@
     - Create
     - Update
     - Delete
-    - Top 5 most popular products
-    - Products by category
 
     #### Orders
 
@@ -66,8 +64,6 @@
     - Create
     - Update
     - Delete
-    - Current Order by user
-    - Completed Orders by user
 
     #### Ordered_products
 
@@ -76,3 +72,10 @@
     - Create
     - Update
     - Delete
+    
+    #### Services
+    
+    - Top 5 most popular products
+    - List of all user's products
+    - List of all user's products by specific order id
+    - List of all user's products completed orders
