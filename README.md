@@ -1,6 +1,6 @@
 # Tech Store API
 
-- This a backend API build in Nodejs for an online store. Its main goal is to create a RESTful API that will be used by the frontend developer on the frontend.
+- This is a backend API build in Nodejs for an online store company. It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
 
 - The database schema and and API route information are in the [REQUIREMENT.md](https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
 
@@ -10,19 +10,19 @@
 
 - To use the API properly please follow these steps :
 
-  1. connect to the default postgres database as the server's root user postgres
+  ### Step 1: connect to the default postgres database as the server's root user postgres
 
      ```
      psql -U postgres
      ```
 
-  2. In psql run the following to create a user
+  ### Step 2: In psql run the following to create a user
 
      ```
      CREATE USER udacity WITH PASSWORD '123';
      ```
 
-  3. run the following to create the dev and test database
+  ### Step 3: run the following to create the dev and test database
 
      ```
      CREATE DATABASE tech_store;
@@ -32,7 +32,7 @@
      CREATE DATABASE tech_store_test;
      ```
 
-  4. Connect to the databases and grant all privileges to our user `udacity`
+  ### Step 4: Connect to the databases and grant all privileges to our user `udacity`
 
      ```
      \c tech_store
