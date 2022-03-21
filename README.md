@@ -54,10 +54,6 @@
 
 - express
 
-```python
-pip install foobar
-```
-
 ```
 npm i express
 ```
