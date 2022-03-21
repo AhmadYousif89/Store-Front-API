@@ -180,6 +180,12 @@ npm start
 npm run build
 ```
 
+- `to watch for any changes happens in the server during development phase.`
+
+```
+npm run dev
+```
+
 - `to run prettier and format project code.`
 
 ```
@@ -204,19 +210,19 @@ npm run m-up
 npm run m-down
 ```
 
-- `to start unit testing scenario.`
+- `to start unit testing scenarios.`
 
 ```
 npm test
 ```
 
-- `to run migration up command but in test environment.`
+- `to run migration up process in test environment.`
 
 ```
 npm run test:m-up
 ```
 
-- `to run migration down command but in test environment.`
+- `to run migration down process in test environment.`
 
 ```
  npm run test:m-down
