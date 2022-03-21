@@ -10,43 +10,43 @@
 
   1. connect to the default postgres database as the server's root user postgres
 
-  ```
-  $ psql -U postgres
-  ```
+     ```
+     psql -U postgres
+     ```
 
   2. In psql run the following to create a user
 
-  ```
-  CREATE USER udacity WITH PASSWORD '123';
-  ```
+     ```
+     CREATE USER udacity WITH PASSWORD '123';
+     ```
 
   3. run the following to create the dev and test database
 
-  ```
-  CREATE DATABASE tech_store;
-  ```
+     ```
+     CREATE DATABASE tech_store;
+     ```
 
-  ```
-  CREATE DATABASE tech_store_test;
-  ```
+     ```
+     CREATE DATABASE tech_store_test;
+     ```
 
   4. Connect to the databases and grant all privileges to our user `udacity`
 
-  ```
-  \c tech_store
-  ```
+     ```
+     \c tech_store
+     ```
 
-  ```
-  GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
-  ```
+     ```
+     GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
+     ```
 
-  ```
-  \c tech_store_test
-  ```
+     ```
+     \c tech_store_test
+     ```
 
-  ```
-  GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
-  ```
+     ```
+     GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+     ```
 
 ### Packages
 
@@ -54,117 +54,117 @@
 
 - express
 
-```
-npm i express
-```
+  ```
+  npm i express
+  ```
 
-```
-npm i -D @types/express
-```
+  ```
+  npm i -D @types/express
+  ```
 
 - typescript
 
-```
-npm i -D typescript
-```
+  ```
+  npm i -D typescript
+  ```
 
-```
-npm i -D ts-node
-```
+  ```
+  npm i -D ts-node
+  ```
 
-```
-npm i -D @types/node
-```
+  ```
+  npm i -D @types/node
+  ```
 
 - db-migrate
 
-```
-npm i -g db-migrate
-```
+  ```
+  npm i -g db-migrate
+  ```
 
-```
-npm i db-migrate-pg
-```
+  ```
+  npm i db-migrate-pg
+  ```
 
-```
-npm i -D @types/pg
-```
+  ```
+  npm i -D @types/pg
+  ```
 
 - cors
 
-```
-npm i cors
-```
+  ```
+  npm i cors
+  ```
 
-```
-npm i -D @types/cors
-```
+  ```
+  npm i -D @types/cors
+  ```
 
 - bcrypt
 
-```
-npm -i -D bcrypt
-```
+  ```
+  npm -i -D bcrypt
+  ```
 
-```
-npm -i -D @types/bcrypt
-```
+  ```
+  npm -i -D @types/bcrypt
+  ```
 
 - dotenv
 
-```
-npm -i -D dotenv
-```
+  ```
+  npm -i -D dotenv
+  ```
 
 - jsonwebtoken
 
-```
-npm i jsonwebtoken
-```
+  ```
+  npm i jsonwebtoken
+  ```
 
-```
-npm i -D @types/jsonwebtoken
-```
+  ```
+  npm i -D @types/jsonwebtoken
+  ```
 
 - prettier
 
-```
-npm i -D prettier
-```
+  ```
+  npm i -D prettier
+  ```
 
 - eslint
 
-```
-npm i -D eslint
-```
+  ```
+  npm i -D eslint
+  ```
 
 - jasmine
 
-```
-npm i -D jasmine
-```
+  ```
+  npm i -D jasmine
+  ```
 
-```
-npm i -D jasmine-ts
-```
+  ```
+  npm i -D jasmine-ts
+  ```
 
-```
-npm i -D @types/jasmine
-```
+  ```
+  npm i -D @types/jasmine
+  ```
 
-```
-npm i -D jasmine-spec-reporter
-```
+  ```
+  npm i -D jasmine-spec-reporter
+  ```
 
 - supertest
 
-```
-npm i supertest
-```
+  ```
+  npm i supertest
+  ```
 
-```
-npm i -D @types/supertest
-```
+  ```
+  npm i -D @types/supertest
+  ```
 
 ### Scripts
 
