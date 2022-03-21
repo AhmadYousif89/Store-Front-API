@@ -54,7 +54,7 @@
 
 - express
 
-```bash
+```python
 pip install foobar
 ```
 
