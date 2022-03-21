@@ -5,7 +5,7 @@
 ## API Endpoints
 
 - home : `http://localhost:3000`
-- users :
+### users  :
   - `GET` /users ==> all users `token`
   - `GET` /users/:id ==> one user `token`
   - `POST` /users/signup ==> create user
@@ -15,20 +15,20 @@
   - `GET` /users/:id/account/review/ordered-products ==> all user's ordered products `token`
   - `GET` /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
   - `GET` /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
-- products :
+### products :
   - `GET` /products ==> all products
   - `GET` /products/:id ==> one product
   - `POST` /products ==> create product `token`
   - `PUT` /products/ ==> update product
   - `DELETE` /products/:id ==> delete product
   - `GET` /products/most/popular ==> most popular products
-- orders :
+### orders :
   - `GET` /user/account/orders ==> all orders `token`
   - `GET` /user/account/orders/:id ==> one order `token`
   - `POST` /user/account/orders ==> create order `token`
   - `PUT` /user/account/orders/ ==> update order `token`
   - `DELETE` /user/account/orders/:id ==> delete order `token`
-- ordered-products :
+### ordered-products :
   - `GET` /user/account/ordered-products ==> all ordered-products
   - `GET` /user/account/ordered-products/:id ==> one ordered-product
   - `POST` /user/account/orders/:id/products ==> add product to order
