@@ -39,38 +39,40 @@
 
 - For better readability i have provided sql file with the schema | [db-schema.sql](https://github.com/AhmadYousif89/Tech_Store/blob/main/db-schema.sql)
 
-#### Users
+### CRUD System :
 
-- Index
-- Show
-- Create
-- Update
-- Delete
+  #### Users
 
-#### Products
+  - Index
+  - Show
+  - Create
+  - Update
+  - Delete
 
-- Index
-- Show
-- Create
-- Update
-- Delete
-- Top 5 most popular products
-- Products by category
+  #### Products
 
-#### Orders
+  - Index
+  - Show
+  - Create
+  - Update
+  - Delete
+  - Top 5 most popular products
+  - Products by category
 
-- Index
-- Show
-- Create
-- Update
-- Delete
-- Current Order by user
-- Completed Orders by user
+  #### Orders
 
-#### Ordered_products
+  - Index
+  - Show
+  - Create
+  - Update
+  - Delete
+  - Current Order by user
+  - Completed Orders by user
 
-- Index
-- Show
-- Create
-- Update
-- Delete
+  #### Ordered_products
+
+  - Index
+  - Show
+  - Create
+  - Update
+  - Delete
