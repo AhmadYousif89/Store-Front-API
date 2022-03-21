@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Test
           command: |
-            npm run test
+            npm run jasmine
       - run:
           name: "Done"
           command: echo "Job Done"
