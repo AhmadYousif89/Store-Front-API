@@ -6,30 +6,30 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 
-- home : http://localhost:3000
+- home : `http://localhost:3000`
 - users :
-  - GET /users ==> all users
-  - GET /users/:id ==> one user
+  - GET /users ==> all users `token`
+  - GET /users/:id ==> one user `token`
   - POST /users/signup ==> create user
-  - PUT /users/ ==> update user
-  - DELETE /users/:id ==> delete user
-  - POST /users/login ==> authenticate user
-  - GET /users/:id/account/review/ordered-products ==> all user's ordered products
-  - GET /users/:uid/account/most-recent/purchases ==> all user's most recent purchases
-  - GET /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id
+  - PUT /users/ ==> update user `token`
+  - DELETE /users/:id ==> delete user `token`
+  - POST /users/login ==> authenticate user `token`
+  - GET /users/:id/account/review/ordered-products ==> all user's ordered products `token`
+  - GET /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
+  - GET /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
 - products :
   - GET /products ==> all products
   - GET /products/:id ==> one product
-  - POST /products ==> create product
+  - POST /products ==> create product `token`
   - PUT /products/ ==> update product
   - DELETE /products/:id ==> delete product
   - GET /products/most/popular ==> most popular products
 - orders :
-  - GET /user/account/orders ==> all orders
-  - GET /user/account/orders/:id ==> one order
-  - POST /user/account/orders ==> create order
-  - PUT /user/account/orders/ ==> update order
-  - DELETE /user/account/orders/:id ==> delete order
+  - GET /user/account/orders ==> all orders `token`
+  - GET /user/account/orders/:id ==> one order `token`
+  - POST /user/account/orders ==> create order `token`
+  - PUT /user/account/orders/ ==> update order `token`
+  - DELETE /user/account/orders/:id ==> delete order `token`
 - ordered-products :
   - GET /user/account/ordered-products ==> all ordered-products
   - GET /user/account/ordered-products/:id ==> one ordered-product
@@ -37,23 +37,27 @@ These are the notes from a meeting with the frontend developer that describe wha
   - PUT /user/account/ordered-products/ ==> update ordered-product
   - DELETE /user/account/ordered-products/:id ==> delete ordered-product
 
+#### DB Schema
+
+- For better readability i have provided sql file with the schema | [db-schema.sql](https://github.com/AhmadYousif89/Tech_Store/blob/main/db-schema.sql)
+
 #### Users
 
-- Index [token
-- Show (args: id)[token required]
-- Create (args: User)[token required]
+- Index
+- Show
+- Create
 - Update
 - Delete
 
 #### Products
 
 - Index
-- Show (args: product id)
-- Create (args: Product)[token required]
+- Show
+- Create
 - Update
 - Delete
 - Top 5 most popular products
-- Products by category (args: product category)
+- Products by category
 
 #### Orders
 
@@ -62,8 +66,8 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Create
 - Update
 - Delete
-- Current Order by user (args: user id)[token required]
-- Completed Orders by user (args: user id)[token required]
+- Current Order by user (args: user id)
+- Completed Orders by user (args: user id)
 
 #### Ordered_products
 
@@ -72,23 +76,3 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Create
 - Update
 - Delete
-
-#### DB Schema
-
-- For better readability i provided sql fil with the schema / db-schema.sql
-- Tables are as follow :
-
-  - users :
-    - u_id of type UUID - u_name of type VARCHAR- password of type VARCHAR
-  - orders :
-    - o_id of type SERIAL - order_status of type VARCHAR- user_id REFERENCES (users.u_id)
-  - products :
-    - p_id of type UUID - category of type ENUM - p_name of type VARCHAR - brand of type VARCHAR - maker of type VARCHAR - price of type INT - popular of type ENUM
-  - ordered_products :
-    - op_id of type SERIAL - order_id REFERENCES (orders.o_id) | product_id REFERENCES (products.p_id) | p_quantity of type INT | created_in of type DATE
-
-- ENUMs are as follow :
-
-  - column order_status ('new','active','complete')
-  - column category ('mobiles','electronics')
-  - column popular ('no','yes')
