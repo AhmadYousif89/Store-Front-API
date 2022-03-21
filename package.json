@@ -15,10 +15,9 @@
     "lint": "eslint src/**/*.ts",
     "m-up": "db-migrate up",
     "m-down": "db-migrate reset",
-    "jasmine": "db-migrate -e test up && jasmine && db-migrate -e test reset",
-    "test:m-up": "SET ENV=test && db-migrate -e test up",
-    "test:m-down": "SET ENV=test && db-migrate -e test reset",
-    "test": "SET ENV=test && tsc && db-migrate -e test up && jasmine && db-migrate -e test reset"
+    "test:m-up": "db-migrate -e test up",
+    "test:m-down": "db-migrate -e test reset",
+    "test": "db-migrate -e test up && jasmine && db-migrate -e test reset"
   },
   "keywords": [],
   "author": "Ahmad Yousif",
