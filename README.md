@@ -1,4 +1,4 @@
-![CircleCI](https://img.shields.io/circleci/build/github/AhmadYousif89/Tech_Store/main) ![test-pass-green](https://user-images.githubusercontent.com/90717578/159390088-8447eca4-be35-4f0a-b6b1-28ccd8a9d987.svg) ![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub repo size](https://img.shields.io/github/repo-size/AhmadYousif89/Tech_Store) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
+![CircleCI](https://img.shields.io/circleci/build/github/AhmadYousif89/Tech_Store/main) ![test-passing-success](https://user-images.githubusercontent.com/90717578/159390995-332c826e-259f-4881-a7cb-835651909464.svg) ![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub repo size](https://img.shields.io/github/repo-size/AhmadYousif89/Tech_Store) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
 # Tech Store API
 
 - This API project built on Nodejs framework for an online store company, It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
