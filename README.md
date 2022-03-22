@@ -1,4 +1,5 @@
 ![CircleCI](https://img.shields.io/circleci/build/github/AhmadYousif89/Tech_Store/main) ![test-passing-success](https://user-images.githubusercontent.com/90717578/159390995-332c826e-259f-4881-a7cb-835651909464.svg) ![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub repo size](https://img.shields.io/github/repo-size/AhmadYousif89/Tech_Store) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
+
 # Tech Store API
 
 - This API project built on Nodejs framework for an online store company, It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
@@ -6,55 +7,56 @@
 - The database schema and and API route information are in the [REQUIREMENT.md](https://github.com/AhmadYousif89/Tech_Store/blob/main/REQUIREMENTS.md)
 
 ### Getting started
-***
 
 - To use the API properly please follow these steps :
 
   #### Step 1: connect to the default postgres database as the server's root user postgres
 
-     ```
-     psql -U postgres
+  ```
+  psql -U postgres
 
-     ```
+  ```
 
   #### Step 2: In psql run the following to create a user
 
-     ```
-     CREATE USER udacity WITH PASSWORD '123';
-     ```
+  ```
+  CREATE USER udacity WITH PASSWORD '123';
+  ```
 
   #### Step 3: run the following to create the dev and test database
 
-     ```
-     CREATE DATABASE tech_store;
-     ```
+  ```
+  CREATE DATABASE tech_store;
+  ```
 
-     ```
-     CREATE DATABASE tech_store_test;
-     ```
+  ```
+  CREATE DATABASE tech_store_test;
+  ```
 
   #### Step 4: Connect to the databases and grant all privileges to the user you just created
 
-     ```
-     \c tech_store
-     ```
+  ```
+  \c tech_store
+  ```
 
-     ```
-     GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
-     ```
+  ```
+  GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
+  ```
 
-     ```
-     \c tech_store_test
-     ```
+  ```
+  \c tech_store_test
+  ```
 
-     ```
-     GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
-     ```
+  ```
+  GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+  ```
 
 ### Packages
-***
+
+---
 
 #### some of the packages used in this project.
+
 - express
 
   ```
@@ -170,7 +172,8 @@
   ```
 
 ### Scripts
-***
+
+---
 
 - `to start the server on localhost:3000 as default.`
 
@@ -218,7 +221,8 @@
 ---
 
 ### ENV
-***
+
+---
 
 - `ENV = dev`
 - `PG_DB = tech_store`
@@ -235,6 +239,7 @@
 ---
 
 ### License
-***
+
+---
 
 - [MIT](https://choosealicense.com/licenses/mit/)
