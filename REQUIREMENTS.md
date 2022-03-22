@@ -5,21 +5,18 @@
 ## API Endpoints
 
 - home : `http://localhost:3000`
-<<<<<<< HEAD
-- users### users :
-=======
-### users  :
--
->>>>>>> ffa886c213fbd3cda0d7ea26a9dc6cd9fdc7e461
-  - `GET` /users ==> all users `token`
-  - `GET` /users/:id ==> one user `token`
-  - `POST` /users/signup ==> create user
-  - `PUT` /users/ ==> update user `token`
-  - `DELETE` /users/:id ==> delete user `token`
-  - `POST` /users/login ==> authenticate user `token`
-  - `GET` /users/:id/account/review/ordered-products ==> all user's ordered products `token`
-  - `GET` /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
-  - `GET` /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
+
+### users :
+
+- `GET` /users ==> all users `token`
+- `GET` /users/:id ==> one user `token`
+- `POST` /users/signup ==> create user
+- `PUT` /users/ ==> update user `token`
+- `DELETE` /users/:id ==> delete user `token`
+- `POST` /users/login ==> authenticate user `token`
+- `GET` /users/:id/account/review/ordered-products ==> all user's ordered products `token`
+- `GET` /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
+- `GET` /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
 
 ### products :
 
