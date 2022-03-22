@@ -1,4 +1,4 @@
-![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social) ![GitHub repo size](https://img.shields.io/github/repo-size/AhmadYousif89/Tech_Store)
+![test-pass-green](https://user-images.githubusercontent.com/90717578/159390088-8447eca4-be35-4f0a-b6b1-28ccd8a9d987.svg) ![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub repo size](https://img.shields.io/github/repo-size/AhmadYousif89/Tech_Store) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
 # Tech Store API
 
 - This API project built on Nodejs framework for an online store company, It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
@@ -14,6 +14,7 @@
 
      ```
      psql -U postgres
+
      ```
 
   #### Step 2: In psql run the following to create a user
