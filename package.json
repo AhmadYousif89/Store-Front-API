@@ -19,7 +19,7 @@
     "test:m-down": "db-migrate -e test reset",
     "test": "db-migrate -e test up && jasmine && db-migrate -e test reset"
   },
-  "keywords": [],
+  "keywords": ["TS"],
   "author": "Ahmad Yousif",
   "license": "MIT",
   "dependencies": {
