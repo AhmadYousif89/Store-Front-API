@@ -8,6 +8,8 @@
 
 ### Getting started
 
+---
+
 - To use the API properly please follow these steps :
 
   #### Step 1: connect to the default postgres database as the server's root user postgres
