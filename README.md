@@ -15,13 +15,13 @@
      psql -U postgres
      ```
 
-  ### Step 2: In psql run the following to create a user
+  #### Step 2: In psql run the following to create a user
 
      ```
      CREATE USER udacity WITH PASSWORD '123';
      ```
 
-  ### Step 3: run the following to create the dev and test database
+  #### Step 3: run the following to create the dev and test database
 
      ```
      CREATE DATABASE tech_store;
@@ -31,7 +31,7 @@
      CREATE DATABASE tech_store_test;
      ```
 
-  ### Step 4: Connect to the databases and grant all privileges to the user you just created
+  #### Step 4: Connect to the databases and grant all privileges to the user you just created
 
      ```
      \c tech_store
@@ -49,9 +49,10 @@
      GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
      ```
 
-## Packages
+### Packages
+***
 
-### some of the packages used in this project.
+#### some of the packages used in this project.
 - express
 
   ```
@@ -166,7 +167,8 @@
   npm i -D @types/supertest
   ```
 
-## Scripts
+### Scripts
+***
 
 - `to start the server on localhost:3000 as default.`
 
@@ -214,6 +216,7 @@
 ---
 
 ### ENV
+***
 
 - `ENV = dev`
 - `PG_DB = tech_store`
@@ -230,5 +233,6 @@
 ---
 
 ### License
+***
 
 - [MIT](https://choosealicense.com/licenses/mit/)
