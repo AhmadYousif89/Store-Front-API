@@ -1,4 +1,4 @@
-![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
+![npm type definitions](https://img.shields.io/npm/types/typescript) ![GitHub watchers](https://img.shields.io/github/watchers/AhmadYousif89/tech_store?style=social)
 # Tech Store API
 
 - This API project built on Nodejs framework for an online store company, It's main goal is to create a RESTful API that will serving as a backend server for the frontend application.
