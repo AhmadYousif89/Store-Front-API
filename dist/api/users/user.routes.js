@@ -52,13 +52,13 @@ const loginUser = (0, express_1.Router)().post("/users/login", async (req, res, 
         if (!user) {
             res
                 .status(401)
-                .json({ msg: "Authentication failed !", data: "Invalid password or User Name" });
+                .json({ message: "Authentication failed !", data: "Invalid password or User Name" });
             return;
         }
         // creating token based on user credentials and my secret token.
         const token = jsonwebtoken_1.default.sign({ user }, SECRET_TOKEN);
         res.status(200).json({
-            msg: "User authenticated successfully",
+            message: "User authenticated successfully",
             data: user,
             token,
         });
@@ -76,10 +76,10 @@ const getUsers = (0, express_1.Router)().get("/users", auth_middleware_1.default
     try {
         const data = await users_1.userModel.index();
         if (data.length === 0) {
-            res.status(404).json({ msg: `No Users Were Found !` });
+            res.status(404).json({ message: `No Users Were Found !` });
             return;
         }
-        res.status(200).json({ msg: "Data generated successfully", data });
+        res.status(200).json({ message: "Data generated successfully", data });
     }
     catch (err) {
         error = {
@@ -97,7 +97,7 @@ const getUserById = (0, express_1.Router)().get("/users/:id", auth_middleware_1.
         const data = await users_1.userModel.show(uid);
         if (!data) {
             res.status(404).json({
-                msg: "Request failed !",
+                message: "Request failed !",
                 data: `User with id (${uid}) doesn't exist`,
             });
             return;
@@ -127,7 +127,7 @@ const updateUser = (0, express_1.Router)().put("/users", auth_middleware_1.defau
         const data = await users_1.userModel.update(uid, password);
         if (!data) {
             res.status(404).json({
-                msg: "Update failed !",
+                message: "Update failed !",
                 data: `User with id (${uid}) doesn't exist`,
             });
             return;
@@ -150,7 +150,7 @@ const deleteUser = (0, express_1.Router)().delete("/users/:id", async (req, res,
         const data = await users_1.userModel.delete(uid);
         if (!data) {
             res.status(404).json({
-                msg: "Delete failed !",
+                message: "Delete failed !",
                 data: `User with id (${uid}) doesn't exist`,
             });
             return;

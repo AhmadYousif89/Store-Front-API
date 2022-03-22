@@ -48,10 +48,10 @@ const getOrders = Router().get(
     try {
       const data = await orderModel.index();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Orders Were Found !` });
+        res.status(404).json({ message: `No Orders Were Found !` });
         return;
       }
-      res.status(200).json({ msg: "Data generated successfully", data });
+      res.status(200).json({ message: "Data generated successfully", data });
     } catch (err) {
       error = {
         message: `Request Failed ! ${(err as Error).message}`,
@@ -78,7 +78,7 @@ const getOrderById = Router().get(
       if (!data) {
         res
           .status(404)
-          .json({ msg: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
+          .json({ message: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
         return;
       }
       res.status(200).json(data);
@@ -115,7 +115,7 @@ const updateOrder = Router().put(
       // safety net
       if (!data) {
         res.status(404).json({
-          msg: "Update failed !",
+          message: "Update failed !",
           data: `Order with id (${id}) doesn't exist`,
         });
         return;
@@ -146,7 +146,7 @@ const deleteOrder = Router().delete(
       const data = await orderModel.delete(id);
       if (!data) {
         res.status(404).json({
-          msg: "Delete failed !",
+          message: "Delete failed !",
           data: `Order with id (${id}) doesn't exist`,
         });
         return;

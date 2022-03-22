@@ -23,7 +23,7 @@ describe("Testing product Model functions: \n", () => {
         it(`should create new product`, async () => {
             const result = await products_1.productModel.create(appSpec_1.schema);
             expect(result).toEqual({
-                msg: "Product created successfully",
+                message: "Product created successfully",
                 ...result,
             });
             console.log("product has been created");
@@ -47,7 +47,7 @@ describe("Testing product Model functions: \n", () => {
         it("should return the correct product by id", async () => {
             const result = await products_1.productModel.show(pId);
             expect(result).toEqual({
-                msg: "Product generated successfully",
+                message: "Product generated successfully",
                 data: {
                     p_id: pId,
                     category: appSpec_1.schema.category,
@@ -63,7 +63,7 @@ describe("Testing product Model functions: \n", () => {
         it(`should update the price to = (500) and popular = 'yes' for product by id`, async () => {
             const result = await products_1.productModel.update(pId, 500, "yes");
             expect(result).toEqual({
-                msg: "Product updated successfully",
+                message: "Product updated successfully",
                 data: {
                     p_id: pId,
                     category: appSpec_1.schema.category,
@@ -79,7 +79,7 @@ describe("Testing product Model functions: \n", () => {
         it(`should delete the selected product by ID`, async () => {
             const result = await products_1.productModel.delete(pId);
             expect(result).toEqual({
-                msg: "Product deleted successfully",
+                message: "Product deleted successfully",
                 data: {
                     p_id: pId,
                     category: appSpec_1.schema.category,

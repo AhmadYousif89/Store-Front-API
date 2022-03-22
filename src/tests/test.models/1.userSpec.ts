@@ -30,7 +30,7 @@ describe("Testing user Model functions: \n", () => {
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
       const result = await userModel.create(schema);
-      expect(result?.msg).toEqual("User created successfully");
+      expect(result?.message).toEqual("User created successfully");
       console.log("user has been created");
     });
 
@@ -58,7 +58,7 @@ describe("Testing user Model functions: \n", () => {
     it(`should update the password to = 123 for specific user by id`, async () => {
       const result = await userModel.update(userId, "123");
       expect(result).toEqual({
-        msg: "User updated successfully",
+        message: "User updated successfully",
         data: {
           u_id: userId,
           u_name: schema.u_name,
@@ -79,7 +79,7 @@ describe("Testing user Model functions: \n", () => {
     it("should delete the selected user by id", async () => {
       const result = await userModel.delete(userId);
       expect(result).toEqual({
-        msg: "User deleted successfully",
+        message: "User deleted successfully",
         data: {
           u_id: userId,
           u_name: schema.u_name,

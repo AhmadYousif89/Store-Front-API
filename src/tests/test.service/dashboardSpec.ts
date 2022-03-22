@@ -43,7 +43,7 @@ describe("Testing dashboard Model functions: \n", () => {
         u_id: userId,
         order_status: schema.order_status,
       });
-      expect(order?.msg).toEqual("Order created successfully");
+      expect(order?.message).toEqual("Order created successfully");
     });
 
     it(`should add product to order`, async () => {
@@ -51,14 +51,14 @@ describe("Testing dashboard Model functions: \n", () => {
         ...schema,
         p_id: pId,
       });
-      expect(op?.msg).toEqual(
+      expect(op?.message).toEqual(
         `Product has been added successfully to order number (${schema.order_id})`
       );
     });
 
     it(`should update order status`, async () => {
       const order = await orderModel.update(schema.order_id as number, "complete");
-      expect(order?.msg).toEqual("Order updated successfully");
+      expect(order?.message).toEqual("Order updated successfully");
     });
 
     it("should get all products related to a user", async () => {

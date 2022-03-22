@@ -23,8 +23,10 @@ class OrderedProducts {
       // handling errors
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
+      } else if ((err as Error).message?.includes("relation")) {
+        errMsg = customErr(err as Error, "Table (orders) does not exist !.", ".");
       } else {
-        errMsg = err as unknown as string;
+        errMsg = err as string;
       }
       throw new Error(`${errMsg}`);
     }
@@ -41,7 +43,7 @@ class OrderedProducts {
         console.log(result.command, result.rows);
         conct.release();
         return {
-          msg: `Product has been added successfully to order number (${values.order_id})`,
+          message: `Product has been added successfully to order number (${values.order_id})`,
           data: product,
         };
       }
@@ -84,7 +86,7 @@ class OrderedProducts {
         console.log(result.command, result.rowCount, data);
         conct.release();
         return {
-          msg: "Data generated successfully",
+          message: "Data generated successfully",
           data: data,
         };
       }
@@ -106,7 +108,7 @@ class OrderedProducts {
         console.log(result.command, result.rowCount, product);
         conct.release();
         return {
-          msg: `Product quantity updated successfully`,
+          message: `Product quantity updated successfully`,
           data: product,
         };
       }
@@ -132,7 +134,7 @@ class OrderedProducts {
         console.log(result.command, result.rowCount, product);
         conct.release();
         return {
-          msg: `Row number ${opId} was deleted successfully`,
+          message: `Row number ${opId} was deleted successfully`,
           data: product,
         };
       }

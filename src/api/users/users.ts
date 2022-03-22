@@ -21,7 +21,7 @@ class UserModel {
         console.log(result.command, result.rows);
         conct.release();
         return {
-          msg: `User created successfully`,
+          message: `User created successfully`,
           data: user,
         };
       }
@@ -33,10 +33,8 @@ class UserModel {
       throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
     }
   }
-  /*
-  - Get users => (without retrieving user password as it consider sensitive information)
-  - If we want to control how much of data to be received when calling this route we could use keyword (LIMIT) like = LIMIT 5.
-  */
+
+  // Get all users => (without retrieving user password as it consider sensitive information)
   async index(): Promise<DbSchema[]> {
     try {
       const conct = await pgDB.connect();
@@ -61,7 +59,7 @@ class UserModel {
         console.log(result.command, result.rowCount, user);
         conct.release();
         return {
-          msg: `User generated successfully`,
+          message: `User generated successfully`,
           data: user,
         };
       }
@@ -87,7 +85,7 @@ class UserModel {
         console.log(result.command, result.rowCount, user);
         conct.release();
         return {
-          msg: `User updated successfully`,
+          message: `User updated successfully`,
           data: user,
         };
       }
@@ -112,7 +110,7 @@ class UserModel {
         console.log(result.command, result.rowCount, user);
         conct.release();
         return {
-          msg: `User deleted successfully`,
+          message: `User deleted successfully`,
           data: user,
         };
       }

@@ -27,7 +27,7 @@ class ProductModel {
         // colsing connection with db.
         conct.release();
         return {
-          msg: `Product created successfully`,
+          message: `Product created successfully`,
           data: product,
         };
       }
@@ -76,7 +76,7 @@ class ProductModel {
         console.log(result.command, result.rowCount, product);
         conct.release();
         return {
-          msg: `Product generated successfully`,
+          message: `Product generated successfully`,
           data: product,
         };
       }
@@ -102,7 +102,7 @@ class ProductModel {
         console.log(result.command, result.rowCount, product);
         conct.release();
         return {
-          msg: `Product updated successfully`,
+          message: `Product updated successfully`,
           data: product,
         };
       }
@@ -134,7 +134,7 @@ class ProductModel {
         console.log(result.command, result.rowCount, product);
         conct.release();
         return {
-          msg: `Product deleted successfully`,
+          message: `Product deleted successfully`,
           data: product,
         };
       }

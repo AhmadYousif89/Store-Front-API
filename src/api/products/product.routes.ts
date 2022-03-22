@@ -52,10 +52,10 @@ const getProducts = Router().get(
     try {
       const data = await productModel.index();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Products Were Found !` });
+        res.status(404).json({ message: `No Products Were Found !` });
         return;
       }
-      res.status(200).json({ msg: "Data generated successfully", data });
+      res.status(200).json({ message: "Data generated successfully", data });
     } catch (err) {
       error = {
         message: `Request Failed ! ${(err as Error).message}`,
@@ -77,7 +77,7 @@ const getProductById = Router().get(
       if (!data) {
         res
           .status(404)
-          .json({ msg: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
+          .json({ message: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
         return;
       }
       res.status(200).json(data);
@@ -114,7 +114,7 @@ const updateProduct = Router().put(
       const data = await productModel.update(pid, price, popular);
       if (!data) {
         res.status(404).json({
-          msg: "Update failed !",
+          message: "Update failed !",
           data: `Product with id (${pid}) doesn't exist`,
         });
         return;
@@ -144,7 +144,7 @@ const deleteProduct = Router().delete(
       const data = await productModel.delete(pid);
       if (!data) {
         res.status(404).json({
-          msg: "Delete failed !",
+          message: "Delete failed !",
           data: `Product with id (${pid}) doesn't exist`,
         });
         return;

@@ -44,12 +44,12 @@ describe("Testing Application Functionality: \n", () => {
     it(`should get end point /products with status code 404 and error message`, async () => {
         const response = await exports.route.get("/products");
         expect(response.statusCode).toBe(404);
-        expect(response.body.msg).toEqual("No Products Were Found !");
+        expect(response.body.message).toEqual("No Products Were Found !");
     });
     it(`should get end point /products/most/popular with status code 404 and error message`, async () => {
         const response = await exports.route.get("/products/most/popular");
         expect(response.statusCode).toBe(404);
-        expect(response.body.msg).toEqual("No Popular Products Were Found !");
+        expect(response.body.message).toEqual("No Popular Products Were Found !");
     });
     it(`should get end point /user/account/orders with status code 404 and error message`, async () => {
         const response = await exports.route.get("/user/account/orders");
@@ -59,7 +59,7 @@ describe("Testing Application Functionality: \n", () => {
     it(`should get end point /user/account/ordered-products with status code 404 and error message`, async () => {
         const response = await exports.route.get("/user/account/ordered-products");
         expect(response.statusCode).toBe(404);
-        expect(response.body.msg).toEqual("No Data Were Found !");
+        expect(response.body.message).toEqual("No Data Were Found !");
     });
     it(`should get end point /users/:id/account/review/ordered-products with status code 401 and error message`, async () => {
         const response = await exports.route.get(`/users/(any user)/account/review/ordered-products`);
@@ -79,7 +79,7 @@ describe("Testing Application Functionality: \n", () => {
     describe("Testing app end points: \n", () => {
         it("should create user and extract id", async () => {
             const createUser = await users_1.userModel.create(exports.schema);
-            expect(createUser?.msg).toEqual("User created successfully");
+            expect(createUser?.message).toEqual("User created successfully");
             console.log(`user has been created \n`);
             const user = await users_1.userModel.index();
             userId = user[0].u_id;
@@ -87,7 +87,7 @@ describe("Testing Application Functionality: \n", () => {
         });
         it(`should create product and extract id`, async () => {
             const createProduct = await products_1.productModel.create(exports.schema);
-            expect(createProduct?.msg).toEqual("Product created successfully");
+            expect(createProduct?.message).toEqual("Product created successfully");
             console.log(`product has been created \n`);
             const product = await products_1.productModel.index();
             pId = product[0].p_id;
@@ -98,7 +98,7 @@ describe("Testing Application Functionality: \n", () => {
                 u_id: userId,
                 order_status: exports.schema.order_status,
             });
-            expect(createOrder?.msg).toEqual("Order created successfully");
+            expect(createOrder?.message).toEqual("Order created successfully");
             console.log(`order has been created \n`);
         });
         it(`should add product to order number (${exports.schema.order_id})`, async () => {
@@ -107,12 +107,12 @@ describe("Testing Application Functionality: \n", () => {
                 order_id: exports.schema.order_id,
                 quantity: exports.schema.quantity,
             });
-            expect(createOrder?.msg).toEqual(`Product has been added successfully to order number (${exports.schema.order_id})`);
+            expect(createOrder?.message).toEqual(`Product has been added successfully to order number (${exports.schema.order_id})`);
             console.log(`product added to order \n`);
         });
         it("should extract time of creation of ordered product", async () => {
             const op = await orderedProducts_1.OPT.index();
-            time = JSON.stringify(op[0].created_in).replaceAll(`"`, "");
+            time = JSON.stringify(op[0].created_at).replaceAll(`"`, "");
             console.log(`time extracted: ${time} \n`);
         });
         it("should not get user until authorized", async () => {
@@ -128,8 +128,8 @@ describe("Testing Application Functionality: \n", () => {
                 .set("Content-type", "application/json")
                 .send({ name: exports.schema.u_name, password: exports.schema.password });
             expect(response.status).toEqual(200);
-            const { msg, data, token: userToken } = response.body;
-            expect(msg).toEqual("User authenticated successfully");
+            const { message, data, token: userToken } = response.body;
+            expect(message).toEqual("User authenticated successfully");
             expect(data).toEqual({
                 u_id: userId,
                 u_name: exports.schema.u_name,
@@ -140,7 +140,7 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.get(`/users/${userId}`).set("Authorization", `Bearer ${token}`);
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "User generated successfully",
+                message: "User generated successfully",
                 data: {
                     u_id: userId,
                     u_name: exports.schema.u_name,
@@ -154,7 +154,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ name: "X", password: "abc" });
             expect(response.status).toEqual(401);
             expect(response.body).toEqual({
-                msg: "Authentication failed !",
+                message: "Authentication failed !",
                 data: "Invalid password or User Name",
             });
         });
@@ -162,7 +162,7 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.get(`/users`).set("Authorization", `Bearer ${token}`);
             expect(result.statusCode).toBe(200);
             expect(result.body).toEqual({
-                msg: "Data generated successfully",
+                message: "Data generated successfully",
                 data: [
                     {
                         u_id: userId,
@@ -179,7 +179,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ uid: userId, password: "abc" });
             expect(result.status).toEqual(200);
             expect(result.body).toEqual({
-                msg: "User updated successfully",
+                message: "User updated successfully",
                 data: { u_id: userId, u_name: exports.schema.u_name },
             });
         });
@@ -194,7 +194,7 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.delete(`/users/9586560b-8e75-46b5-bcaf-ebd2d1033308`);
             expect(result.status).toEqual(404);
             expect(result.body).toEqual({
-                msg: "Delete failed !",
+                message: "Delete failed !",
                 data: `User with id (9586560b-8e75-46b5-bcaf-ebd2d1033308) doesn't exist`,
             });
         });
@@ -202,7 +202,7 @@ describe("Testing Application Functionality: \n", () => {
             const response = await exports.route.get(`/products`);
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                msg: "Data generated successfully",
+                message: "Data generated successfully",
                 data: [
                     {
                         p_id: pId,
@@ -220,7 +220,7 @@ describe("Testing Application Functionality: \n", () => {
             const response = await exports.route.get(`/products/${pId}`);
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                msg: "Product generated successfully",
+                message: "Product generated successfully",
                 data: {
                     p_id: pId,
                     category: exports.schema.category,
@@ -239,7 +239,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ id: pId, price: 900, popular: "yes" });
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                msg: "Product updated successfully",
+                message: "Product updated successfully",
                 data: {
                     p_id: pId,
                     category: exports.schema.category,
@@ -264,7 +264,7 @@ describe("Testing Application Functionality: \n", () => {
                 .set("Authorization", `Bearer ${token}`);
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Data generated successfully",
+                message: "Data generated successfully",
                 data: [
                     {
                         order_id: exports.schema.order_id,
@@ -280,7 +280,7 @@ describe("Testing Application Functionality: \n", () => {
                 .set("Authorization", `Bearer ${token}`);
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Order generated successfully",
+                message: "Order generated successfully",
                 data: {
                     order_id: exports.schema.order_id,
                     order_status: exports.schema.order_status,
@@ -308,7 +308,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ order_id: exports.schema.order_id, status: exports.schema.order_status });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: `Order number (${exports.schema.order_id}) already has a status of (${exports.schema.order_status}) !`,
+                message: `Order number (${exports.schema.order_id}) already has a status of (${exports.schema.order_status}) !`,
             });
         });
         it("should update order status to (complete)", async () => {
@@ -319,7 +319,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ order_id: exports.schema.order_id, status: "complete" });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Order updated successfully",
+                message: "Order updated successfully",
                 data: {
                     order_id: exports.schema.order_id,
                     order_status: "complete",
@@ -335,7 +335,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ order_id: exports.schema.order_id, status: exports.schema.order_status });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: `Order number (${exports.schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
+                message: `Order number (${exports.schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
             });
         });
         it(`should not delete order because of foregin key constrain`, async () => {
@@ -351,14 +351,14 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.get("/user/account/ordered-products");
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Data generated successfully",
+                message: "Data generated successfully",
                 data: [
                     {
                         op_id: exports.schema.op_id,
                         order_id: exports.schema.order_id,
                         product_id: pId,
                         quantity: exports.schema.quantity,
-                        created_in: time,
+                        created_at: time,
                     },
                 ],
             });
@@ -367,13 +367,13 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.get(`/user/account/ordered-products/${exports.schema.op_id}`);
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Data generated successfully",
+                message: "Data generated successfully",
                 data: {
                     op_id: exports.schema.op_id,
                     order_id: exports.schema.order_id,
                     product_id: pId,
                     quantity: exports.schema.quantity,
-                    created_in: time,
+                    created_at: time,
                 },
             });
         });
@@ -395,7 +395,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ p_id: "325b12e8-9676-4af8-8c12-34816ecb8ce1", quantity: 1 });
             expect(result.status).toBe(404);
             expect(result.body).toEqual({
-                msg: "Update failed !",
+                message: "Update failed !",
                 data: `Product with id (325b12e8-9676-4af8-8c12-34816ecb8ce1) doesn't exist`,
             });
         });
@@ -427,13 +427,13 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ p_id: pId, quantity: 20 });
             expect(result.status).toBe(200);
             expect(result.body).toEqual({
-                msg: "Product quantity updated successfully",
+                message: "Product quantity updated successfully",
                 data: {
                     op_id: exports.schema.op_id,
                     order_id: exports.schema.order_id,
                     product_id: pId,
                     quantity: 20,
-                    created_in: time,
+                    created_at: time,
                 },
             });
         });
@@ -443,7 +443,7 @@ describe("Testing Application Functionality: \n", () => {
                 .set("Authorization", `Bearer ${token}`);
             expect(response.statusCode).toBe(200);
             expect(response.body).toEqual({
-                msg: `Data generated successfully for user id (${userId})`,
+                message: `Data generated successfully for user id (${userId})`,
                 data: [
                     {
                         op_id: exports.schema.op_id,
@@ -451,7 +451,7 @@ describe("Testing Application Functionality: \n", () => {
                         order_status: "complete",
                         product_id: pId,
                         quantity: 20,
-                        created_in: time,
+                        created_at: time,
                     },
                 ],
             });
@@ -459,7 +459,7 @@ describe("Testing Application Functionality: \n", () => {
         it(`should get end point /products/most/popular`, async () => {
             const response = await exports.route.get("/products/most/popular");
             expect(response.statusCode).toBe(200);
-            expect(response.body.msg).toEqual("Data generated successfully");
+            expect(response.body.message).toEqual("Data generated successfully");
         });
         it(`should get end point /users/:uid/orders/:oid/account/review/ordered-products `, async () => {
             const response = await exports.route
@@ -476,24 +476,24 @@ describe("Testing Application Functionality: \n", () => {
         it("should delete one row from ordered products", async () => {
             const result = await exports.route.delete(`/user/account/ordered-products/${exports.schema.op_id}`);
             expect(result.status).toBe(200);
-            expect(result.body.msg).toEqual(`Row number ${exports.schema.op_id} was deleted successfully`);
+            expect(result.body.message).toEqual(`Row number ${exports.schema.op_id} was deleted successfully`);
         });
         it(`should delete one product`, async () => {
             const result = await exports.route.delete(`/products/${pId}`).set("Authorization", `Bearer ${token}`);
             expect(result.status).toBe(200);
-            expect(result.body.msg).toEqual(`Product deleted successfully`);
+            expect(result.body.message).toEqual(`Product deleted successfully`);
         });
         it(`should delete order number ${exports.schema.order_id}`, async () => {
             const response = await exports.route
                 .delete(`/user/account/orders/${exports.schema.order_id}`)
                 .set("Authorization", `Bearer ${token}`);
             expect(response.status).toBe(200);
-            expect(response.body.msg).toEqual(`Order deleted successfully`);
+            expect(response.body.message).toEqual(`Order deleted successfully`);
         });
         it(`should delete one user`, async () => {
             const response = await exports.route.delete(`/users/${userId}`);
             expect(response.status).toBe(200);
-            expect(response.body.msg).toEqual(`User deleted successfully`);
+            expect(response.body.message).toEqual(`User deleted successfully`);
         });
         afterAll(async () => {
             const conct = await database_1.default.connect();

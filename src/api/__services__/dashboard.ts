@@ -9,7 +9,7 @@ class Dashboard {
     try {
       const conct = await pgDB.connect();
       const sql = `
-      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_in FROM orders 
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
       JOIN ordered_products 
       ON orders.order_id = ordered_products.order_id 
       WHERE orders.user_id = ($1)`;
@@ -26,7 +26,7 @@ class Dashboard {
       } else {
         errMsg = customErr(
           err as Error,
-          "Make sure to add products to this user before tring to access this page !.",
+          "Make sure to add products to this user before trying to access this page !.",
           "."
         );
       }
@@ -39,7 +39,7 @@ class Dashboard {
     try {
       const conct = await pgDB.connect();
       const sql = `
-        SELECT op_id, order_status, product_id, quantity, created_in FROM orders
+        SELECT op_id, order_status, product_id, quantity, created_at FROM orders
         JOIN ordered_products
         ON orders.order_id = ordered_products.order_id 
         WHERE orders.user_id = ($1) AND orders.order_id = ($2)`;
@@ -58,7 +58,7 @@ class Dashboard {
       } else {
         errMsg = customErr(
           err as Error,
-          "Make sure to add orders and products to this user before tring to access this page !.",
+          "Make sure to add orders and products to this user before trying to access this page !.",
           "."
         );
       }
@@ -71,11 +71,11 @@ class Dashboard {
     try {
       const conct = await pgDB.connect();
       const sql = `
-      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_in FROM orders 
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
       JOIN ordered_products 
       ON orders.order_id = ordered_products.order_id 
       WHERE orders.user_id = ($1) AND orders.order_status = 'complete' 
-      ORDER BY created_in DESC`;
+      ORDER BY created_at DESC`;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         console.log(result.command, result.rowCount, result.rows);
@@ -89,7 +89,7 @@ class Dashboard {
       } else {
         errMsg = customErr(
           err as Error,
-          "Make sure to add orders and products to this user before tring to access this page !.",
+          "Make sure to add orders and products to this user before trying to access this page !.",
           "."
         );
       }

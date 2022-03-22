@@ -46,7 +46,7 @@ describe("OrderedProducts Model functions: \n", () => {
         u_id: userId,
         order_status: schema.order_status,
       });
-      expect(order?.msg).toEqual("Order created successfully");
+      expect(order?.message).toEqual("Order created successfully");
     });
 
     it(`should add product to order`, async () => {
@@ -55,7 +55,7 @@ describe("OrderedProducts Model functions: \n", () => {
         order_id: schema.order_id,
         quantity: schema.quantity,
       });
-      expect(op?.msg).toEqual(
+      expect(op?.message).toEqual(
         `Product has been added successfully to order number (${schema.order_id})`
       );
     });
@@ -70,17 +70,17 @@ describe("OrderedProducts Model functions: \n", () => {
 
     it(`should get one ordered product by id`, async () => {
       const op = await OPT.show(schema.op_id as number);
-      expect(op?.msg).toEqual("Data generated successfully");
+      expect(op?.message).toEqual("Data generated successfully");
     });
 
     it(`should update the quantity of one ordered products by id`, async () => {
       const op = await OPT.update(pId as string, 50);
-      expect(op?.msg).toEqual("Product quantity updated successfully");
+      expect(op?.message).toEqual("Product quantity updated successfully");
     });
 
     it(`should delete one ordered products by id`, async () => {
       const op = await OPT.delete(schema.op_id as number);
-      expect(op?.msg).toEqual(`Row number ${schema.op_id} was deleted successfully`);
+      expect(op?.message).toEqual(`Row number ${schema.op_id} was deleted successfully`);
     });
 
     afterAll(async () => {

@@ -20,7 +20,7 @@ const addProductToOrder = Router().post(
       ${quantity}`
     );
     // validating values before submitting.
-    if (!pId || !quantity || quantity <= 0) {
+    if (!pId || !quantity || quantity <= 0 || isNaN(oId)) {
       res
         .status(400)
         .json({ status: "Error", message: "Please provide correct details before submiting !" });
@@ -50,10 +50,10 @@ const getOrderedProducts = Router().get(
     try {
       const data = await OPT.index();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Data Were Found !` });
+        res.status(404).json({ message: `No Data Were Found !` });
         return;
       }
-      res.status(200).json({ msg: "Data generated successfully", data });
+      res.status(200).json({ message: "Data generated successfully", data });
     } catch (err) {
       error = {
         message: `Request Failed ! ${(err as Error).message}`,
@@ -77,9 +77,10 @@ const getRowByOPid = Router().get(
     try {
       const data = await OPT.show(opId);
       if (!data) {
-        res
-          .status(404)
-          .json({ msg: "Request failed !", data: `No products related to this id (${opId}) !` });
+        res.status(404).json({
+          message: "Request failed !",
+          data: `No products related to this id (${opId}) !`,
+        });
         return;
       }
       res.status(200).json(data);
@@ -114,7 +115,7 @@ const updateOrderedProduct = Router().put(
       const data = await OPT.update(pId, quantity);
       if (!data) {
         res.status(404).json({
-          msg: "Update failed !",
+          message: "Update failed !",
           data: `Product with id (${pId}) doesn't exist`,
         });
         return;
@@ -144,7 +145,7 @@ const delOrderedProduct = Router().delete(
       const data = await OPT.delete(opId);
       if (!data) {
         res.status(404).json({
-          msg: "Delete failed !",
+          message: "Delete failed !",
           data: `Order with id (${opId}) doesn't exist`,
         });
         return;

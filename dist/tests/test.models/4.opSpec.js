@@ -43,7 +43,7 @@ describe("OrderedProducts Model functions: \n", () => {
                 u_id: userId,
                 order_status: appSpec_1.schema.order_status,
             });
-            expect(order?.msg).toEqual("Order created successfully");
+            expect(order?.message).toEqual("Order created successfully");
         });
         it(`should add product to order`, async () => {
             const op = await orderedProducts_1.OPT.addProducts({
@@ -51,7 +51,7 @@ describe("OrderedProducts Model functions: \n", () => {
                 order_id: appSpec_1.schema.order_id,
                 quantity: appSpec_1.schema.quantity,
             });
-            expect(op?.msg).toEqual(`Product has been added successfully to order number (${appSpec_1.schema.order_id})`);
+            expect(op?.message).toEqual(`Product has been added successfully to order number (${appSpec_1.schema.order_id})`);
         });
         it(`should get all ordered products`, async () => {
             const op = await orderedProducts_1.OPT.index();
@@ -62,15 +62,15 @@ describe("OrderedProducts Model functions: \n", () => {
         });
         it(`should get one ordered product by id`, async () => {
             const op = await orderedProducts_1.OPT.show(appSpec_1.schema.op_id);
-            expect(op?.msg).toEqual("Data generated successfully");
+            expect(op?.message).toEqual("Data generated successfully");
         });
         it(`should update the quantity of one ordered products by id`, async () => {
             const op = await orderedProducts_1.OPT.update(pId, 50);
-            expect(op?.msg).toEqual("Product quantity updated successfully");
+            expect(op?.message).toEqual("Product quantity updated successfully");
         });
         it(`should delete one ordered products by id`, async () => {
             const op = await orderedProducts_1.OPT.delete(appSpec_1.schema.op_id);
-            expect(op?.msg).toEqual(`Row number ${appSpec_1.schema.op_id} was deleted successfully`);
+            expect(op?.message).toEqual(`Row number ${appSpec_1.schema.op_id} was deleted successfully`);
         });
         afterAll(async () => {
             const conct = await database_1.default.connect();

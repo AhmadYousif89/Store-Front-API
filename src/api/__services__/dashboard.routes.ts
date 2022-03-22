@@ -15,12 +15,12 @@ const getUserProducts = Router().get(
       const data = await dashBoard.getUserProducts(uid);
       if (!data) {
         res.status(404).json({
-          msg: "Request failed !",
+          message: "Request failed !",
           data: `User with id (${uid}) doesn't have products`,
         });
         return;
       }
-      res.status(200).json({ msg: `Data generated successfully for user id (${uid})`, data });
+      res.status(200).json({ message: `Data generated successfully for user id (${uid})`, data });
       return;
     } catch (err) {
       error = {
@@ -41,7 +41,7 @@ const getUserProductsByOid = Router().get(
     console.log("data: \n", uid, oid);
     if (!oid || oid <= 0) {
       res.status(400).json({
-        msg: "Please enter a valid order id !",
+        message: "Please enter a valid order id !",
       });
       return;
     }
@@ -49,13 +49,13 @@ const getUserProductsByOid = Router().get(
       const data = await dashBoard.getUserProductsByOid(uid, oid);
       if (!data) {
         res.status(404).json({
-          msg: "Request failed !",
+          message: "Request failed !",
           data: `User with id (${uid}) doesn't have products related to order number (${oid})`,
         });
         return;
       }
       res.status(200).json({
-        msg: `Data generated successfully from order number (${oid}) for user id (${uid})`,
+        message: `Data generated successfully from order number (${oid}) for user id (${uid})`,
         data,
       });
       return;
@@ -80,12 +80,12 @@ const getUserMostPurchases = Router().get(
       const data = await dashBoard.getUserMostPurchases(uid);
       if (!data) {
         res.status(404).json({
-          msg: "Request failed !",
+          message: "Request failed !",
           data: `User with id (${uid}) doesn't have purchases`,
         });
         return;
       }
-      res.status(200).json({ msg: `Data generated successfully for user id (${uid})`, data });
+      res.status(200).json({ message: `Data generated successfully for user id (${uid})`, data });
       return;
     } catch (err) {
       error = {
@@ -104,10 +104,10 @@ const getProductByPopularity = Router().get(
     try {
       const data = await dashBoard.getProductByPopularity();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Popular Products Were Found !` });
+        res.status(404).json({ message: `No Popular Products Were Found !` });
         return;
       }
-      res.status(200).json({ msg: "Data generated successfully", data });
+      res.status(200).json({ message: "Data generated successfully", data });
     } catch (err) {
       error = {
         message: `Request Failed ! ${(err as Error).message}`,

@@ -5,7 +5,7 @@
 ## API Endpoints
 
 - home : `http://localhost:3000`
-### users  :
+- users### users :
   - `GET` /users ==> all users `token`
   - `GET` /users/:id ==> one user `token`
   - `POST` /users/signup ==> create user
@@ -15,25 +15,31 @@
   - `GET` /users/:id/account/review/ordered-products ==> all user's ordered products `token`
   - `GET` /users/:uid/account/most-recent/purchases ==> all user's most recent purchases `token`
   - `GET` /users/:uid/orders/:oid/account/review/ordered-products ==> all user's ordered products by specific order id `token`
+
 ### products :
-  - `GET` /products ==> all products
-  - `GET` /products/:id ==> one product
-  - `POST` /products ==> create product `token`
-  - `PUT` /products/ ==> update product
-  - `DELETE` /products/:id ==> delete product
-  - `GET` /products/most/popular ==> most popular products
+
+- `GET` /products ==> all products
+- `GET` /products/:id ==> one product
+- `POST` /products ==> create product `token`
+- `PUT` /products/ ==> update product
+- `DELETE` /products/:id ==> delete product
+- `GET` /products/most/popular ==> most popular products
+
 ### orders :
-  - `GET` /user/account/orders ==> all orders `token`
-  - `GET` /user/account/orders/:id ==> one order `token`
-  - `POST` /user/account/orders ==> create order `token`
-  - `PUT` /user/account/orders/ ==> update order `token`
-  - `DELETE` /user/account/orders/:id ==> delete order `token`
+
+- `GET` /user/account/orders ==> all orders `token`
+- `GET` /user/account/orders/:id ==> one order `token`
+- `POST` /user/account/orders ==> create order `token`
+- `PUT` /user/account/orders/ ==> update order `token`
+- `DELETE` /user/account/orders/:id ==> delete order `token`
+
 ### ordered-products :
-  - `GET` /user/account/ordered-products ==> all ordered-products
-  - `GET` /user/account/ordered-products/:id ==> one ordered-product
-  - `POST` /user/account/orders/:id/products ==> add product to order
-  - `PUT` /user/account/ordered-products/ ==> update ordered-product
-  - `DELETE` /user/account/ordered-products/:id ==> delete ordered-product
+
+- `GET` /user/account/ordered-products ==> all ordered-products
+- `GET` /user/account/ordered-products/:id ==> one ordered-product
+- `POST` /user/account/orders/:id/products ==> add product to order
+- `PUT` /user/account/ordered-products/ ==> update ordered-product
+- `DELETE` /user/account/ordered-products/:id ==> delete ordered-product
 
 ## DB Schema
 
@@ -72,9 +78,9 @@
     - Create
     - Update
     - Delete
-    
+
     ## Services :
-    
+
     - Top 5 most popular products
     - List of all user's products
     - List of all user's products by specific order id

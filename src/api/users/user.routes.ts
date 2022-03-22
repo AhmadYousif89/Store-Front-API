@@ -57,13 +57,13 @@ const loginUser = Router().post(
       if (!user) {
         res
           .status(401)
-          .json({ msg: "Authentication failed !", data: "Invalid password or User Name" });
+          .json({ message: "Authentication failed !", data: "Invalid password or User Name" });
         return;
       }
       // creating token based on user credentials and my secret token.
       const token = JWT.sign({ user }, SECRET_TOKEN as string);
       res.status(200).json({
-        msg: "User authenticated successfully",
+        message: "User authenticated successfully",
         data: user,
         token,
       });
@@ -85,10 +85,10 @@ const getUsers = Router().get(
     try {
       const data = await userModel.index();
       if (data.length === 0) {
-        res.status(404).json({ msg: `No Users Were Found !` });
+        res.status(404).json({ message: `No Users Were Found !` });
         return;
       }
-      res.status(200).json({ msg: "Data generated successfully", data });
+      res.status(200).json({ message: "Data generated successfully", data });
     } catch (err) {
       error = {
         message: `Request Failed ! ${(err as Error).message}`,
@@ -110,7 +110,7 @@ const getUserById = Router().get(
       const data = await userModel.show(uid);
       if (!data) {
         res.status(404).json({
-          msg: "Request failed !",
+          message: "Request failed !",
           data: `User with id (${uid}) doesn't exist`,
         });
         return;
@@ -146,7 +146,7 @@ const updateUser = Router().put(
       const data = await userModel.update(uid, password);
       if (!data) {
         res.status(404).json({
-          msg: "Update failed !",
+          message: "Update failed !",
           data: `User with id (${uid}) doesn't exist`,
         });
         return;
@@ -172,7 +172,7 @@ const deleteUser = Router().delete(
       const data = await userModel.delete(uid);
       if (!data) {
         res.status(404).json({
-          msg: "Delete failed !",
+          message: "Delete failed !",
           data: `User with id (${uid}) doesn't exist`,
         });
         return;

@@ -8,7 +8,7 @@ class OrdersModel {
   async create(values: DbSchema): Promise<DbSchema | null> {
     // don't set new orders as complete.
     if (values.order_status === "complete") {
-      return { msg: `New orders can not be set as (${values.order_status})` };
+      return { message: `New orders can not be set as (${values.order_status})` };
     }
     try {
       // openning connection with db.
@@ -24,7 +24,7 @@ class OrdersModel {
         // colsing connection with db.
         conct.release();
         return {
-          msg: `Order created successfully`,
+          message: `Order created successfully`,
           data: orders,
         };
       }
@@ -73,7 +73,7 @@ class OrdersModel {
         console.log(result.command, result.rowCount, orders);
         conct.release();
         return {
-          msg: `Order generated successfully`,
+          message: `Order generated successfully`,
           data: orders,
         };
       }
@@ -93,12 +93,12 @@ class OrdersModel {
       if (order_status === "complete") {
         conct.release();
         return {
-          msg: `Order number (${oid}) already has a status of (complete) - you may review your order or delete it if you want !`,
+          message: `Order number (${oid}) already has a status of (complete) - you may review your order or delete it if you want !`,
         };
       } else if (order_status === status) {
         conct.release();
         return {
-          msg: `Order number (${oid}) already has a status of (${order_status}) !`,
+          message: `Order number (${oid}) already has a status of (${order_status}) !`,
         };
       }
       const sql2 = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
@@ -108,7 +108,7 @@ class OrdersModel {
         console.log(updateResult.command, updateResult.rowCount, order);
         conct.release();
         return {
-          msg: `Order updated successfully`,
+          message: `Order updated successfully`,
           data: order,
         };
       }
@@ -139,7 +139,7 @@ class OrdersModel {
         console.log(result.command, result.rowCount, orders);
         conct.release();
         return {
-          msg: `Order deleted successfully`,
+          message: `Order deleted successfully`,
           data: orders,
         };
       }

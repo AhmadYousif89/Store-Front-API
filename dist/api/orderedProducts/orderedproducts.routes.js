@@ -18,7 +18,7 @@ const addProductToOrder = (0, express_1.Router)().post("/user/account/orders/:id
       ${pId} 
       ${quantity}`);
     // validating values before submitting.
-    if (!pId || !quantity || quantity <= 0) {
+    if (!pId || !quantity || quantity <= 0 || isNaN(oId)) {
         res
             .status(400)
             .json({ status: "Error", message: "Please provide correct details before submiting !" });
@@ -45,10 +45,10 @@ const getOrderedProducts = (0, express_1.Router)().get("/user/account/ordered-pr
     try {
         const data = await orderedProducts_1.OPT.index();
         if (data.length === 0) {
-            res.status(404).json({ msg: `No Data Were Found !` });
+            res.status(404).json({ message: `No Data Were Found !` });
             return;
         }
-        res.status(200).json({ msg: "Data generated successfully", data });
+        res.status(200).json({ message: "Data generated successfully", data });
     }
     catch (err) {
         error = {
@@ -69,9 +69,10 @@ const getRowByOPid = (0, express_1.Router)().get("/user/account/ordered-products
     try {
         const data = await orderedProducts_1.OPT.show(opId);
         if (!data) {
-            res
-                .status(404)
-                .json({ msg: "Request failed !", data: `No products related to this id (${opId}) !` });
+            res.status(404).json({
+                message: "Request failed !",
+                data: `No products related to this id (${opId}) !`,
+            });
             return;
         }
         res.status(200).json(data);
@@ -101,7 +102,7 @@ const updateOrderedProduct = (0, express_1.Router)().put("/user/account/ordered-
         const data = await orderedProducts_1.OPT.update(pId, quantity);
         if (!data) {
             res.status(404).json({
-                msg: "Update failed !",
+                message: "Update failed !",
                 data: `Product with id (${pId}) doesn't exist`,
             });
             return;
@@ -128,7 +129,7 @@ const delOrderedProduct = (0, express_1.Router)().delete("/user/account/ordered-
         const data = await orderedProducts_1.OPT.delete(opId);
         if (!data) {
             res.status(404).json({
-                msg: "Delete failed !",
+                message: "Delete failed !",
                 data: `Order with id (${opId}) doesn't exist`,
             });
             return;

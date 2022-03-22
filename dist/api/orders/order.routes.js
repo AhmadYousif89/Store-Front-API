@@ -42,10 +42,10 @@ const getOrders = (0, express_1.Router)().get("/user/account/orders", auth_middl
     try {
         const data = await orders_1.orderModel.index();
         if (data.length === 0) {
-            res.status(404).json({ msg: `No Orders Were Found !` });
+            res.status(404).json({ message: `No Orders Were Found !` });
             return;
         }
-        res.status(200).json({ msg: "Data generated successfully", data });
+        res.status(200).json({ message: "Data generated successfully", data });
     }
     catch (err) {
         error = {
@@ -68,7 +68,7 @@ const getOrderById = (0, express_1.Router)().get("/user/account/orders/:id", aut
         if (!data) {
             res
                 .status(404)
-                .json({ msg: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
+                .json({ message: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
             return;
         }
         res.status(200).json(data);
@@ -99,7 +99,7 @@ const updateOrder = (0, express_1.Router)().put("/user/account/orders", auth_mid
         // safety net
         if (!data) {
             res.status(404).json({
-                msg: "Update failed !",
+                message: "Update failed !",
                 data: `Order with id (${id}) doesn't exist`,
             });
             return;
@@ -126,7 +126,7 @@ const deleteOrder = (0, express_1.Router)().delete("/user/account/orders/:id", a
         const data = await orders_1.orderModel.delete(id);
         if (!data) {
             res.status(404).json({
-                msg: "Delete failed !",
+                message: "Delete failed !",
                 data: `Order with id (${id}) doesn't exist`,
             });
             return;

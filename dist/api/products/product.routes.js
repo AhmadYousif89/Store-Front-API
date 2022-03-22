@@ -47,10 +47,10 @@ const getProducts = (0, express_1.Router)().get("/products", async (_req, res, n
     try {
         const data = await products_1.productModel.index();
         if (data.length === 0) {
-            res.status(404).json({ msg: `No Products Were Found !` });
+            res.status(404).json({ message: `No Products Were Found !` });
             return;
         }
-        res.status(200).json({ msg: "Data generated successfully", data });
+        res.status(200).json({ message: "Data generated successfully", data });
     }
     catch (err) {
         error = {
@@ -69,7 +69,7 @@ const getProductById = (0, express_1.Router)().get("/products/:id", async (req, 
         if (!data) {
             res
                 .status(404)
-                .json({ msg: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
+                .json({ message: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
             return;
         }
         res.status(200).json(data);
@@ -101,7 +101,7 @@ const updateProduct = (0, express_1.Router)().put("/products", async (req, res, 
         const data = await products_1.productModel.update(pid, price, popular);
         if (!data) {
             res.status(404).json({
-                msg: "Update failed !",
+                message: "Update failed !",
                 data: `Product with id (${pid}) doesn't exist`,
             });
             return;
@@ -128,7 +128,7 @@ const deleteProduct = (0, express_1.Router)().delete("/products/:id", async (req
         const data = await products_1.productModel.delete(pid);
         if (!data) {
             res.status(404).json({
-                msg: "Delete failed !",
+                message: "Delete failed !",
                 data: `Product with id (${pid}) doesn't exist`,
             });
             return;
