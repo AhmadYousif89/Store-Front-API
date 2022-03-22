@@ -6,6 +6,7 @@
 
 ## Getting started
 ---
+---
 
 - To use the API properly please follow these steps :
 
