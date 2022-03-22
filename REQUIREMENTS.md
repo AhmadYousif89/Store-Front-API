@@ -5,7 +5,12 @@
 ## API Endpoints
 
 - home : `http://localhost:3000`
+<<<<<<< HEAD
 - users### users :
+=======
+### users  :
+-
+>>>>>>> ffa886c213fbd3cda0d7ea26a9dc6cd9fdc7e461
   - `GET` /users ==> all users `token`
   - `GET` /users/:id ==> one user `token`
   - `POST` /users/signup ==> create user
