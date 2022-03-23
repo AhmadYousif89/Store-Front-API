@@ -174,6 +174,7 @@
   ```
   npm start
   ```
+  ![start server](https://user-images.githubusercontent.com/90717578/159601408-4bdf1c62-e4ed-4ab4-ae61-2dad3de991de.gif)
 
 - `to build and complie the project code.`
   ```
@@ -203,6 +204,8 @@
   ```
   npm test
   ```
+  ![test](https://user-images.githubusercontent.com/90717578/159601994-74a5b8a2-d9a7-4249-8d6e-ad564de468fe.gif)
+
 - `to run migration up process in test environment.`
   ```
   npm run test:m-up
@@ -211,10 +214,6 @@
   ```
    npm run test:m-down
   ```
-
-```Test
-[![asciicast](https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G.svg)](https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G)
-```
 
 ---
 
