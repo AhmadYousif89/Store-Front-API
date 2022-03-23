@@ -213,7 +213,7 @@
   ```
 
 ```Test
-https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G
+[![asciicast](https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G.svg)](https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G)
 ```
 
 ---
