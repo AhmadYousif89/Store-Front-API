@@ -36,6 +36,18 @@ describe("Testing Application Functionality: \n", () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it(`should get end point /any-random-page with status code 404 and error message`, async () => {
+    const response = await route.get("/any-random-page");
+    expect(response.statusCode).toBe(404);
+    expect(response.notFound).toBeTruthy();
+    expect(response.text).toMatch(
+      `
+    <h3>404 Page Not Found !</h3>
+    This page doesn't exist, Sorry !
+    `
+    );
+  });
+
   it(`should get end point /users with status code 401 and error message`, async () => {
     const response = await route.get("/users");
     expect(response.statusCode).toBe(401);

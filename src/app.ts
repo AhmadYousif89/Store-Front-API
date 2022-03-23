@@ -25,9 +25,12 @@ app.get("/", (_req: Request, res: Response) => {
 app.use(errorHandler);
 
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    msg: "Please read our API documention to know how to use the application, Good Luck !",
-  });
+  res.status(404).send(
+    `
+    <h3>404 Page Not Found !</h3>
+    This page doesn't exist, Sorry !
+    `
+  );
 });
 
 const port = process.env.SERVER_PORT || 2020;

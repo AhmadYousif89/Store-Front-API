@@ -24,9 +24,10 @@ app.get("/", (_req, res) => {
 });
 app.use(error_middleware_1.default);
 app.use((_req, res) => {
-    res.status(404).json({
-        msg: "Please read our API documention to know how to use the application, Good Luck !",
-    });
+    res.status(404).send(`
+    <h3>404 Page Not Found !</h3>
+    This page doesn't exist, Sorry !
+    `);
 });
 const port = process.env.SERVER_PORT || 2020;
 app.listen(port, async () => {
