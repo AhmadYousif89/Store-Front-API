@@ -19,20 +19,24 @@ jobs:
           name: NPM Install
           command: |
             npm install
+      # - run:
+      #     name: Lint
+      #     command: |
+      #       npm run lint
+      # - run:
+      #     name: Prettier
+      #     command: |
+      #       npm run prettier
+      # - run:
+      #     name: Build
+      #     command: |
+      #       npm run build
       - run:
-          name: Lint
+          name: Test
           command: |
-            npm run lint
+            npm test
       - run:
-          name: Prettier
-          command: |
-            npm run prettier
-      - run:
-          name: Build
-          command: |
-            npm run build
-      - run:
-          name: "Done"
+          name: Done
           command: echo "Job Done"
 
 # Invoke jobs via workflows

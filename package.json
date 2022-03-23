@@ -13,6 +13,7 @@
     "dev": "npx nodemon src/app.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "lint": "eslint src/**/*.ts",
+    "jasmine": "jasmine",
     "m-up": "db-migrate up",
     "m-down": "db-migrate reset",
     "test:m-up": "db-migrate -e test up",
