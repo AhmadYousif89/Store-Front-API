@@ -38,15 +38,7 @@
   #### Step 4: Connect to the databases and grant all privileges to the user you just created
 
   ```
-  \c tech_store
-  ```
-
-  ```
   GRANT ALL PRIVILEGES ON DATABASE tech_store TO udacity;
-  ```
-
-  ```
-  \c tech_store_test
   ```
 
   ```
@@ -219,6 +211,10 @@
   ```
    npm run test:m-down
   ```
+
+```Test
+https://asciinema.org/a/1Kd29CeKvr4mVFt5s0CLDtV6G
+```
 
 ---
 
