@@ -7,20 +7,27 @@ orbs:
   ebs-cli: circleci/aws-elastic-beanstalk@2.0.1
 # Define a job to be invoked later in a workflow.
 jobs:
-  say-done:
-    # Specify the execution environment.
+  build-test:
+    working_directory: ~/circleci-demo-ruby-rails
+    # Specify the execution environments.
     docker:
       - image: cimg/base:stable
       - image: cimg/node:16.14.0
-      - image: cimg/go:1.17
-      - image: cimg/postgres:14.1.0-postgis
+      - image: cimg/ruby:2.6-node
         auth:
-          username: postgres
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD 
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: cimg/postgres:14.0
+        auth:
+          username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD
         environment:
-          POSTGRES_USER: udacity
-          POSTGRES_DB: tech_store_test
-          POSTGRES_PASSWORD: "123"
+          POSTGRES_USER: root
+          POSTGRES_DB: circle-test_test
     # Add steps to the job
     steps:
       - node/install
@@ -33,6 +40,38 @@ jobs:
           name: Build and Complie
           command: |
             npm run build
+       - restore_cache:
+          keys:
+            - rails-demo-{{ checksum "Gemfile.lock" }}
+            - rails-demo-
+
+      # Bundle install dependencies
+      - run:
+          name: Install dependencies
+          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs 4 --retry 3
+
+      - run: sudo apt install -y postgresql-client || true
+
+      # Store bundle cache
+      - save_cache:
+          key: rails-demo-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Database Setup
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:structure:load
+
+      - run:
+          name: Parallel RSpec
+          command: bin/rails test
+
+      # Save artifacts
+      - store_test_results:
+          path: /tmp/test-results
+
       # - run:
       #     name: Lint
       #     command: |
@@ -41,10 +80,6 @@ jobs:
       #     name: Prettier
       #     command: |
       #       npm run prettier
-      # - run:
-      #     name: Build
-      #     command: |
-      #       npm run build
       - run:
           name: Test
           command: |
@@ -57,4 +92,4 @@ jobs:
 workflows:
   project-workflow:
     jobs:
-      - say-done
+      - build-test
