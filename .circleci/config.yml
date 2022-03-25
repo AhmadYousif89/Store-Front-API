@@ -9,7 +9,6 @@ orbs:
 jobs:
   say-done:
     # Specify the execution environment.
-  build:
     docker:
       - image: cimg/base:stable
       - image: cimg/node:16.14.0
