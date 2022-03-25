@@ -11,7 +11,7 @@ jobs:
     # Specify the execution environment.
     docker:
       - image: cimg/base:stable
-      - image: cimg/go:1.17
+      - image: cimg/node:16.14.0
       - image: cimg/postgres:14.1.0
     # Add steps to the job
     steps:
