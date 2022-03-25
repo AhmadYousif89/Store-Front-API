@@ -16,7 +16,7 @@ jobs:
       - image: cimg/ruby:2.6-node
         auth:
           username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD 
+          password: $DOCKERHUB_PASSWORD
         environment:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
@@ -40,7 +40,7 @@ jobs:
           name: Build and Complie
           command: |
             npm run build
-       - restore_cache:
+      - restore_cache:
           keys:
             - rails-demo-{{ checksum "Gemfile.lock" }}
             - rails-demo-
