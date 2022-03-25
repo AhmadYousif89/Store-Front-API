@@ -196,7 +196,7 @@ describe("Testing Application Functionality: \n", () => {
             const result = await exports.route.delete(`/users/${userId}`);
             expect(result.status).toEqual(500);
             expect(result.body).toEqual({
-                message: `Request Failed ! Unable to delete user with id (${userId}) - User can not be deleted - delete any related orders first !`,
+                message: `Request Failed ! Unable to delete user with id (${userId}) - Please delete any related orders first !`,
             });
         });
         it("should not delete user and display error message", async () => {
@@ -426,7 +426,7 @@ describe("Testing Application Functionality: \n", () => {
                 .send({ p_id: pId, quantity: 10 });
             expect(result.status).toBe(500);
             expect(result.body).toEqual({
-                message: `Error: Unable to add product (${pId}) to order (${exports.schema.order_id}) because order status is already (complete)`,
+                message: `Error: Unable to add products to order number (${exports.schema.order_id}) because order status is already (complete)`,
             });
         });
         it(`should update quantity of ordered product number ${exports.schema.op_id} to (20)`, async () => {

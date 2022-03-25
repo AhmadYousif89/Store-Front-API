@@ -16,9 +16,13 @@ jobs:
       - node/install
       - checkout
       - run:
-          name: NPM Install
+          name: Install Packages
           command: |
             npm install
+      - run:
+          name: Build and Complie
+          command: |
+            npm run build
       # - run:
       #     name: Lint
       #     command: |

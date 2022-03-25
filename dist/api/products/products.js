@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.productModel = void 0;
 const database_1 = __importDefault(require("../../database"));
 const control_1 = require("../../utils/control");
+let conct;
 let errMsg;
 // Building CRUD System for Product.
 class ProductModel {
@@ -13,7 +14,7 @@ class ProductModel {
     async create(values) {
         try {
             // openning connection with db.
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             // making query.
             const sql = `INSERT INTO products (category, p_name, brand, maker, price, popular) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
             // retrieving query result.
@@ -29,28 +30,29 @@ class ProductModel {
             if (result.rows.length) {
                 const product = result.rows[0];
                 console.log(result.command, result.rows);
-                // colsing connection with db.
                 conct.release();
                 return {
                     message: `Product created successfully`,
                     data: product,
                 };
             }
-            // colsing connection with db.
             conct.release();
             return null;
         }
         catch (err) {
             // handling error.
-            // making my custom error syntax.
+            conct.release();
             if (err.message?.includes("enum category")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter category between (electronics) and (mobiles) !.", ".");
             }
             else if (err.message?.includes("enum popular")) {
                 errMsg = (0, control_1.customErr)(err, "Please choose popularity between (yes) or (no) !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to create new Product - ${errMsg}`);
         }
@@ -58,7 +60,7 @@ class ProductModel {
     // Get Products
     async index() {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = "SELECT * FROM products";
             const result = await conct.query(sql);
             conct.release();
@@ -66,15 +68,21 @@ class ProductModel {
             return result.rows;
         }
         catch (err) {
-            errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            conct.release();
+            if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
+            }
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one Product
     async show(id) {
         try {
-            const conct = await database_1.default.connect();
-            const sql = `SELECT * FROM products WHERE p_id = ($1)`;
+            conct = await database_1.default.connect();
+            const sql = `SELECT * FROM products WHERE p_id = $1`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
                 const product = result.rows[0];
@@ -89,11 +97,15 @@ class ProductModel {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
         }
@@ -101,7 +113,7 @@ class ProductModel {
     // Update Product
     async update(id, price, popular) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
             const result = await conct.query(sql, [id, price, popular]);
             if (result.rows.length) {
@@ -117,14 +129,18 @@ class ProductModel {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else if (err.message?.includes("enum")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a value between [ yes | no ] for popular !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
         }
@@ -132,7 +148,7 @@ class ProductModel {
     // Delete Product
     async delete(id) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
@@ -148,14 +164,18 @@ class ProductModel {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Product can not be deleted - remove this product from any related orders !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
         }

@@ -1,6 +1,8 @@
+import { PoolClient } from "pg";
 import pgDB from "../../database";
 import { Error, customErr, DbSchema } from "../../utils/control";
 
+let conct: PoolClient;
 let errMsg: string | undefined;
 // Building CRUD System for products to Orders.
 class OrderedProducts {
@@ -8,19 +10,19 @@ class OrderedProducts {
   async addProducts(values: DbSchema): Promise<DbSchema | null> {
     // accessing orders table first
     try {
+      conct = await pgDB.connect();
       const sql = "SELECT * FROM orders WHERE order_id = ($1)";
-      const conct = await pgDB.connect();
       const result = await conct.query(sql, [values.order_id]);
       const order = result.rows[0];
       // check if order is complete or not.
       if (order.order_status === "complete") {
         throw new Error(
-          `Unable to add product (${values.p_id}) to order (${values.order_id}) because order status is already (${order.order_status})`
+          `Unable to add products to order number (${values.order_id}) because order status is already (${order.order_status})`
         );
       }
-      conct.release();
     } catch (err) {
       // handling errors
+      conct.release();
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
       } else if ((err as Error).message?.includes("relation")) {
@@ -32,7 +34,7 @@ class OrderedProducts {
     }
     try {
       // openning connection with db.
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       // making query.
       const sql = `INSERT INTO ordered_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *`;
       // retrieving query result.
@@ -47,15 +49,19 @@ class OrderedProducts {
           data: product,
         };
       }
+      conct.release();
       return null;
     } catch (err) {
       // handling errors
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect product id or product does not exist !.", ".");
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to add product to order - ${errMsg}`);
     }
@@ -64,21 +70,26 @@ class OrderedProducts {
   // Get all data from ordered_products table.
   async index(): Promise<DbSchema[]> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = "SELECT * FROM ordered_products";
       const result = await conct.query(sql);
       conct.release();
       console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
-      errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      conct.release();
+      if ((err as Error).message?.includes("relation")) {
+        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
+      }
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Get one row from table ordered_products.
   async show(opId: number): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = `SELECT * FROM ordered_products WHERE op_id = ($1)`;
       const result = await conct.query(sql, [opId]);
       if (result.rows.length) {
@@ -93,14 +104,19 @@ class OrderedProducts {
       conct.release();
       return null;
     } catch (err) {
-      errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      conct.release();
+      if ((err as Error).message?.includes("relation")) {
+        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
+      }
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Update quantity of specific Product.
   async update(pId: string, quantity: number): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = `UPDATE ordered_products SET quantity = ($2) WHERE product_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [pId, quantity]);
       if (result.rows.length) {
@@ -115,10 +131,13 @@ class OrderedProducts {
       conct.release();
       return null;
     } catch (err) {
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to update Product with id (${pId}) - ${errMsg}`);
     }
@@ -126,7 +145,7 @@ class OrderedProducts {
   // Delete one row from table ordered_products by id.
   async delete(opId: number): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = `DELETE FROM ordered_products WHERE op_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [opId]);
       if (result.rows.length) {
@@ -141,6 +160,7 @@ class OrderedProducts {
       conct.release();
       return null;
     } catch (err) {
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
@@ -149,8 +169,10 @@ class OrderedProducts {
           "Product can not be deleted - remove this product from any related orders !.",
           "."
         );
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to delete row with id (${opId}) - ${errMsg}`);
     }

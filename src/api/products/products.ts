@@ -1,6 +1,8 @@
+import { PoolClient } from "pg";
 import pgDB from "../../database";
 import { Error, customErr, DbSchema } from "../../utils/control";
 
+let conct: PoolClient;
 let errMsg: string | undefined;
 // Building CRUD System for Product.
 class ProductModel {
@@ -8,7 +10,7 @@ class ProductModel {
   async create(values: DbSchema): Promise<DbSchema | null> {
     try {
       // openning connection with db.
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       // making query.
       const sql = `INSERT INTO products (category, p_name, brand, maker, price, popular) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
       // retrieving query result.
@@ -24,19 +26,17 @@ class ProductModel {
       if (result.rows.length) {
         const product = result.rows[0];
         console.log(result.command, result.rows);
-        // colsing connection with db.
         conct.release();
         return {
           message: `Product created successfully`,
           data: product,
         };
       }
-      // colsing connection with db.
       conct.release();
       return null;
     } catch (err) {
       // handling error.
-      // making my custom error syntax.
+      conct.release();
       if ((err as Error).message?.includes("enum category")) {
         errMsg = customErr(
           err as Error,
@@ -45,8 +45,10 @@ class ProductModel {
         );
       } else if ((err as Error).message?.includes("enum popular")) {
         errMsg = customErr(err as Error, "Please choose popularity between (yes) or (no) !.", ".");
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to create new Product - ${errMsg}`);
     }
@@ -54,22 +56,27 @@ class ProductModel {
   // Get Products
   async index(): Promise<DbSchema[]> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = "SELECT * FROM products";
       const result = await conct.query(sql);
       conct.release();
       console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
-      errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      conct.release();
+      if ((err as Error).message?.includes("relation")) {
+        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
+      }
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
   // Get one Product
   async show(id: string): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
-      const sql = `SELECT * FROM products WHERE p_id = ($1)`;
+      conct = await pgDB.connect();
+      const sql = `SELECT * FROM products WHERE p_id = $1`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const product = result.rows[0];
@@ -83,10 +90,13 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
     }
@@ -94,7 +104,7 @@ class ProductModel {
   // Update Product
   async update(id: string, price: number, popular: string): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = `UPDATE Products SET price = ($2), popular = ($3) WHERE p_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [id, price, popular]);
       if (result.rows.length) {
@@ -109,6 +119,7 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("enum")) {
@@ -117,8 +128,10 @@ class ProductModel {
           "Please enter a value between [ yes | no ] for popular !.",
           "."
         );
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
     }
@@ -126,7 +139,7 @@ class ProductModel {
   // Delete Product
   async delete(id: string): Promise<DbSchema | null> {
     try {
-      const conct = await pgDB.connect();
+      conct = await pgDB.connect();
       const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
@@ -141,6 +154,7 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
+      conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
@@ -149,8 +163,10 @@ class ProductModel {
           "Product can not be deleted - remove this product from any related orders !.",
           "."
         );
-      } else {
+      } else if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
+      } else {
+        errMsg = err as string;
       }
       throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
     }

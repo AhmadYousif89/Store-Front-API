@@ -6,13 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dashBoard = void 0;
 const database_1 = __importDefault(require("../../database"));
 const control_1 = require("../../utils/control");
+let conct;
 let errMsg;
 // Business logic functions.
 class Dashboard {
     // Get ordered products for specific user.
     async getUserProducts(uid) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `
       SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
       JOIN ordered_products 
@@ -24,9 +25,11 @@ class Dashboard {
                 conct.release();
                 return result.rows;
             }
+            conct.release();
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
             }
@@ -39,7 +42,7 @@ class Dashboard {
     // Get ordered products for specific user by order id.
     async getUserProductsByOid(uid, oid) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `
         SELECT op_id, order_status, product_id, quantity, created_at FROM orders
         JOIN ordered_products
@@ -51,9 +54,11 @@ class Dashboard {
                 conct.release();
                 return result.rows;
             }
+            conct.release();
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
             }
@@ -69,7 +74,7 @@ class Dashboard {
     // Get user most recent purchases .
     async getUserMostPurchases(uid) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `
       SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
       JOIN ordered_products 
@@ -82,9 +87,11 @@ class Dashboard {
                 conct.release();
                 return result.rows;
             }
+            conct.release();
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
             }
@@ -97,7 +104,7 @@ class Dashboard {
     // Get Popular Products
     async getProductByPopularity() {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
             const result = await conct.query(sql);
             conct.release();
@@ -105,6 +112,7 @@ class Dashboard {
             return result.rows;
         }
         catch (err) {
+            conct.release();
             errMsg = (0, control_1.customErr)(err, "TABLE (products) does not exist !.", ".");
             throw new Error(`Unable to get data - ${errMsg}`);
         }

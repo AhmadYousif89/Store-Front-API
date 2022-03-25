@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderModel = void 0;
 const database_1 = __importDefault(require("../../database"));
 const control_1 = require("../../utils/control");
+let conct;
 let errMsg;
 // Building CRUD System for Orders.
 class OrdersModel {
@@ -17,7 +18,7 @@ class OrdersModel {
         }
         try {
             // openning connection with db.
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             // making query.
             const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
             // retrieving query result.
@@ -33,11 +34,12 @@ class OrdersModel {
                     data: orders,
                 };
             }
+            conct.release();
             return null;
         }
         catch (err) {
             // handling error.
-            // making my custom error syntax.
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid user id !.", ".");
             }
@@ -46,6 +48,9 @@ class OrdersModel {
             }
             else if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect user id or user does not exist !.", ".");
+            }
+            else if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
             else {
                 errMsg = err;
@@ -56,7 +61,7 @@ class OrdersModel {
     // Get orders
     async index() {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = "SELECT * FROM orders";
             const result = await conct.query(sql);
             conct.release();
@@ -64,14 +69,20 @@ class OrdersModel {
             return result.rows;
         }
         catch (err) {
-            errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+            conct.release();
+            if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
+            }
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one order
     async show(id) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `SELECT * FROM orders WHERE order_id = ($1)`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
@@ -87,13 +98,20 @@ class OrdersModel {
             return null;
         }
         catch (err) {
-            throw new Error(`Unable to get order with id (${id}) - ${err}`);
+            conct.release();
+            if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
+            }
+            throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
         }
     }
     // Update Orders
     async update(oid, status) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql1 = `SELECT * FROM orders WHERE order_id = ($1)`;
             const rowResult = await conct.query(sql1, [oid]);
             const order_status = rowResult.rows[0].order_status;
@@ -120,14 +138,19 @@ class OrdersModel {
                     data: order,
                 };
             }
+            conct.release();
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("undefined")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
             }
             else if (err.message?.includes("enum")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter value between [ active | complete ] for order status !.", ".");
+            }
+            else if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
             }
             else {
                 errMsg = err;
@@ -138,7 +161,7 @@ class OrdersModel {
     // Delete Orders
     async delete(id) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `DELETE FROM orders WHERE order_id = ($1) RETURNING *`;
             const result = await conct.query(sql, [id]);
             if (result.rows.length) {
@@ -154,11 +177,15 @@ class OrdersModel {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Please remove any products related to this order first !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (orders) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to delete order with id (${id}) - ${errMsg}`);
         }

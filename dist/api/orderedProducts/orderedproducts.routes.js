@@ -1,15 +1,13 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orderedProducts_1 = require("./orderedProducts");
-const auth_middleware_1 = __importDefault(require("../../middlewares/auth.middleware"));
 let error;
 // method => POST /user/account/orders/:id/products
 // desc   => add product to order.
-const addProductToOrder = (0, express_1.Router)().post("/user/account/orders/:id/products", auth_middleware_1.default, async (req, res, next) => {
+const addProductToOrder = (0, express_1.Router)().post("/user/account/orders/:id/products", 
+// Authentication,
+async (req, res, next) => {
     const oId = parseInt(req.params.id);
     const pId = req.body.p_id;
     const quantity = parseInt(req.body.quantity);

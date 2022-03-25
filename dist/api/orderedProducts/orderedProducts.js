@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OPT = void 0;
 const database_1 = __importDefault(require("../../database"));
 const control_1 = require("../../utils/control");
+let conct;
 let errMsg;
 // Building CRUD System for products to Orders.
 class OrderedProducts {
@@ -13,18 +14,18 @@ class OrderedProducts {
     async addProducts(values) {
         // accessing orders table first
         try {
+            conct = await database_1.default.connect();
             const sql = "SELECT * FROM orders WHERE order_id = ($1)";
-            const conct = await database_1.default.connect();
             const result = await conct.query(sql, [values.order_id]);
             const order = result.rows[0];
             // check if order is complete or not.
             if (order.order_status === "complete") {
-                throw new Error(`Unable to add product (${values.p_id}) to order (${values.order_id}) because order status is already (${order.order_status})`);
+                throw new Error(`Unable to add products to order number (${values.order_id}) because order status is already (${order.order_status})`);
             }
-            conct.release();
         }
         catch (err) {
             // handling errors
+            conct.release();
             if (err.message?.includes("undefined")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect order id or order does not exist !.", ".");
             }
@@ -38,7 +39,7 @@ class OrderedProducts {
         }
         try {
             // openning connection with db.
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             // making query.
             const sql = `INSERT INTO ordered_products (order_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *`;
             // retrieving query result.
@@ -53,18 +54,23 @@ class OrderedProducts {
                     data: product,
                 };
             }
+            conct.release();
             return null;
         }
         catch (err) {
             // handling errors
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Incorrect product id or product does not exist !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to add product to order - ${errMsg}`);
         }
@@ -72,7 +78,7 @@ class OrderedProducts {
     // Get all data from ordered_products table.
     async index() {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = "SELECT * FROM ordered_products";
             const result = await conct.query(sql);
             conct.release();
@@ -80,14 +86,20 @@ class OrderedProducts {
             return result.rows;
         }
         catch (err) {
-            errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            conct.release();
+            if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
+            }
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Get one row from table ordered_products.
     async show(opId) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `SELECT * FROM ordered_products WHERE op_id = ($1)`;
             const result = await conct.query(sql, [opId]);
             if (result.rows.length) {
@@ -103,14 +115,20 @@ class OrderedProducts {
             return null;
         }
         catch (err) {
-            errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            conct.release();
+            if (err.message?.includes("relation")) {
+                errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
+            }
             throw new Error(`Unable to get data - ${errMsg}`);
         }
     }
     // Update quantity of specific Product.
     async update(pId, quantity) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `UPDATE ordered_products SET quantity = ($2) WHERE product_id = ($1) RETURNING *`;
             const result = await conct.query(sql, [pId, quantity]);
             if (result.rows.length) {
@@ -126,11 +144,15 @@ class OrderedProducts {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to update Product with id (${pId}) - ${errMsg}`);
         }
@@ -138,7 +160,7 @@ class OrderedProducts {
     // Delete one row from table ordered_products by id.
     async delete(opId) {
         try {
-            const conct = await database_1.default.connect();
+            conct = await database_1.default.connect();
             const sql = `DELETE FROM ordered_products WHERE op_id = ($1) RETURNING *`;
             const result = await conct.query(sql, [opId]);
             if (result.rows.length) {
@@ -154,14 +176,18 @@ class OrderedProducts {
             return null;
         }
         catch (err) {
+            conct.release();
             if (err.message?.includes("uuid")) {
                 errMsg = (0, control_1.customErr)(err, "Please enter a valid product id !.", ".");
             }
             else if (err.message?.includes("foreign")) {
                 errMsg = (0, control_1.customErr)(err, "Product can not be deleted - remove this product from any related orders !.", ".");
             }
-            else {
+            else if (err.message?.includes("relation")) {
                 errMsg = (0, control_1.customErr)(err, "TABLE (ordered_products) does not exist !.", ".");
+            }
+            else {
+                errMsg = err;
             }
             throw new Error(`Unable to delete row with id (${opId}) - ${errMsg}`);
         }
