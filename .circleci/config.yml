@@ -14,9 +14,10 @@ jobs:
       - image: cimg/node:16.14.0
       - image: cimg/go:1.17
       - image: cimg/postgres:14.1.0-postgis
+       - image: cimg/ruby:2.7.1-node
         auth:
-          username: postgres
-          password: "123"
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
     # Add steps to the job
     steps:
       - node/install
