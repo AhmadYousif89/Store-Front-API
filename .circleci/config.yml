@@ -15,12 +15,12 @@ jobs:
       - image: cimg/go:1.17
       - image: cimg/postgres:14.1.0-postgis
         auth:
-              username: mydockerhub-user
-              password: $DOCKERHUB_PASSWORD
-            environment:
-              POSTGRES_USER: udacity
-              POSTGRES_DB: tech_store_test
-              POSTGRES_PASSWORD: "123"
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          POSTGRES_USER: udacity
+          POSTGRES_DB: tech_store_test
+          POSTGRES_PASSWORD: "123"
     # Add steps to the job
     steps:
       - node/install
