@@ -16,7 +16,7 @@ jobs:
       - image: cimg/postgres:14.1.0-postgis
         auth:
           username: udacity
-          password: 123
+          password: '123'
     # Add steps to the job
     steps:
       - node/install
