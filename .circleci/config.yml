@@ -23,8 +23,8 @@ jobs:
           PGUSER: root
       - image: cimg/postgres:14.0
         auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD
+          username: udacity
+          password: "123"
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle-test_test
