@@ -7,14 +7,10 @@ let error;
 // desc   => Create new product data.
 const createProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name, brand, maker } = req.body;
-  const category = req.body.category.toLowerCase();
   const price = parseInt(req.body.price);
+  const category = req.body.category.toLowerCase();
   const popular = req.body.popular.toLowerCase();
-  console.log(
-    `params:
-      ${category} ${name} ${brand}  ${maker} ${price} ${popular}`
-  );
-  // validating values before submitting.
+
   if (!category || !name || !brand || !maker || !price || price <= 0) {
     res
       .status(400)
@@ -61,7 +57,7 @@ const getProducts = async (_req: Request, res: Response, next: NextFunction): Pr
 // desc   => Return a specific product by id.
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const id = req.params.id;
-  console.log("data: \n", id);
+
   try {
     const data = await productModel.show(id);
     if (!data) {
@@ -85,12 +81,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
   const pid = req.body.id;
   const price = parseInt(req.body.price);
   const popular = req.body.popular.toLowerCase();
-  console.log(
-    `data: 
-      ${pid} 
-      ${price}
-      ${popular}`
-  );
+
   if (!pid || !price || price <= 0) {
     res
       .status(400)
@@ -119,7 +110,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
 // desc   => Delete a specific Product.
 const deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const pid = req.params.id;
-  console.log("data: \n", pid);
+
   if (!pid) {
     res.status(400).json({ status: "Error", message: "Please provide product id !" });
     return;

@@ -6,7 +6,6 @@ let error;
 // desc   => Return a list of all ordered products for a user.
 const getUserProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const uid = req.params.id;
-  console.log("data: \n", uid);
   try {
     const data = await dashBoard.getUserProducts(uid);
     if (!data) {
@@ -35,7 +34,6 @@ const getUserProductsByOid = async (
 ): Promise<void> => {
   const uid = req.params.uid;
   const oid = parseInt(req.params.oid);
-  console.log("data: \n", uid, oid);
   if (!oid || oid <= 0) {
     res.status(400).json({
       message: "Please enter a valid order id !",
@@ -72,7 +70,6 @@ const getUserMostPurchases = async (
   next: NextFunction
 ): Promise<void> => {
   const uid = req.params.id;
-  console.log("data: \n", uid);
   try {
     const data = await dashBoard.getUserMostPurchases(uid);
     if (!data) {

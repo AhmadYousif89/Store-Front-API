@@ -4,23 +4,16 @@ import { encrypt, Error, isPwValide, customErr, DbSchema } from "../../utils/con
 
 let conct: PoolClient;
 let errMsg: string | undefined;
-// Building CRUD System for Users
 class UserModel {
-  // Create user
   async create(values: DbSchema): Promise<DbSchema | null> {
     try {
-      // openning connection with db.
       conct = await pgDB.connect();
-      // making sql query.
       const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_id , u_name`;
       // encrypting password.
       const hash = encrypt(values.password as string);
-      // retrieving query result.
       const result = await conct.query(sql, [values.u_name, hash]);
-      // check for data.
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(result.command, result.rows);
         conct.release();
         return {
           message: `User created successfully`,
@@ -29,7 +22,6 @@ class UserModel {
       }
       return null;
     } catch (err) {
-      // handling error.
       conct.release();
       if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
@@ -40,14 +32,13 @@ class UserModel {
     }
   }
 
-  // Get all users => (without retrieving user password as it consider sensitive information)
+  // Get all users
   async index(): Promise<DbSchema[]> {
     try {
       conct = await pgDB.connect();
       const sql = `SELECT u_id, u_name FROM users`;
       const result = await conct.query(sql);
       conct.release();
-      console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
       conct.release();
@@ -59,6 +50,7 @@ class UserModel {
       throw new Error(`Unable to get Users - ${errMsg}`);
     }
   }
+
   // Get one user
   async show(uid: string): Promise<DbSchema | null> {
     try {
@@ -67,7 +59,6 @@ class UserModel {
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(result.command, result.rowCount, user);
         conct.release();
         return {
           message: `User generated successfully`,
@@ -88,16 +79,17 @@ class UserModel {
       throw new Error(`Unable to get user with id (${uid}) - ${errMsg}`);
     }
   }
+
   // Update user
   async update(u_id: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
       const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name`;
+      // hashing user password before updating to database
       const hash = encrypt(password);
       const result = await conct.query(sql, [u_id, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(result.command, result.rowCount, user);
         conct.release();
         return {
           message: `User updated successfully`,
@@ -118,6 +110,7 @@ class UserModel {
       throw new Error(`Unable to update user with id (${u_id}) - ${errMsg}`);
     }
   }
+
   // Delete user
   async delete(u_id: string): Promise<DbSchema | null> {
     try {
@@ -126,7 +119,6 @@ class UserModel {
       const result = await conct.query(sql, [u_id]);
       if (result.rows.length) {
         const user = result.rows[0];
-        console.log(result.command, result.rowCount, user);
         conct.release();
         return {
           message: `User deleted successfully`,
@@ -149,13 +141,13 @@ class UserModel {
       throw new Error(`Unable to delete user with id (${u_id}) - ${errMsg}`);
     }
   }
+
   // Authenticate user.
   async authenticateUser(u_name: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
       const sql = `SELECT password FROM users WHERE u_name = ($1)`;
       const result = await conct.query(sql, [u_name]);
-      // checking for data.
       if (result.rows.length) {
         const user = result.rows[0];
         // checking user password authenticity.
@@ -169,7 +161,6 @@ class UserModel {
       conct.release();
       return null;
     } catch (err) {
-      // handling error
       conct.release();
       if ((err as Error).message?.includes("relation")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");

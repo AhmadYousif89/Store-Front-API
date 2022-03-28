@@ -4,16 +4,11 @@ import { Error, customErr, DbSchema } from "../../utils/control";
 
 let conct: PoolClient;
 let errMsg: string | undefined;
-// Building CRUD System for Product.
 class ProductModel {
-  // Create Product
   async create(values: DbSchema): Promise<DbSchema | null> {
     try {
-      // openning connection with db.
       conct = await pgDB.connect();
-      // making query.
       const sql = `INSERT INTO products (category, p_name, brand, maker, price, popular) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-      // retrieving query result.
       const result = await conct.query(sql, [
         values.category,
         values.p_name,
@@ -22,10 +17,8 @@ class ProductModel {
         values.price,
         values.popular,
       ]);
-      // check if row has been created.
       if (result.rows.length) {
         const product = result.rows[0];
-        console.log(result.command, result.rows);
         conct.release();
         return {
           message: `Product created successfully`,
@@ -35,7 +28,6 @@ class ProductModel {
       conct.release();
       return null;
     } catch (err) {
-      // handling error.
       conct.release();
       if ((err as Error).message?.includes("enum category")) {
         errMsg = customErr(
@@ -53,6 +45,7 @@ class ProductModel {
       throw new Error(`Unable to create new Product - ${errMsg}`);
     }
   }
+
   // Get Products
   async index(): Promise<DbSchema[]> {
     try {
@@ -60,7 +53,6 @@ class ProductModel {
       const sql = "SELECT * FROM products";
       const result = await conct.query(sql);
       conct.release();
-      console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
       conct.release();
@@ -72,15 +64,15 @@ class ProductModel {
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
+
   // Get one Product
   async show(id: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT * FROM products WHERE p_id = $1`;
+      const sql = `SELECT * FROM products WHERE p_id = ($1)`;
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const product = result.rows[0];
-        console.log(result.command, result.rowCount, product);
         conct.release();
         return {
           message: `Product generated successfully`,
@@ -101,6 +93,7 @@ class ProductModel {
       throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
     }
   }
+
   // Update Product
   async update(id: string, price: number, popular: string): Promise<DbSchema | null> {
     try {
@@ -109,7 +102,6 @@ class ProductModel {
       const result = await conct.query(sql, [id, price, popular]);
       if (result.rows.length) {
         const product = result.rows[0];
-        console.log(result.command, result.rowCount, product);
         conct.release();
         return {
           message: `Product updated successfully`,
@@ -136,6 +128,7 @@ class ProductModel {
       throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
     }
   }
+
   // Delete Product
   async delete(id: string): Promise<DbSchema | null> {
     try {
@@ -144,7 +137,6 @@ class ProductModel {
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const product = result.rows[0];
-        console.log(result.command, result.rowCount, product);
         conct.release();
         return {
           message: `Product deleted successfully`,

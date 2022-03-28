@@ -6,41 +6,30 @@ import { userModel } from "../models/users";
 let error;
 // method => POST /users/signup
 // desc   => Create new user data.
-const createUser =
-  // Authentication, can't put auth here because it will be impossible to create users !!
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { name, password } = req.body;
-    console.log(
-      `data:
-      ${name}
-      ${password}`
-    );
-    // validating values before submitting.
-    if (!name || !password) {
-      res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
-      return;
-    }
-    try {
-      const data = await userModel.create({ u_name: name, password: password });
-      res.status(201).json(data);
-    } catch (err) {
-      error = {
-        message: `Request Failed ! ${(err as Error).message}`,
-      };
-      next(error);
-    }
-  };
+const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { name, password } = req.body;
+
+  if (!name || !password) {
+    res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
+    return;
+  }
+  try {
+    const data = await userModel.create({ u_name: name, password: password });
+    res.status(201).json(data);
+  } catch (err) {
+    error = {
+      message: `Request Failed ! ${(err as Error).message}`,
+    };
+    next(error);
+  }
+};
 
 // method => POST /users/login
 // desc   => Authenticate user data.
 const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name, password } = req.body;
-  console.log(
-    `data:
-      ${name}
-      ${password}`
-  );
   const { SECRET_TOKEN } = process.env;
+
   try {
     if (!name || !password) {
       res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
@@ -90,7 +79,7 @@ const getUsers = async (_req: Request, res: Response, next: NextFunction): Promi
 // desc   => Return a specific user.
 const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const uid = req.params.id;
-  console.log("data: \n", uid);
+
   try {
     const data = await userModel.show(uid);
     if (!data) {
@@ -114,11 +103,7 @@ const getUserById = async (req: Request, res: Response, next: NextFunction): Pro
 // desc   => Update a specific user .
 const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { uid, password } = req.body;
-  console.log(
-    `data: 
-      ${uid} 
-      ${password}`
-  );
+
   try {
     if (!uid || !password) {
       res.status(400).json({ status: "Error", message: "Please provide user id and password !" });
@@ -145,7 +130,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction): Prom
 // desc   => Delete a specific user.
 const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const uid = req.params.id;
-  console.log("params: \n", uid);
+
   try {
     const data = await userModel.delete(uid);
     if (!data) {

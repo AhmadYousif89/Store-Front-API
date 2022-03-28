@@ -12,12 +12,7 @@ const createOrders = async (
 ): Promise<void | Response> => {
   const userId = req.body.user_id;
   const status = req.body.status.toLowerCase();
-  console.log(
-    `params:
-      ${userId} 
-      ${status}`
-  );
-  // validating values before submitting.
+
   if (!userId || !status) {
     res
       .status(400)
@@ -60,7 +55,7 @@ const getOrders = async (_req: Request, res: Response, next: NextFunction): Prom
 // desc   => Return a specific Order.
 const getOrderById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const oid = parseInt(req.params.id);
-  console.log("data: \n", oid);
+
   if (!oid || oid <= 0) {
     res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
     return;
@@ -87,11 +82,7 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction): Pr
 const updateOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const id = parseInt(req.body.order_id);
   const status = req.body.status.toLowerCase();
-  console.log(
-    `data: 
-      ${id} 
-      ${status}`
-  );
+
   if (!id || id <= 0 || !status) {
     res
       .status(400)
@@ -100,7 +91,6 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction): Pro
   }
   try {
     const data = await orderModel.update(id, status);
-    // safety net
     if (!data) {
       res.status(404).json({
         message: "Update failed !",
@@ -121,7 +111,7 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction): Pro
 // desc   => Delete a specific Order.
 const deleteOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const id = parseInt(req.params.id);
-  console.log("data: \n", id);
+
   if (!id || id <= 0) {
     res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
     return;

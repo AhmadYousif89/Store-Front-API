@@ -17,7 +17,6 @@ class Dashboard {
       WHERE orders.user_id = ($1)`;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
-        console.log(result.command, result.rowCount, result.rows);
         conct.release();
         return result.rows;
       }
@@ -49,7 +48,6 @@ class Dashboard {
         WHERE orders.user_id = ($1) AND orders.order_id = ($2)`;
       const result = await conct.query(sql, [uid, oid]);
       if (result.rows.length) {
-        console.log(result.command, result.rowCount, result.rows);
         conct.release();
         return result.rows;
       }
@@ -84,7 +82,6 @@ class Dashboard {
       ORDER BY created_at DESC`;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
-        console.log(result.command, result.rowCount, result.rows);
         conct.release();
         return result.rows;
       }
@@ -113,7 +110,6 @@ class Dashboard {
         "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
       const result = await conct.query(sql);
       conct.release();
-      console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
       conct.release();

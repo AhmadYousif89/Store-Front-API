@@ -4,26 +4,18 @@ import { Error, customErr, DbSchema } from "../../utils/control";
 
 let conct: PoolClient;
 let errMsg: string | undefined;
-// Building CRUD System for Orders.
 class OrdersModel {
-  // Create Orders
   async create(values: DbSchema): Promise<DbSchema | null> {
     // don't set new orders as complete.
     if (values.order_status === "complete") {
       return { message: `New orders can not be set as (${values.order_status})` };
     }
     try {
-      // openning connection with db.
       conct = await pgDB.connect();
-      // making query.
       const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
-      // retrieving query result.
       const result = await conct.query(sql, [values.order_status, values.u_id]);
-      // check if row has been created.
       if (result.rows.length) {
         const orders = result.rows[0];
-        console.log(result.command, orders);
-        // colsing connection with db.
         conct.release();
         return {
           message: `Order created successfully`,
@@ -33,7 +25,6 @@ class OrdersModel {
       conct.release();
       return null;
     } catch (err) {
-      // handling error.
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
@@ -53,6 +44,7 @@ class OrdersModel {
       throw new Error(`Unable to create new Order - ${errMsg}`);
     }
   }
+
   // Get orders
   async index(): Promise<DbSchema[]> {
     try {
@@ -60,7 +52,6 @@ class OrdersModel {
       const sql = "SELECT * FROM orders";
       const result = await conct.query(sql);
       conct.release();
-      console.log(result.command, result.rowCount, result.rows, "\n");
       return result.rows;
     } catch (err) {
       conct.release();
@@ -72,6 +63,7 @@ class OrdersModel {
       throw new Error(`Unable to get data - ${errMsg}`);
     }
   }
+
   // Get one order
   async show(id: number): Promise<DbSchema | null> {
     try {
@@ -80,7 +72,6 @@ class OrdersModel {
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const orders = result.rows[0];
-        console.log(result.command, result.rowCount, orders);
         conct.release();
         return {
           message: `Order generated successfully`,
@@ -99,6 +90,7 @@ class OrdersModel {
       throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
     }
   }
+
   // Update Orders
   async update(oid: number, status: string): Promise<DbSchema | null> {
     try {
@@ -106,6 +98,7 @@ class OrdersModel {
       const sql1 = `SELECT * FROM orders WHERE order_id = ($1)`;
       const rowResult = await conct.query(sql1, [oid]);
       const order_status = rowResult.rows[0].order_status;
+      // checking if order has status of (complete) or have the same incoming status
       if (order_status === "complete") {
         conct.release();
         return {
@@ -121,7 +114,6 @@ class OrdersModel {
       const updateResult = await conct.query(sql2, [oid, status]);
       if (updateResult.rows.length) {
         const order = updateResult.rows[0];
-        console.log(updateResult.command, updateResult.rowCount, order);
         conct.release();
         return {
           message: `Order updated successfully`,
@@ -148,6 +140,7 @@ class OrdersModel {
       throw new Error(`Unable to update orders with id (${oid}) - ${errMsg}`);
     }
   }
+
   // Delete Orders
   async delete(id: number): Promise<DbSchema | null> {
     try {
@@ -156,7 +149,6 @@ class OrdersModel {
       const result = await conct.query(sql, [id]);
       if (result.rows.length) {
         const orders = result.rows[0];
-        console.log(result.command, result.rowCount, orders);
         conct.release();
         return {
           message: `Order deleted successfully`,

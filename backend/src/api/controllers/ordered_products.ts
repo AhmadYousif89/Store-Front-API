@@ -13,12 +13,7 @@ const addProductToOrder = async (
   const oId = parseInt(req.params.id);
   const pId = req.body.p_id;
   const quantity = parseInt(req.body.quantity);
-  console.log(
-    `params:
-      ${oId}
-      ${pId} 
-      ${quantity}`
-  );
+
   // validating values before submitting.
   if (!pId || !quantity || quantity <= 0 || isNaN(oId)) {
     res
@@ -67,7 +62,7 @@ const getOrderedProducts = async (
 // desc   => Return a specific row from ordered products.
 const getOPsById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const opId = parseInt(req.params.id);
-  console.log("data: \n", opId);
+
   if (!opId || opId <= 0) {
     res.status(400).json({ status: "Error", message: "Please enter a valid op id !" });
     return;
@@ -99,11 +94,7 @@ const updateOrderedProduct = async (
 ): Promise<void> => {
   const pId = req.body.p_id;
   const quantity = parseInt(req.body.quantity);
-  console.log(
-    `data:
-      ${pId} 
-      ${quantity}`
-  );
+
   if (!pId || quantity <= 0 || !quantity) {
     res
       .status(400)
@@ -136,7 +127,7 @@ const delOrderedProduct = async (
   next: NextFunction
 ): Promise<void> => {
   const opId = parseInt(req.params.id);
-  console.log("data: \n", opId);
+
   if (!opId || opId <= 0) {
     res.status(400).json({ status: "Error", message: "Please enter a valid op id !" });
     return;
