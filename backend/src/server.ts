@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 export const corsOptions = {
-  origin: process.env.PG_HOST,
+  origin: process.env.HOST,
   optionsSuccessStatus: 200,
 };
 
