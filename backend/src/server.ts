@@ -25,7 +25,7 @@ app.get("/", (_req: Request, res: Response) => {
 app.use(errorHandler);
 
 app.use((_req: Request, res: Response) => {
-  res.status(404).send(
+  res.status(404).json(
     `
     <h3>404 Page Not Found !</h3>
     This page doesn't exist, Sorry !

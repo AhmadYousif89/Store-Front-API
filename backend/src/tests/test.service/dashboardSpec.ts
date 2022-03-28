@@ -2,7 +2,7 @@ import { OPT } from "../../api/models/ordered_products";
 import { orderModel } from "../../api/models/orders";
 import { productModel } from "../../api/models/products";
 import { userModel } from "../../api/models/users";
-import { schema } from "../test.app.routes/serverSpec";
+import { schema } from "../test.server.routes/serverSpec";
 import { dashBoard } from "./../../api/__services__/dashboard";
 
 let pId: string | undefined;

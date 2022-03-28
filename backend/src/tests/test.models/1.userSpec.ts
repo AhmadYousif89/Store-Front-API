@@ -1,5 +1,5 @@
 import { userModel } from "../../api/models/users";
-import { schema } from "../test.app.routes/serverSpec";
+import { schema } from "../test.server.routes/serverSpec";
 
 let userId = "";
 describe("Testing user Model functions: \n", () => {

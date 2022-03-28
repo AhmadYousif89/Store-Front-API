@@ -1,6 +1,6 @@
 import { userModel } from "../../api/models/users";
 import { orderModel } from "../../api/models/orders";
-import { schema } from "../test.app.routes/serverSpec";
+import { schema } from "../test.server.routes/serverSpec";
 import pgDB from "../../database";
 
 let userId: string | undefined;
