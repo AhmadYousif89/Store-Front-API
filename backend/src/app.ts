@@ -7,7 +7,6 @@ import errorHandler from "./middlewares/error.middleware";
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("public"));
 app.use(express.json());
 
 export const corsOptions = {

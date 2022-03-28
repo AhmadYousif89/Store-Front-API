@@ -61,7 +61,7 @@ const loginUser = Router().post(
         return;
       }
       // creating token based on user credentials and my secret token.
-      const token = JWT.sign({ user }, SECRET_TOKEN as string);
+      const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "10m" });
       res.status(200).json({
         message: "User authenticated successfully",
         data: user,
