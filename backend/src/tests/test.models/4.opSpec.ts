@@ -1,8 +1,8 @@
-import { schema } from "../test.app.routes/appSpec";
-import { productModel } from "../../api/products/products";
-import { OPT } from "../../api/orderedProducts/orderedProducts";
-import { orderModel } from "../../api/orders/orders";
-import { userModel } from "../../api/users/users";
+import { schema } from "../test.app.routes/serverSpec";
+import { productModel } from "../../api/models/products";
+import { OPT } from "../../api/models/ordered_products";
+import { orderModel } from "../../api/models/orders";
+import { userModel } from "../../api/models/users";
 import pgDB from "../../database";
 
 let pId: string | undefined;

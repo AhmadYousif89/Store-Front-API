@@ -1,6 +1,6 @@
 import "dotenv/config";
 import cors from "cors";
-import { routes } from "./api/app.routes";
+import { serverRoutes } from "./api/server.routes";
 import express, { Request, Response } from "express";
 import errorHandler from "./middlewares/error.middleware";
 
@@ -13,9 +13,10 @@ export const corsOptions = {
   origin: process.env.PG_HOST,
   optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
-app.use("/", routes);
+app.use("/api", serverRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).json(`<h2>Home Page ...</h2>`);
@@ -32,7 +33,7 @@ app.use((_req: Request, res: Response) => {
   );
 });
 
-const port = process.env.SERVER_PORT || 2020;
+const port = process.env.SERVER_PORT || 4000;
 app.listen(port, async () => {
   console.log(`server running on port ${port}...\n`);
 });

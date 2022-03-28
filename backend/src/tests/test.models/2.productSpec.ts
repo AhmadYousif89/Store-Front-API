@@ -1,5 +1,5 @@
-import { schema } from "../test.app.routes/appSpec";
-import { productModel } from "../../api/products/products";
+import { schema } from "../test.app.routes/serverSpec";
+import { productModel } from "../../api/models/products";
 
 let pId = "";
 

@@ -1,10 +1,10 @@
-import app from "../../app";
+import app from "../../server";
 import pgDB from "../../database";
 import supertest from "supertest";
-import { userModel } from "../../api/users/users";
-import { orderModel } from "../../api/orders/orders";
-import { productModel } from "../../api/products/products";
-import { OPT } from "../../api/orderedProducts/orderedProducts";
+import { userModel } from "../../api/models/users";
+import { orderModel } from "../../api/models/orders";
+import { productModel } from "../../api/models/products";
+import { OPT } from "../../api/models/ordered_products";
 import { DbSchema } from "../../utils/control";
 
 const { SERVER_PORT } = process.env;
