@@ -29,7 +29,7 @@ describe("Order Model functions: \n", () => {
       await userModel.create(schema);
       const user = await userModel.index();
       userId = user[0].u_id;
-      console.log("user id extracted: ", userId);
+      console.log("order has been created");
     });
 
     it(`should create new order`, async () => {
@@ -56,6 +56,7 @@ describe("Order Model functions: \n", () => {
           user_id: userId,
         },
       ]);
+      console.log("all order");
     });
 
     it(`should get one order by id`, async () => {
@@ -68,6 +69,7 @@ describe("Order Model functions: \n", () => {
           user_id: userId,
         },
       });
+      console.log("one order");
     });
 
     it(`should update the status of one order by id`, async () => {
@@ -80,6 +82,7 @@ describe("Order Model functions: \n", () => {
           user_id: userId,
         },
       });
+      console.log("update order");
     });
 
     it(`should delete one order by id`, async () => {
@@ -92,13 +95,14 @@ describe("Order Model functions: \n", () => {
           user_id: userId,
         },
       });
+      console.log("delete order");
     });
 
     afterAll(async () => {
       const conct = await pgDB.connect();
       await conct.query("DELETE FROM users");
       await conct.query("ALTER SEQUENCE orders_order_id_seq RESTART WITH 1");
-      console.log("seq altered");
+      console.log("Sequence altered successfully");
       conct.release();
     });
   });

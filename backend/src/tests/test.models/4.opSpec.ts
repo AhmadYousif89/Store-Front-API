@@ -34,11 +34,11 @@ describe("OrderedProducts Model functions: \n", () => {
       await userModel.create(schema);
       const user = await userModel.index();
       userId = user[0].u_id;
-      console.log("user id extracted: ", userId);
+
       await productModel.create(schema);
       const product = await productModel.index();
       pId = product[0].p_id;
-      console.log("product id extracted: ", pId);
+      console.log("product added to order");
     });
 
     it(`should create new order`, async () => {
@@ -66,21 +66,25 @@ describe("OrderedProducts Model functions: \n", () => {
       expect(op[0].order_id).toEqual(schema.order_id);
       expect(op[0].product_id).toEqual(pId);
       expect(op[0].quantity).toEqual(schema.quantity);
+      console.log("all ordered product");
     });
 
     it(`should get one ordered product by id`, async () => {
       const op = await OPT.show(schema.op_id as number);
       expect(op?.message).toEqual("Data generated successfully");
+      console.log("one ordered product");
     });
 
     it(`should update the quantity of one ordered products by id`, async () => {
       const op = await OPT.update(pId as string, 50);
       expect(op?.message).toEqual("Product quantity updated successfully");
+      console.log("update ordered product");
     });
 
     it(`should delete one ordered products by id`, async () => {
       const op = await OPT.delete(schema.op_id as number);
       expect(op?.message).toEqual(`Row number ${schema.op_id} was deleted successfully`);
+      console.log("delete ordered product");
     });
 
     afterAll(async () => {
@@ -91,7 +95,7 @@ describe("OrderedProducts Model functions: \n", () => {
       await conct.query("DELETE FROM users");
       await conct.query("ALTER SEQUENCE orders_order_id_seq RESTART WITH 1");
       await conct.query("ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1");
-      console.log("seq altered");
+      console.log("Sequence altered successfully");
       conct.release();
     });
   });

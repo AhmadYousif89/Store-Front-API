@@ -30,12 +30,10 @@ describe("Testing dashboard Model functions: \n", () => {
       await userModel.create(schema);
       const user = await userModel.index();
       userId = user[0].u_id;
-      console.log("user id extracted: ", userId);
 
       await productModel.create({ ...schema, popular: "yes" });
       const product = await productModel.index();
       pId = product[0].p_id;
-      console.log("product id extracted: ", pId);
     });
 
     it(`should create new order`, async () => {

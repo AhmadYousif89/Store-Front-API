@@ -1,10 +1,6 @@
 import app from "../../server";
 import pgDB from "../../database";
 import supertest from "supertest";
-import { userModel } from "../../api/models/users";
-import { orderModel } from "../../api/models/orders";
-import { productModel } from "../../api/models/products";
-import { OPT } from "../../api/models/ordered_products";
 import { DbSchema } from "../../utils/control";
 
 const { SERVER_PORT } = process.env;
@@ -303,51 +299,33 @@ describe("Testing application end points: \n", () => {
 // ======================================== //
 
 describe("Testing application routes functionalty: \n", () => {
-  it("should create user and extract id", async () => {
-    const createUser = await userModel.create(schema);
-    expect(createUser?.message).toEqual("User created successfully");
-    console.log(`user has been created \n`);
-    const user = await userModel.index();
-    userId = user[0].u_id as string;
-    console.log(`user id extracted: ${userId}`);
-  });
-
-  it(`should create product and extract id`, async () => {
-    const createProduct = await productModel.create(schema);
-    expect(createProduct?.message).toEqual("Product created successfully");
-    console.log(`product has been created \n`);
-    const product = await productModel.index();
-    pId = product[0].p_id as string;
-    console.log(`product id extracted: ${pId} \n`);
-  });
-
-  it(`should create new order for user ${userId}`, async () => {
-    const createOrder = await orderModel.create({
+  // Create a user
+  it("should get end point /api/signup and create user and extract id", async () => {
+    const response = await route
+      .post("/api/signup")
+      .set("Content-type", "application/json")
+      .send({ name: schema.u_name, password: schema.password });
+    const { u_id } = response.body.data;
+    userId = u_id as string;
+    expect(response.statusCode).toBe(201);
+    expect(response.body.message).toEqual("User created successfully");
+    expect(response.body.data).toEqual({
       u_id: userId,
-      order_status: schema.order_status,
+      u_name: schema.u_name,
     });
-    expect(createOrder?.message).toEqual("Order created successfully");
-    console.log(`order has been created \n`);
   });
 
-  it(`should add product to order number (${schema.order_id})`, async () => {
-    const createOrder = await OPT.addProducts({
-      p_id: pId,
-      order_id: schema.order_id,
-      quantity: schema.quantity,
+  it("should not create user and get end point /api/signup with status code 400 and error message", async () => {
+    const response = await route
+      .post("/api/signup")
+      .set("Content-type", "application/json")
+      .send({ name: "", password: "" });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please provide user name and password !",
     });
-    expect(createOrder?.message).toEqual(
-      `Product has been added successfully to order number (${schema.order_id})`
-    );
-    console.log(`product added to order \n`);
   });
-  it("should extract time of creation of ordered product", async () => {
-    const op = await OPT.index();
-    time = JSON.stringify(op[0].created_at).replaceAll(`"`, "");
-    console.log(`time extracted: ${time} \n`);
-  });
-
-  // Users
 
   it(`should authenticate user and create token`, async () => {
     const response = await route
@@ -363,6 +341,149 @@ describe("Testing application routes functionalty: \n", () => {
     });
     token = userToken;
   });
+
+  // Create a product
+
+  it(`should get end point /api/products and create product and extract id`, async () => {
+    const response = await route
+      .post("/api/products")
+      .set("Content-type", "application/json")
+      .send({
+        name: schema.p_name,
+        price: schema.price,
+        maker: schema.maker,
+        brand: schema.brand,
+        popular: schema.popular,
+        category: schema.category,
+      });
+    const { p_id } = response.body.data;
+    pId = p_id as string;
+    expect(response.statusCode).toBe(201);
+    expect(response.body.message).toEqual("Product created successfully");
+    expect(response.body.data).toEqual({
+      p_id: pId,
+      p_name: schema.p_name,
+      price: schema.price,
+      maker: schema.maker,
+      brand: schema.brand,
+      popular: schema.popular,
+      category: schema.category,
+    });
+  });
+
+  // Create order
+
+  it(`should create order and get end point /api/user/account/orders and create new order for user ${userId}`, async () => {
+    const response = await route
+      .post("/api/user/account/orders")
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: userId, status: schema.order_status });
+    expect(response.statusCode).toBe(201);
+    expect(response.body.message).toEqual("Order created successfully");
+    expect(response.body.data).toEqual({
+      order_id: schema.order_id,
+      order_status: schema.order_status,
+      user_id: userId,
+    });
+  });
+
+  it(`should not create order and get end point /api/user/account/orders with status code 500 and error message`, async () => {
+    const response = await route
+      .post("/api/user/account/orders")
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: "123", status: schema.order_status });
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual(
+      "Request Failed ! Unable to create new Order - Please enter a valid user id !"
+    );
+  });
+
+  it(`should not create order and get end point /api/user/account/orders with status code 500 and error message`, async () => {
+    const response = await route
+      .post("/api/user/account/orders")
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: userId, status: "anything" });
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual(
+      "Request Failed ! Unable to create new Order - Please enter a value between [ new | active ] for order status !"
+    );
+  });
+
+  it(`should not create order and get end point /api/user/account/orders with status code 400 and error message`, async () => {
+    const response = await route
+      .post("/api/user/account/orders")
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ user_id: "", status: schema.order_status });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please provide correct details before submiting !",
+    });
+  });
+
+  // Add product to order
+
+  it(`should get end point /api/user/account/orders/:id/products and add product to order number ${schema.order_id}`, async () => {
+    const response = await route
+      .post(`/api/user/account/orders/${schema.order_id}/products`)
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ p_id: pId, quantity: schema.quantity });
+    const { created_at } = response.body.data;
+    time = JSON.stringify(created_at).replaceAll(`"`, "");
+    expect(response.statusCode).toBe(201);
+    expect(response.body.message).toEqual(
+      `Product has been added successfully to order number (${schema.order_id})`
+    );
+    expect(response.body.data).toEqual({
+      op_id: schema.op_id,
+      order_id: schema.order_id,
+      product_id: pId,
+      quantity: schema.quantity,
+      created_at: time,
+    });
+  });
+
+  it(`should not add product and get end point /api/user/account/orders/:id/products with status code 500 and error message`, async () => {
+    const response = await route
+      .post(`/api/user/account/orders/2/products`)
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ p_id: pId, quantity: schema.quantity });
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual("Incorrect order id or order does not exist !");
+  });
+
+  it(`should not add product and get end point /api/user/account/orders/:id/products with status code 500 and error message`, async () => {
+    const response = await route
+      .post(`/api/user/account/orders/${schema.order_id}/products`)
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ p_id: "123", quantity: schema.quantity });
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual(
+      "Unable to add product to order - Please enter a valid product id !"
+    );
+  });
+
+  it(`should not add product and get end point /api/user/account/orders/:id/products with status code 500 and error message`, async () => {
+    const response = await route
+      .post(`/api/user/account/orders/${schema.order_id}/products`)
+      .set("Content-type", "application/json")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ p_id: "", quantity: "" });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please provide correct details before submiting !",
+    });
+  });
+
+  // Users
 
   it(`should not authenticate user and deny access`, async () => {
     const response = await route
@@ -908,7 +1029,7 @@ describe("Testing application routes functionalty: \n", () => {
     const conct = await pgDB.connect();
     await conct.query(`ALTER SEQUENCE orders_order_id_seq RESTART WITH 1`);
     await conct.query(`ALTER SEQUENCE ordered_products_op_id_seq RESTART WITH 1`);
-    console.log("seq altered");
+    console.log("Sequence altered successfully");
     conct.release();
   });
 });
