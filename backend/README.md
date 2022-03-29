@@ -207,7 +207,7 @@
   npm test
   ```
 
-  ![test](https://user-images.githubusercontent.com/90717578/160262296-1b2c97b7-7b1a-4e3c-b21f-bc0390afd12d.gif)
+  ![test](https://user-images.githubusercontent.com/90717578/160520167-54874b55-ae1a-4b31-83ab-1e7fb9560eb4.gif)
 
 - `to run migration up process in test environment.`
   ```
