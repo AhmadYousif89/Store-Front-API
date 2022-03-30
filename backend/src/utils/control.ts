@@ -5,6 +5,7 @@ type DbSchema = {
   p_id?: string;
   op_id?: number;
   u_name?: string;
+  u_email?: string;
   user_id?: string;
   order_id?: number;
   password?: string;
@@ -45,4 +46,9 @@ const customErr = (err: Error, msg: string, spliter: string) => {
   return str;
 };
 
-export { DbSchema, Error, encrypt, isPwValide, customErr };
+const validateEmail = (email: string): boolean => {
+  const emailPattern = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,8}$/i;
+  return emailPattern.test(email);
+};
+
+export { DbSchema, Error, encrypt, isPwValide, customErr, validateEmail };

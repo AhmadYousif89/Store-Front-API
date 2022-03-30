@@ -13,6 +13,7 @@ let token = "";
 
 export const schema = {
   u_name: "Ali",
+  u_email: "Ali@gmail.com",
   password: "123",
   order_id: 1,
   order_status: "new",
@@ -304,7 +305,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/signup")
       .set("Content-type", "application/json")
-      .send({ name: schema.u_name, password: schema.password });
+      .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
     const { u_id } = response.body.data;
     userId = u_id as string;
     expect(response.statusCode).toBe(201);
@@ -312,6 +313,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.body.data).toEqual({
       u_id: userId,
       u_name: schema.u_name,
+      u_email: schema.u_email,
     });
   });
 
@@ -319,27 +321,87 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/signup")
       .set("Content-type", "application/json")
-      .send({ name: "", password: "" });
+      .send({ name: "", email: schema.u_email, password: "" });
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
       status: "Error",
-      message: "Please provide user name and password !",
+      message: "Please provide correct information !",
     });
+  });
+
+  it("should not create user and get end point /api/signup with status code 400 and error message", async () => {
+    const response = await route
+      .post("/api/signup")
+      .set("Content-type", "application/json")
+      .send({ name: schema.u_name, email: "invalid email", password: schema.password });
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please provide a valid email !",
+    });
+  });
+
+  it("should not create user and get end point /api/signup with status code 500 and error message", async () => {
+    const response = await route
+      .post("/api/signup")
+      .set("Content-type", "application/json")
+      .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toEqual(
+      "Request Failed ! Unable to create user - User already exist with this email !"
+    );
   });
 
   it(`should authenticate user and create token`, async () => {
     const response = await route
       .post(`/api/login`)
       .set("Content-type", "application/json")
-      .send({ name: schema.u_name, password: schema.password });
+      .send({ email: schema.u_email, password: schema.password });
     const { token: userToken } = response.body;
-    expect(response.body.message).toEqual("User authenticated successfully");
     expect(response.status).toEqual(200);
+    expect(response.body.message).toEqual("User authenticated successfully");
     expect(response.body.data).toEqual({
       u_id: userId,
       u_name: schema.u_name,
+      u_email: schema.u_email,
     });
     token = userToken;
+  });
+
+  it(`should not authenticate user and return status code 400 and error message`, async () => {
+    const response = await route
+      .post(`/api/login`)
+      .set("Content-type", "application/json")
+      .send({ email: "", password: schema.password });
+    expect(response.status).toEqual(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please provide your email and password !",
+    });
+  });
+
+  it(`should not authenticate user and return status code 400 and error message`, async () => {
+    const response = await route
+      .post(`/api/login`)
+      .set("Content-type", "application/json")
+      .send({ email: "invalid email", password: schema.password });
+    expect(response.status).toEqual(400);
+    expect(response.body).toEqual({
+      status: "Error",
+      message: "Please enter a valid email !",
+    });
+  });
+
+  it(`should not authenticate user and deny access`, async () => {
+    const response = await route
+      .post(`/api/login`)
+      .set("Content-type", "application/json")
+      .send({ email: "XX@xx.com", password: "abc" });
+    expect(response.status).toEqual(401);
+    expect(response.body).toEqual({
+      message: "Authentication failed",
+      data: "Invalid password or email !",
+    });
   });
 
   // Create a product
@@ -485,18 +547,6 @@ describe("Testing application routes functionalty: \n", () => {
 
   // Users
 
-  it(`should not authenticate user and deny access`, async () => {
-    const response = await route
-      .post(`/api/login`)
-      .set("Content-type", "application/json")
-      .send({ name: "X", password: "abc" });
-    expect(response.status).toEqual(401);
-    expect(response.body).toEqual({
-      message: "Authentication failed !",
-      data: "Invalid password or User Name",
-    });
-  });
-
   it("should authenticate user and allow access", async () => {
     const result = await route.get(`/api/users/${userId}`).set("Authorization", `Bearer ${token}`);
     expect(result.status).toBe(200);
@@ -505,6 +555,7 @@ describe("Testing application routes functionalty: \n", () => {
       data: {
         u_id: userId,
         u_name: schema.u_name,
+        u_email: schema.u_email,
       },
     });
   });
@@ -526,6 +577,7 @@ describe("Testing application routes functionalty: \n", () => {
         {
           u_id: userId,
           u_name: schema.u_name,
+          u_email: schema.u_email,
         },
       ],
     });
@@ -578,7 +630,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(result.status).toEqual(200);
     expect(result.body).toEqual({
       message: "User updated successfully",
-      data: { u_id: userId, u_name: schema.u_name },
+      data: { u_id: userId, u_email: schema.u_email, u_name: schema.u_name },
     });
   });
 

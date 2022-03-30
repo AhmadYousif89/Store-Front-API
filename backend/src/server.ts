@@ -4,27 +4,27 @@ import { serverRoutes } from "./api/server.routes";
 import express, { Request, Response } from "express";
 import errorHandler from "./middlewares/error.middleware";
 
-const app = express();
+const server = express();
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+server.use(express.urlencoded({ extended: false }));
+server.use(express.json());
 
 export const corsOptions = {
   origin: process.env.HOST,
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+server.use(cors(corsOptions));
 
-app.use("/api", serverRoutes);
+server.use("/api", serverRoutes);
 
-app.get("/", (_req: Request, res: Response) => {
+server.get("/", (_req: Request, res: Response) => {
   res.status(200).json(`<h2>Home Page ...</h2>`);
 });
 
-app.use(errorHandler);
+server.use(errorHandler);
 
-app.use((_req: Request, res: Response) => {
+server.use((_req: Request, res: Response) => {
   res.status(404).json(
     `
     <h3>404 Page Not Found !</h3>
@@ -33,9 +33,16 @@ app.use((_req: Request, res: Response) => {
   );
 });
 
-const port = process.env.SERVER_PORT || 4000;
-app.listen(port, async () => {
-  console.log(`server running on port ${port}...\n`);
-});
+const port = process.env.SERVER_PORT || 1000;
+const testPort = process.env.TEST_PORT;
 
-export default app;
+if (process.env.ENV === "test") {
+  server.listen(testPort, () => {
+    console.log(`server running on test port ${testPort}...\n`);
+  });
+} else
+  server.listen(port, () => {
+    console.log(`server running on port ${port}...\n`);
+  });
+
+export default server;

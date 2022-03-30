@@ -1,20 +1,24 @@
 import { Request, Response, NextFunction } from "express";
 import JWT from "jsonwebtoken";
-import { Error } from "../../utils/control";
+import { Error, validateEmail } from "../../utils/control";
 import { userModel } from "../models/users";
 
 let error;
 // method => POST /users/signup
 // desc   => Create new user data.
 const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { name, password } = req.body;
+  const { name, email, password } = req.body;
+  const checkEmail = validateEmail(email);
 
-  if (!name || !password) {
-    res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
+  if (!name || !email || !password) {
+    res.status(400).json({ status: "Error", message: "Please provide correct information !" });
+    return;
+  } else if (checkEmail === false) {
+    res.status(400).json({ status: "Error", message: "Please provide a valid email !" });
     return;
   }
   try {
-    const data = await userModel.create({ u_name: name, password: password });
+    const data = await userModel.create({ u_name: name, u_email: email, password: password });
     res.status(201).json(data);
   } catch (err) {
     error = {
@@ -27,23 +31,27 @@ const createUser = async (req: Request, res: Response, next: NextFunction): Prom
 // method => POST /users/login
 // desc   => Authenticate user data.
 const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { name, password } = req.body;
+  const { email, password } = req.body;
   const { SECRET_TOKEN } = process.env;
+  const checkEmail = validateEmail(email);
 
+  if (!email || !password) {
+    res.status(400).json({ status: "Error", message: "Please provide your email and password !" });
+    return;
+  } else if (checkEmail === false) {
+    res.status(400).json({ status: "Error", message: "Please enter a valid email !" });
+    return;
+  }
   try {
-    if (!name || !password) {
-      res.status(400).json({ status: "Error", message: "Please provide user name and password !" });
-      return;
-    }
-    const user = await userModel.authenticateUser(name, password);
+    const user = await userModel.authenticateUser(email, password);
     if (!user) {
       res
         .status(401)
-        .json({ message: "Authentication failed !", data: "Invalid password or User Name" });
+        .json({ message: "Authentication failed", data: "Invalid password or email !" });
       return;
     }
     // creating token based on user credentials and my secret token.
-    const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "10m" });
+    const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     res.status(200).json({
       message: "User authenticated successfully",
       data: user,

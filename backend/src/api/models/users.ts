@@ -8,10 +8,10 @@ class UserModel {
   async create(values: DbSchema): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `INSERT INTO users (u_name, password) VALUES ($1, $2) RETURNING u_id , u_name`;
+      const sql = `INSERT INTO users (u_name, u_email, password) VALUES ($1, $2, $3) RETURNING u_id , u_name, u_email`;
       // encrypting password.
       const hash = encrypt(values.password as string);
-      const result = await conct.query(sql, [values.u_name, hash]);
+      const result = await conct.query(sql, [values.u_name, values.u_email, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
@@ -23,12 +23,14 @@ class UserModel {
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
+      if ((err as Error).message?.includes("unique_user_email")) {
+        errMsg = customErr(err as Error, "User already exist with this email !.", ".");
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to create new User (${values.u_name}) - ${errMsg}`);
+      throw new Error(`Unable to create user - ${errMsg}`);
     }
   }
 
@@ -36,13 +38,13 @@ class UserModel {
   async index(): Promise<DbSchema[]> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT u_id, u_name FROM users`;
+      const sql = `SELECT u_id, u_name, u_email FROM users`;
       const result = await conct.query(sql);
       conct.release();
       return result.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
+      if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -55,7 +57,7 @@ class UserModel {
   async show(uid: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT u_id, u_name FROM users WHERE u_id = $1 `;
+      const sql = `SELECT u_id, u_name, u_email FROM users WHERE u_id = $1 `;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -71,7 +73,7 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -84,7 +86,7 @@ class UserModel {
   async update(u_id: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name`;
+      const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name, u_email`;
       // hashing user password before updating to database
       const hash = encrypt(password);
       const result = await conct.query(sql, [u_id, hash]);
@@ -102,7 +104,7 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -115,7 +117,7 @@ class UserModel {
   async delete(u_id: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `DELETE FROM users WHERE u_id = ($1) RETURNING u_id , u_name`;
+      const sql = `DELETE FROM users WHERE u_id = ($1) RETURNING u_id , u_name, u_email`;
       const result = await conct.query(sql, [u_id]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -133,7 +135,7 @@ class UserModel {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, `Please delete any related orders first !.`, ".");
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -143,17 +145,17 @@ class UserModel {
   }
 
   // Authenticate user.
-  async authenticateUser(u_name: string, password: string): Promise<DbSchema | null> {
+  async authenticateUser(u_email: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT password FROM users WHERE u_name = ($1)`;
-      const result = await conct.query(sql, [u_name]);
+      const sql = `SELECT password FROM users WHERE u_email = ($1)`;
+      const result = await conct.query(sql, [u_email]);
       if (result.rows.length) {
-        const user = result.rows[0];
+        const hashed = result.rows[0].password;
         // checking user password authenticity.
-        if (isPwValide(password, user.password)) {
-          const sql = `SELECT u_id, u_name FROM users WHERE u_name = ($1)`;
-          const data = await conct.query(sql, [u_name]);
+        if (isPwValide(password, hashed)) {
+          const sql = `SELECT u_id, u_name, u_email FROM users WHERE u_email = ($1)`;
+          const data = await conct.query(sql, [u_email]);
           conct.release();
           return data.rows[0];
         }
@@ -162,7 +164,7 @@ class UserModel {
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
+      if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;

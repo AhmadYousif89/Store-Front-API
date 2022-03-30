@@ -41,6 +41,7 @@ describe("Testing user Model functions: \n", () => {
         {
           u_id: userId,
           u_name: schema.u_name,
+          u_email: schema.u_email,
         },
       ]);
       console.log("all users");
@@ -50,6 +51,7 @@ describe("Testing user Model functions: \n", () => {
       const result = await userModel.show(userId);
       expect(result?.data).toEqual({
         u_id: userId,
+        u_email: schema.u_email,
         u_name: schema.u_name,
       });
       console.log("one user");
@@ -61,17 +63,19 @@ describe("Testing user Model functions: \n", () => {
         message: "User updated successfully",
         data: {
           u_id: userId,
+          u_email: schema.u_email,
           u_name: schema.u_name,
         },
       });
       console.log("update user");
     });
 
-    it(`should authenticate user by name and password`, async () => {
-      const result = await userModel.authenticateUser(schema.u_name as string, "123");
+    it(`should authenticate user by email and password`, async () => {
+      const result = await userModel.authenticateUser(schema.u_email as string, "123");
       expect(result).toEqual({
         u_id: userId,
         u_name: schema.u_name,
+        u_email: schema.u_email,
       });
       console.log("validate user");
     });
@@ -82,6 +86,7 @@ describe("Testing user Model functions: \n", () => {
         message: "User deleted successfully",
         data: {
           u_id: userId,
+          u_email: schema.u_email,
           u_name: schema.u_name,
         },
       });
