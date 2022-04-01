@@ -103,7 +103,7 @@ describe("Testing application end points: \n", () => {
     const response = await route.get(`/api/products/123`);
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to get Product with id (123) - Please enter a valid product id !"
+      "Unable to get Product with id (123) - Please enter a valid product id !"
     );
   });
 
@@ -149,7 +149,7 @@ describe("Testing application end points: \n", () => {
       });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to create new Product - Please choose popularity between (yes) or (no) !"
+      "Unable to create new Product - Please choose popularity between (yes) or (no) !"
     );
   });
 
@@ -167,7 +167,7 @@ describe("Testing application end points: \n", () => {
       });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to create new Product - Please enter category between (electronics) and (mobiles) !"
+      "Unable to create new Product - Please enter category between (electronics) and (mobiles) !"
     );
   });
 
@@ -178,7 +178,7 @@ describe("Testing application end points: \n", () => {
       .send({ id: 123, price: schema.price, popular: schema.popular });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to update Product with id (123) - Please enter a valid product id !"
+      "Unable to update Product with id (123) - Please enter a valid product id !"
     );
   });
 
@@ -203,7 +203,7 @@ describe("Testing application end points: \n", () => {
     });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to update Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) - Please enter a value between [ yes | no ] for popular !"
+      "Unable to update Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) - Please enter a value between [ yes | no ] for popular !"
     );
   });
 
@@ -211,7 +211,7 @@ describe("Testing application end points: \n", () => {
     const response = await route.delete("/api/products/123");
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to delete Product with id (123) - Please enter a valid product id !"
+      "Unable to delete Product with id (123) - Please enter a valid product id !"
     );
   });
 
@@ -309,7 +309,7 @@ describe("Testing application routes functionalty: \n", () => {
     const { u_id } = response.body.data;
     userId = u_id as string;
     expect(response.statusCode).toBe(201);
-    expect(response.body.message).toEqual("User created successfully");
+    expect(response.body.message).toEqual("user created successfully");
     expect(response.body.data).toEqual({
       u_id: userId,
       u_name: schema.u_name,
@@ -325,7 +325,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
       status: "Error",
-      message: "Please provide correct information !",
+      message: "Please fill up the registration form",
     });
   });
 
@@ -337,7 +337,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({
       status: "Error",
-      message: "Please provide a valid email !",
+      message: "Please provide a valid email",
     });
   });
 
@@ -347,9 +347,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
     expect(response.statusCode).toBe(500);
-    expect(response.body.message).toEqual(
-      "Request Failed ! Unable to create user - User already exist with this email !"
-    );
+    expect(response.body.message).toEqual("User already exist with this email");
   });
 
   it(`should authenticate user and create token`, async () => {
@@ -359,12 +357,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ email: schema.u_email, password: schema.password });
     const { token: userToken } = response.body;
     expect(response.status).toEqual(200);
-    expect(response.body.message).toEqual("User authenticated successfully");
-    expect(response.body.data).toEqual({
-      u_id: userId,
-      u_name: schema.u_name,
-      u_email: schema.u_email,
-    });
+    expect(response.body.message).toEqual("user logged in");
     token = userToken;
   });
 
@@ -376,7 +369,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.status).toEqual(400);
     expect(response.body).toEqual({
       status: "Error",
-      message: "Please provide your email and password !",
+      message: "Please provide your email and password",
     });
   });
 
@@ -388,7 +381,18 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.status).toEqual(400);
     expect(response.body).toEqual({
       status: "Error",
-      message: "Please enter a valid email !",
+      message: "Please enter a valid email",
+    });
+  });
+
+  it(`should not authenticate user and deny access`, async () => {
+    const response = await route
+      .post(`/api/login`)
+      .set("Content-type", "application/json")
+      .send({ email: schema.u_email, password: "abc" });
+    expect(response.status).toEqual(401);
+    expect(response.body).toEqual({
+      message: "Invalid password or email",
     });
   });
 
@@ -397,10 +401,9 @@ describe("Testing application routes functionalty: \n", () => {
       .post(`/api/login`)
       .set("Content-type", "application/json")
       .send({ email: "XX@xx.com", password: "abc" });
-    expect(response.status).toEqual(401);
+    expect(response.status).toEqual(500);
     expect(response.body).toEqual({
-      message: "Authentication failed",
-      data: "Invalid password or email !",
+      message: "User does not exist on our database !",
     });
   });
 
@@ -458,7 +461,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ user_id: "123", status: schema.order_status });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to create new Order - Please enter a valid user id !"
+      "Unable to create new Order - Please enter a valid user id !"
     );
   });
 
@@ -470,7 +473,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ user_id: userId, status: "anything" });
     expect(response.statusCode).toBe(500);
     expect(response.body.message).toEqual(
-      "Request Failed ! Unable to create new Order - Please enter a value between [ new | active ] for order status !"
+      "Unable to create new Order - Please enter a value between [ new | active ] for order status !"
     );
   });
 
@@ -564,7 +567,7 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route.get(`/api/users/123`).set("Authorization", `Bearer ${token}`);
     expect(result.status).toBe(500);
     expect(result.body.message).toEqual(
-      "Request Failed ! Unable to get user with id (123) - Please enter a valid user id !"
+      "Unable to get user with id (123) - Please enter a valid user id !"
     );
   });
 
@@ -617,7 +620,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ uid: "123", password: "abc" });
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
-      "Request Failed ! Unable to update user with id (123) - Please enter a valid user id !"
+      "Unable to update user with id (123) - Please enter a valid user id !"
     );
   });
 
@@ -638,7 +641,7 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route.delete(`/api/users/123`).set("Authorization", `Bearer ${token}`);
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
-      "Request Failed ! Unable to delete user with id (123) - Please enter a valid user id !"
+      "Unable to delete user with id (123) - Please enter a valid user id !"
     );
   });
 
@@ -648,7 +651,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
-      `Request Failed ! Unable to delete user with id (${userId}) - Please delete any related orders first !`
+      `Unable to delete user with id (${userId}) - Please delete any related orders first !`
     );
   });
 
@@ -725,7 +728,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route.delete(`/api/products/${pId}`);
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
-      `Request Failed ! Unable to delete Product with id (${pId}) - Product can not be deleted - remove this product from any related orders !`
+      `Unable to delete Product with id (${pId}) - Product can not be deleted - remove this product from any related orders !`
     );
   });
 
@@ -807,7 +810,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ order_id: schema.order_id, status: "anything" });
     expect(result.status).toBe(500);
     expect(result.body.message).toEqual(
-      `Request Failed ! Unable to update orders with id (${schema.order_id}) - Please enter value between [ active | complete ] for order status !`
+      `Unable to update orders with id (${schema.order_id}) - Please enter value between [ active | complete ] for order status !`
     );
   });
 
@@ -857,7 +860,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
-      `Request Failed ! Unable to delete order with id (${schema.order_id}) - Please remove any products related to this order first !`
+      `Unable to delete order with id (${schema.order_id}) - Please remove any products related to this order first !`
     );
   });
 
@@ -956,7 +959,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ p_id: "123", quantity: 20 });
     expect(result.status).toBe(500);
     expect(result.body.message).toEqual(
-      `Request Failed ! Unable to update Product with id (123) - Please enter a valid product id !`
+      `Unable to update Product with id (123) - Please enter a valid product id !`
     );
   });
 

@@ -27,7 +27,7 @@ const createOrders = async (
     res.status(201).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -45,7 +45,7 @@ const getOrders = async (_req: Request, res: Response, next: NextFunction): Prom
     res.status(200).json({ message: "Data generated successfully", data });
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -71,7 +71,7 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction): Pr
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -101,7 +101,7 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction): Pro
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -128,7 +128,7 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction): Pro
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }

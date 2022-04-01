@@ -29,7 +29,7 @@ const createProducts = async (req: Request, res: Response, next: NextFunction): 
     res.status(201).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -47,7 +47,7 @@ const getProducts = async (_req: Request, res: Response, next: NextFunction): Pr
     res.status(200).json({ message: "Data generated successfully", data });
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -69,7 +69,7 @@ const getProductById = async (req: Request, res: Response, next: NextFunction): 
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -100,7 +100,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -127,7 +127,7 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }

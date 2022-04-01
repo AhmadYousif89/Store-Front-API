@@ -52,7 +52,7 @@ const getOrderedProducts = async (
     res.status(200).json({ message: "Data generated successfully", data });
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -79,7 +79,7 @@ const getOPsById = async (req: Request, res: Response, next: NextFunction): Prom
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -113,7 +113,7 @@ const updateOrderedProduct = async (
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }
@@ -144,7 +144,7 @@ const delOrderedProduct = async (
     res.status(200).json(data);
   } catch (err) {
     error = {
-      message: `Request Failed ! ${(err as Error).message}`,
+      message: `${(err as Error).message}`,
     };
     next(error);
   }

@@ -76,7 +76,6 @@ h3 {
 }
 
 .heading {
-  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 50px;
   padding: 0 20px;
@@ -86,20 +85,20 @@ h3 {
   color: #828282;
 }
 
-.goals {
+.orders {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-.goal {
-  background-color: #f4f4f4;
+.order {
+  background-color: #e64c4c;
   margin: 10px 0;
   padding: 20px 0 10px;
   position: relative;
 }
 
-.goal .close {
+.order .close {
   position: absolute;
   top: 10px;
   right: 15px;
@@ -146,10 +145,6 @@ h3 {
   font-weight: 700;
   cursor: pointer;
   text-align: center;
-  appearance: button;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .btn svg {
@@ -167,10 +162,16 @@ h3 {
 }
 
 .btn:hover {
-  transform: scale(0.98);
+  transform: scale(0.99);
 }
 
-.loadingSpinnerContainer {
+.logout {
+  cursor: pointer;
+}
+.logout:hover {
+  color: #777;
+}
+.spinnerContainer {
   position: fixed;
   top: 0;
   right: 0;
@@ -183,13 +184,20 @@ h3 {
   align-items: center;
 }
 
-.loadingSpinner {
+.spinner {
   width: 64px;
   height: 64px;
   border: 8px solid;
   border-color: #000 transparent #555 transparent;
   border-radius: 50%;
   animation: spin 1.2s linear infinite;
+}
+
+.registe {
+  font-size: 0.75rem;
+}
+.registe:hover {
+  color: red;
 }
 
 @keyframes spin {

@@ -16,7 +16,7 @@ class UserModel {
         const user = result.rows[0];
         conct.release();
         return {
-          message: `User created successfully`,
+          message: `user created successfully`,
           data: user,
         };
       }
@@ -24,13 +24,13 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("unique_user_email")) {
-        errMsg = customErr(err as Error, "User already exist with this email !.", ".");
+        errMsg = customErr(err as Error, "User already exist with this email.", ".");
       } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to create user - ${errMsg}`);
+      throw new Error(`${errMsg}`);
     }
   }
 
@@ -148,28 +148,35 @@ class UserModel {
   async authenticateUser(u_email: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT password FROM users WHERE u_email = ($1)`;
+      const sql = `SELECT password, u_email FROM users WHERE u_email = ($1)`;
       const result = await conct.query(sql, [u_email]);
+      const userEmail = result.rows[0].u_email;
+      if (userEmail === undefined) {
+        conct.release();
+        return null;
+      }
       if (result.rows.length) {
         const hashed = result.rows[0].password;
         // checking user password authenticity.
         if (isPwValide(password, hashed)) {
           const sql = `SELECT u_id, u_name, u_email FROM users WHERE u_email = ($1)`;
-          const data = await conct.query(sql, [u_email]);
+          const user = await conct.query(sql, [u_email]);
           conct.release();
-          return data.rows[0];
+          return user.rows[0];
         }
       }
       conct.release();
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("not exist")) {
+      if ((err as Error).message?.includes("undefined")) {
+        errMsg = customErr(err as Error, "User does not exist on our database !.", ".");
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to authenticate user - ${errMsg}`);
+      throw new Error(`${errMsg}`);
     }
   }
 }
