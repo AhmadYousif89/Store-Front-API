@@ -28,14 +28,12 @@ jobs:
       - run:
           name: Configure Psql
           command: |
-            psql --version
             sudo su - root
-            sudo service postgresql start
             sudo -u root psql -d postgres
             CREATE USER udacity WITH PASSWORD '123';
             CREATE DATABASE tech_store_test;
             GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
-            \q
+            exit || true
 
       - run:
           # Install backend dependencies
