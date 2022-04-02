@@ -39,7 +39,7 @@ jobs:
 
       # Create Postgres users and database
       - run: |
-          sudo -u postgres createuser -s -i -d -r -l -w udacity
+          sudo -u root createuser -s -i -d -r -l -w udacity
           sudo -u postgres psql -c "ALTER ROLE udacity WITH PASSWORD '123';"
 
       - run:
