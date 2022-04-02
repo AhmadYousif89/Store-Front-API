@@ -29,6 +29,7 @@ jobs:
           name: Configure Psql
           command: |
             echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
+            sudo su - postgres
             sudo service postgresql start
             sudo -u root psql -d postgres
             CREATE USER udacity WITH PASSWORD '123';
