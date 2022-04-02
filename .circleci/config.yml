@@ -21,12 +21,12 @@ jobs:
           SECRET_TOKEN: secret-$1$2$3$-token
     steps:
       - node/install
-      - postgres/install
       - checkout
 
       - run:
           name: Configure Psql
           command: |
+            sudo apt-get install -y postgresql postgresql-client libpq-dev
             echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
             sudo service postgresql start
             sudo -u root psql -d postgres
