@@ -9,7 +9,7 @@ jobs:
         #   username: mydockerhub-user
         #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
 
-      - image: cimg/postgres:14.0
+      - image: circleci/postgres:11-alpine-ram
         # auth:
         #   username: udacity
         #   password: "123" # context / project UI env-var reference
@@ -37,11 +37,6 @@ jobs:
       - run:
           command: echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
 
-      # Create Postgres users and database
-      - run: |
-          sudo -u root createuser -s -i -d -r -l -w udacity
-          sudo -u postgres psql -c "ALTER ROLE udacity WITH PASSWORD '123';"
-
       - run:
           # Install backend dependencies
           name: Install Back-End
@@ -52,7 +47,7 @@ jobs:
           # Backend Test
           name: Install Back-End
           command: |
-            npm test --prefix backend
+            npm ci:test --prefix backend
 
       # - restore_cache:
       #     keys:

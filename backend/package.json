@@ -18,11 +18,9 @@
     "m-down": "db-migrate reset",
     "test:m-up": "db-migrate -e test up",
     "test:m-down": "db-migrate -e test reset",
-    "test": "db-migrate -e test up && jasmine && db-migrate -e test reset"
+    "test": "db-migrate -e test up && jasmine && db-migrate -e test reset",
+    "ci:test": "db-migrate -e test up && jasmine && db-migrate -e test reset --ci --runInBand --detectOpenHandles --forceExit"
   },
-  "keywords": [
-    "TS"
-  ],
   "author": "Ahmad Yousif",
   "license": "MIT",
   "dependencies": {
