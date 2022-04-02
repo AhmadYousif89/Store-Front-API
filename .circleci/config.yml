@@ -39,8 +39,11 @@ jobs:
 
       # Create Postgres users and database
       - run: |
-          sudo -u postgres createuser -h localhost --superuser udacity &&
-          sudo createdb -h localhost tech_store_test
+          psql -U postgres
+          CREATE USER udacity SUPERUSER WITH PASSWORD '123';
+          CREATE DATABASE tech_store_test;
+          GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+          \q
 
       - run:
           # Install backend dependencies
