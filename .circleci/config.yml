@@ -21,6 +21,7 @@ jobs:
           SECRET_TOKEN: secret-$1$2$3$-token
     steps:
       - node/install
+      - postgres/install
       - checkout
 
       - run:
