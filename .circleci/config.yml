@@ -41,6 +41,12 @@ jobs:
           # Install backend dependencies
           name: Install Back-End
           command: |
+            npm i --prefix backend
+
+      - run:
+          # Build backend
+          name: Install Back-End
+          command: |
             npm run build --prefix backend
 
       - run:
