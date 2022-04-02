@@ -4,7 +4,7 @@ orbs:
 jobs:
   build-test:
     docker:
-      - image: cimg/base:stable
+      # - image: cimg/base:stable
         # auth:
         #   username: mydockerhub-user
         #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
@@ -27,8 +27,8 @@ jobs:
           PEPPER: pass-$1$2$3$-word
           SECRET_TOKEN: secret-$1$2$3$-token
 
-    environment:
-      TEST_REPORTS: /tmp/test-reports
+    # environment:
+    #   TEST_REPORTS: /tmp/test-reports
 
     steps:
       - node/install
