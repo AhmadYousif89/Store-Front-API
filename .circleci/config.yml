@@ -25,31 +25,27 @@ jobs:
 
       - run: sudo apt install -y postgresql-client || true
 
-      # - run:
-      #     name: Configure Psql
-      #     command: |
-      #       sudo su - root
-      #       sudo -u root psql -d postgres
-      #       CREATE USER udacity WITH PASSWORD '123';
-      #       CREATE DATABASE tech_store_test;
-      #       GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
-      #       exit || true
+      - run:
+          name: Configure Psql
+          command: |
+            sudo -u root psql -d postgres
+            CREATE USER udacity WITH PASSWORD '123';
+            CREATE DATABASE tech_store_test;
+            GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+            exit || true
 
       - run:
-          # Install backend dependencies
           name: Install Back-End
           command: |
             npm i --prefix backend
 
       - run:
-          # Build backend
-          name: Install Back-End
+          name: Build Back-End
           command: |
             npm run build --prefix backend
 
       - run:
-          # Backend Test
-          name: Install Back-End
+          name: Test Back-End
           command: |
             npm run ci:test --prefix backend
 
