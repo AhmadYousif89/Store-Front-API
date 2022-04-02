@@ -35,6 +35,7 @@ jobs:
             CREATE USER udacity WITH PASSWORD '123';
             CREATE DATABASE tech_store_test;
             GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
+            \q
 
       - run:
           # Install backend dependencies
