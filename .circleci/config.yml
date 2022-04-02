@@ -53,7 +53,7 @@ jobs:
           # Backend Test
           name: Install Back-End
           command: |
-            npm ci:test --prefix backend
+            npm run ci:test --prefix backend
 
       # - restore_cache:
       #     keys:
