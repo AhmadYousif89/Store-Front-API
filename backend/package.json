@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node dist/app.js",
-    "build": "rimraf dist && tsc",
+    "build": "tsc",
     "watch": "tsc -w",
     "dev": "npx nodemon",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
