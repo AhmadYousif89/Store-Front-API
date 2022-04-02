@@ -4,15 +4,15 @@ orbs:
 jobs:
   build-test:
     docker:
-      # - image: cimg/base:stable
+      - image: cimg/base:stable
         # auth:
         #   username: mydockerhub-user
         #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
 
      - image: cimg/postgres:14.0
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        auth:
+          username: udacity
+          password: 123  # context / project UI env-var reference
         environment:
           ENV: dev
           HOST: 127.0.0.1
