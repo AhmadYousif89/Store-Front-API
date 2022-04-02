@@ -9,10 +9,10 @@ jobs:
         #   username: mydockerhub-user
         #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
 
-     - image: cimg/postgres:14.0
+      - image: cimg/postgres:14.0
         auth:
           username: udacity
-          password: 123  # context / project UI env-var reference
+          password: 123 # context / project UI env-var reference
         environment:
           ENV: dev
           HOST: 127.0.0.1
@@ -94,4 +94,3 @@ workflows:
   project-workflow:
     jobs:
       - build-test
-
