@@ -27,7 +27,7 @@ jobs:
           name: Configure Psql
           command: |
             echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
-            sudo -u postgres psql -d postgres
+            sudo -u root psql -d postgres
             CREATE USER udacity WITH PASSWORD '123';
             CREATE DATABASE tech_store_test;
             GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
