@@ -23,10 +23,11 @@ jobs:
       - node/install
       - checkout
 
+      - run: sudo apt install -y postgresql-client || true
+
       - run:
           name: Configure Psql
           command: |
-            sudo apt-get install -y postgresql postgresql-client libpq-dev
             echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
             sudo service postgresql start
             sudo -u root psql -d postgres
