@@ -5,14 +5,7 @@ jobs:
   build-test:
     docker:
       - image: cimg/base:stable
-        # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
-
       - image: circleci/postgres:11-alpine-ram
-        # auth:
-        #   username: udacity
-        #   password: "123" # context / project UI env-var reference
         environment:
           ENV: dev
           HOST: "127.0.0.1"
@@ -26,16 +19,18 @@ jobs:
           SALT: "10"
           PEPPER: pass-$1$2$3$-word
           SECRET_TOKEN: secret-$1$2$3$-token
-
-    # environment:
-    #   TEST_REPORTS: /tmp/test-reports
-
     steps:
       - node/install
       - checkout
 
       - run:
-          command: echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
+          name: Configure Psql
+          command: |
+            echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
+            sudo -u postgres psql -d postgres
+            CREATE USER udacity WITH PASSWORD '123';
+            CREATE DATABASE tech_store_test;
+            GRANT ALL PRIVILEGES ON DATABASE tech_store_test TO udacity;
 
       - run:
           # Install backend dependencies
