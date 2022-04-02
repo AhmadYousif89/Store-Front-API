@@ -12,18 +12,18 @@ jobs:
       - image: cimg/postgres:14.0
         auth:
           username: udacity
-          password: 123 # context / project UI env-var reference
+          password: "123" # context / project UI env-var reference
         environment:
           ENV: dev
-          HOST: 127.0.0.1
-          SERVER_PORT: 5000
-          TEST_PORT: 4000
+          HOST: "127.0.0.1"
+          SERVER_PORT: "5000"
+          TEST_PORT: "4000"
           PG_DB: tech_store
           PG_DB_TEST: tech_store_test
           PG_USER: udacity
-          PG_PASSWORD: 123
-          PG_PORT: 5432
-          SALT: 10
+          PG_PASSWORD: "123"
+          PG_PORT: "5432"
+          SALT: "10"
           PEPPER: pass-$1$2$3$-word
           SECRET_TOKEN: secret-$1$2$3$-token
 
