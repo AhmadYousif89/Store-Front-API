@@ -1,0 +1,97 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.1
+jobs:
+  build-test:
+    docker:
+      - image: cimg/base:stable
+        # auth:
+        #   username: mydockerhub-user
+        #   password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
+
+     - image: cimg/postgres:14.0
+        # auth:
+        #   username: mydockerhub-user
+        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+          ENV: dev
+          HOST: 127.0.0.1
+          SERVER_PORT: 5000
+          TEST_PORT: 4000
+          PG_DB: tech_store
+          PG_DB_TEST: tech_store_test
+          PG_USER: udacity
+          PG_PASSWORD: 123
+          PG_PORT: 5432
+          SALT: 10
+          PEPPER: pass-$1$2$3$-word
+          SECRET_TOKEN: secret-$1$2$3$-token
+
+    environment:
+      TEST_REPORTS: /tmp/test-reports
+
+    steps:
+      - node/install
+      - checkout
+
+      - run:
+          command: echo 127.0.0.1 devhost | sudo tee -a /etc/hosts
+
+      # Create Postgres users and database
+      - run: |
+          sudo -u root createuser -h localhost --superuser udacity &&
+          sudo createdb -h localhost tech_store_test
+
+      - run:
+          # Install backend dependencies
+          name: Install Back-End
+          command: |
+            npm run build --prefix backend
+
+      - run:
+          # Backend Test
+          name: Install Back-End
+          command: |
+            npm test --prefix backend
+
+      # - restore_cache:
+      #     keys:
+      #       - v1-my-project-{{ checksum "project.clj" }}
+      #       - v1-my-project-
+
+      # - run:
+      #     environment:
+      #       SSH_TARGET: "localhost"
+      #       TEST_ENV: "linux"
+      #     command: |
+      #       set -xu
+      #       mkdir -p ${TEST_REPORTS}
+      #       run-tests.sh
+      #       cp out/tests/*.xml ${TEST_REPORTS}
+
+      # - run: |
+      #     set -xu
+      #     mkdir -p /tmp/artifacts
+      #     create_jars.sh << pipeline.number >>
+      #     cp *.jar /tmp/artifacts
+
+      # - save_cache:
+      #     key: v1-my-project-{{ checksum "project.clj" }}
+      #     paths:
+      #       - ~/.m2
+
+      # # Save artifacts
+      # - store_artifacts:
+      #     path: /tmp/artifacts
+      #     destination: build
+
+      # # Upload test results
+      # - store_test_results:
+      #     path: /tmp/test-reports
+
+# Invoke jobs via workflows
+workflows:
+  project-workflow:
+    jobs:
+      - build-test
+
