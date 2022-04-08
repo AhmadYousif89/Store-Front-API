@@ -84,7 +84,6 @@ jobs:
       # - store_test_results:
       #     path: /tmp/test-reports
 
-# Invoke jobs via workflows
 workflows:
   project-workflow:
     jobs:

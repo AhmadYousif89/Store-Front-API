@@ -30,7 +30,7 @@ describe("Testing user Model functions: \n", () => {
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
       const result = await userModel.create(schema);
-      expect(result?.message).toEqual("User created successfully");
+      expect(result?.message).toEqual("user created successfully");
       console.log("user has been created");
     });
 

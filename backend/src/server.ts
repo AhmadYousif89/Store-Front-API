@@ -25,12 +25,7 @@ server.get("/", (_req: Request, res: Response) => {
 server.use(errorHandler);
 
 server.use((_req: Request, res: Response) => {
-  res.status(404).json(
-    `
-    <h3>404 Page Not Found !</h3>
-    This page doesn't exist, Sorry !
-    `
-  );
+  res.status(404).send("<h3>404 Page Not Found !</h3>This page doesn't exist, Sorry !");
 });
 
 const port = process.env.SERVER_PORT || 1000;

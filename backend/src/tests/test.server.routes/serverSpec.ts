@@ -42,7 +42,7 @@ describe("Testing application end points: \n", () => {
   it(`should get end point /any-random-route with status code 404 and error message`, async () => {
     const response = await route.get("/any-random-route");
     expect(response.statusCode).toBe(404);
-    expect(response.body).toContain("This page doesn't exist, Sorry !");
+    expect(response.text).toContain("This page doesn't exist, Sorry !");
   });
 
   // Users routes

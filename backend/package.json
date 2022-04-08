@@ -1,7 +1,7 @@
 {
-  "name": "store-front-api",
+  "name": "tech_store",
   "version": "1.0.0",
-  "description": "",
+  "description": "full stack application",
   "main": "index.js",
   "repository": {
     "url": "https://github.com/AhmadYousif89/Store-Front-API.git"
