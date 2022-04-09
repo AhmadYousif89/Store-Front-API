@@ -170,7 +170,7 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
-        errMsg = customErr(err as Error, "User does not exist on our database !.", ".");
+        errMsg = customErr(err as Error, "User does not exist !.", ".");
       } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {

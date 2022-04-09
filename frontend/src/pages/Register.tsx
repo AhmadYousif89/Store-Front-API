@@ -26,11 +26,13 @@ function Register() {
       toast.error(message);
     }
     if (isSuccess || user) {
-      toast.success(message);
+      if (isSuccess) {
+        toast.success(message);
+      }
       navigate("/login");
     }
     dispatch(reset());
-  }, [user, isSuccess, isError, message, navigate, dispatch]);
+  }, [user, isSuccess, isError, message, navigate, dispatch, isLoading]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
     setFormData((prevState) => ({

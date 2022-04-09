@@ -3,6 +3,7 @@ import { FaSignInAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { logout, reset } from "../features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Dashboard from "../pages/Dashboard";
 
 function Header() {
   const navigate = useNavigate();
@@ -10,12 +11,10 @@ function Header() {
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
 
   const handleLogOut = () => {
-    if (user) {
-      toast.info("logging out");
-      dispatch(logout());
-      dispatch(reset());
-      navigate("/");
-    }
+    toast.info("logging out");
+    dispatch(logout());
+    dispatch(reset());
+    navigate("/");
   };
 
   return (
@@ -24,21 +23,26 @@ function Header() {
         <Link to="/">TechStore</Link>
       </div>
       <ul>
-        <li>
-          <Link to="/login">
-            <FaSignInAlt /> Login
-          </Link>
-        </li>
-        <li>
-          <Link to="/register">
-            <FaUser /> Register
-          </Link>
-        </li>
-        <li>
-          <div className="logout" onClick={handleLogOut}>
-            <FaSignOutAlt /> Logout
-          </div>
-        </li>
+        {user && <Dashboard /> ? (
+          <li>
+            <div className="logout" onClick={handleLogOut}>
+              <FaSignOutAlt /> Logout
+            </div>
+          </li>
+        ) : (
+          <>
+            <li>
+              <Link to="/register">
+                <FaUser /> Register
+              </Link>
+            </li>
+            <li>
+              <Link to="/login">
+                <FaSignInAlt /> Login
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
     </header>
   );

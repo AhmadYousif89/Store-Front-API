@@ -403,7 +403,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ email: "XX@xx.com", password: "abc" });
     expect(response.status).toEqual(500);
     expect(response.body).toEqual({
-      message: "User does not exist on our database !",
+      message: "User does not exist !",
     });
   });
 
