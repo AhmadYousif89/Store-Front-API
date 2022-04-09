@@ -32,7 +32,7 @@ function Register() {
       navigate("/login");
     }
     dispatch(reset());
-  }, [user, isSuccess, isError, message, navigate, dispatch, isLoading]);
+  }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
     setFormData((prevState) => ({

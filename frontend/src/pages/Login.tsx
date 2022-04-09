@@ -1,5 +1,5 @@
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { login, reset } from "../features/users/userSlice";
+import { login } from "../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
@@ -28,7 +28,6 @@ function Login() {
       toast.success(message);
       navigate("/dashboard");
     }
-    dispatch(reset());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
