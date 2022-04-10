@@ -37,7 +37,7 @@ h3 {
 
 .container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: center;
@@ -109,9 +109,9 @@ h3 {
 
 .form,
 .content {
-  width: 70%;
+  width: 50%;
   margin: 0 auto;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px solid #ccc;
 }
 
 .form-group {
