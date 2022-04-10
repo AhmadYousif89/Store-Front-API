@@ -12,9 +12,7 @@ const createProducts = async (req: Request, res: Response, next: NextFunction): 
   const popular = req.body.popular.toLowerCase();
 
   if (!category || !name || !brand || !maker || !price || price <= 0) {
-    res
-      .status(400)
-      .json({ status: "Error", message: "Please enter a valid details before submiting !" });
+    res.status(400).json({ message: "Please enter a valid details before submiting !" });
     return;
   }
   try {
@@ -83,9 +81,7 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
   const popular = req.body.popular.toLowerCase();
 
   if (!pid || !price || price <= 0) {
-    res
-      .status(400)
-      .json({ status: "Error", message: "Please provide a valid details before updating !" });
+    res.status(400).json({ message: "Please provide a valid details before updating !" });
     return;
   }
   try {
@@ -112,7 +108,7 @@ const deleteProduct = async (req: Request, res: Response, next: NextFunction): P
   const pid = req.params.id;
 
   if (!pid) {
-    res.status(400).json({ status: "Error", message: "Please provide product id !" });
+    res.status(400).json({ message: "Please provide product id !" });
     return;
   }
   try {

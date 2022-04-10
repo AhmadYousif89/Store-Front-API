@@ -6,7 +6,7 @@ const user = JSON.parse(localStorage.getItem("user") as string);
 
 // Register a user
 const register = createAsyncThunk(
-  "user/signup",
+  "user/register",
   async (user: any, thunkAPI) => {
     try {
       return await userService.registration(user);

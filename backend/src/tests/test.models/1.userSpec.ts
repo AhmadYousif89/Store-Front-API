@@ -49,10 +49,13 @@ describe("Testing user Model functions: \n", () => {
 
     it("should return the correct user by id", async () => {
       const result = await userModel.show(userId);
-      expect(result?.data).toEqual({
-        u_id: userId,
-        u_email: schema.u_email,
-        u_name: schema.u_name,
+      expect(result).toEqual({
+        message: `User generated successfully`,
+        data: {
+          u_id: userId,
+          u_email: schema.u_email,
+          u_name: schema.u_name,
+        },
       });
       console.log("one user");
     });

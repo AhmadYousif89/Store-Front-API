@@ -14,9 +14,7 @@ const createOrders = async (
   const status = req.body.status.toLowerCase();
 
   if (!userId || !status) {
-    res
-      .status(400)
-      .json({ status: "Error", message: "Please provide correct details before submiting !" });
+    res.status(400).json({ message: "Please provide correct details before submiting !" });
     return;
   }
   try {
@@ -57,7 +55,7 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction): Pr
   const oid = parseInt(req.params.id);
 
   if (!oid || oid <= 0) {
-    res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
+    res.status(400).json({ message: "Please enter a valid order id !" });
     return;
   }
   try {
@@ -84,9 +82,7 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction): Pro
   const status = req.body.status.toLowerCase();
 
   if (!id || id <= 0 || !status) {
-    res
-      .status(400)
-      .json({ status: "Error", message: "Please provide a valid order status and id !" });
+    res.status(400).json({ message: "Please provide a valid order status and id !" });
     return;
   }
   try {
@@ -113,7 +109,7 @@ const deleteOrder = async (req: Request, res: Response, next: NextFunction): Pro
   const id = parseInt(req.params.id);
 
   if (!id || id <= 0) {
-    res.status(400).json({ status: "Error", message: "Please enter a valid order id !" });
+    res.status(400).json({ message: "Please enter a valid order id !" });
     return;
   }
   try {

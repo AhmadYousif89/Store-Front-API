@@ -35,13 +35,13 @@ describe("Testing application end points: \n", () => {
   //  Main route
   it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
     const response = await route.get("/");
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toContain("Home Page ...");
   });
 
   it(`should get end point /any-random-route with status code 404 and error message`, async () => {
     const response = await route.get("/any-random-route");
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.text).toContain("This page doesn't exist, Sorry !");
   });
 
@@ -49,31 +49,31 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/users with status code 401 and error message`, async () => {
     const response = await route.get("/api/users");
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/users/:id with status code 401 and error message`, async () => {
     const response = await route.get(`/api/users/${userId}`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/users and not updating user with status code 401 and error message`, async () => {
     const response = await route.put(`/api/users`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/users/:id and not deleting user with status code 401 and error message`, async () => {
     const response = await route.delete(`/api/users/any-user`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/users/:id/account/review/ordered-products with status code 401 and error message`, async () => {
     const response = await route.get(`/api/users/(any user)/account/review/ordered-products`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
@@ -81,13 +81,13 @@ describe("Testing application end points: \n", () => {
     const response = await route.get(
       `/api/users/(any user)/orders/${schema.order_id}/account/review/ordered-products`
     );
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/users/:uid/account/most-recent/purchases with status code 401 and error message`, async () => {
     const response = await route.get(`/api/users/(any user)/account/most-recent/purchases`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
@@ -95,13 +95,13 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/products with status code 404 and error message`, async () => {
     const response = await route.get("/api/products");
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.body.message).toEqual("No Products Were Found !");
   });
 
   it(`should get end point /api/products:id with status code 500 and error message`, async () => {
     const response = await route.get(`/api/products/123`);
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to get Product with id (123) - Please enter a valid product id !"
     );
@@ -109,7 +109,7 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/products:id with status code 404 and error message`, async () => {
     const response = await route.get(`/api/products/da0eecd7-2be5-4909-9c86-83728c2f39d5`);
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.body).toEqual({
       message: "Request failed !",
       data: `Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) Doesn't Exist !`,
@@ -128,9 +128,8 @@ describe("Testing application end points: \n", () => {
         popular: schema.popular,
         category: schema.category,
       });
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
       message: "Please enter a valid details before submiting !",
     });
   });
@@ -147,7 +146,7 @@ describe("Testing application end points: \n", () => {
         popular: "Idk",
         category: schema.category,
       });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Product - Please choose popularity between (yes) or (no) !"
     );
@@ -165,7 +164,7 @@ describe("Testing application end points: \n", () => {
         popular: schema.popular,
         category: "Food",
       });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Product - Please enter category between (electronics) and (mobiles) !"
     );
@@ -176,7 +175,7 @@ describe("Testing application end points: \n", () => {
       .put("/api/products")
       .set("Content-type", "application/json")
       .send({ id: 123, price: schema.price, popular: schema.popular });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to update Product with id (123) - Please enter a valid product id !"
     );
@@ -188,7 +187,7 @@ describe("Testing application end points: \n", () => {
       price: schema.price,
       popular: schema.popular,
     });
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.body).toEqual({
       message: "Update failed !",
       data: `Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) doesn't exist`,
@@ -201,7 +200,7 @@ describe("Testing application end points: \n", () => {
       price: schema.price,
       popular: "Idk",
     });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to update Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) - Please enter a value between [ yes | no ] for popular !"
     );
@@ -209,7 +208,7 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/products/:id with status code 500 and error message`, async () => {
     const response = await route.delete("/api/products/123");
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to delete Product with id (123) - Please enter a valid product id !"
     );
@@ -217,7 +216,7 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/products/:id with status code 404 and error message`, async () => {
     const response = await route.delete(`/api/products/da0eecd7-2be5-4909-9c86-83728c2f39d5`);
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.body).toEqual({
       message: "Delete failed !",
       data: `Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) doesn't exist`,
@@ -226,7 +225,7 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/products/most/popular with status code 404 and error message`, async () => {
     const response = await route.get("/api/products/most/popular");
-    expect(response.statusCode).toBe(404);
+    expect(response.status).toBe(404);
     expect(response.body.message).toEqual("No Popular Products Were Found !");
   });
 
@@ -234,31 +233,31 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/user/account/orders with status code 401 and error message`, async () => {
     const response = await route.get("/api/user/account/orders");
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/orders/:id with status code 401 and error message`, async () => {
     const response = await route.get(`/api/user/account/orders/${schema.order_id}`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/orders with status code 401 and error message`, async () => {
     const response = await route.put("/api/user/account/orders");
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/orders with status code 401 and error message`, async () => {
     const response = await route.post("/api/user/account/orders");
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/orders/:id with status code 401 and error message`, async () => {
     const response = await route.delete(`/api/user/account/orders/${schema.order_id}`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
@@ -266,31 +265,31 @@ describe("Testing application end points: \n", () => {
 
   it(`should get end point /api/user/account/ordered-products with status code 401 and error message`, async () => {
     const response = await route.get("/api/user/account/ordered-products");
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/ordered-products/:id with status code 401 and error message`, async () => {
     const response = await route.get(`/api/user/account/ordered-products/${schema.op_id}`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/ordered-products with status code 401 and error message`, async () => {
     const response = await route.put(`/api/user/account/ordered-products`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/orders/:id/products with status code 401 and error message`, async () => {
     const response = await route.post(`/api/user/account/orders/${schema.order_id}/products`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 
   it(`should get end point /api/user/account/ordered-products/:id with status code 401 and error message`, async () => {
     const response = await route.delete(`/api/user/account/ordered-products/${schema.op_id}`);
-    expect(response.statusCode).toBe(401);
+    expect(response.status).toBe(401);
     expect(response.body.message).toEqual("Access denied, Faild to authenticate !");
   });
 });
@@ -301,14 +300,14 @@ describe("Testing application end points: \n", () => {
 
 describe("Testing application routes functionalty: \n", () => {
   // Create a user
-  it("should get end point /api/signup and create user and extract id", async () => {
+  it("should get end point /api/register and create user and extract id", async () => {
     const response = await route
-      .post("/api/signup")
+      .post("/api/register")
       .set("Content-type", "application/json")
       .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
     const { u_id } = response.body.data;
     userId = u_id as string;
-    expect(response.statusCode).toBe(201);
+    expect(response.status).toBe(201);
     expect(response.body.message).toEqual("user created successfully");
     expect(response.body.data).toEqual({
       u_id: userId,
@@ -317,37 +316,35 @@ describe("Testing application routes functionalty: \n", () => {
     });
   });
 
-  it("should not create user and get end point /api/signup with status code 400 and error message", async () => {
+  it("should not create user and get end point /api/register with status code 400 and error message", async () => {
     const response = await route
-      .post("/api/signup")
+      .post("/api/register")
       .set("Content-type", "application/json")
       .send({ name: "", email: schema.u_email, password: "" });
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
-      message: "Please fill up the registration form",
+      message: "please fill up the registration form",
     });
   });
 
-  it("should not create user and get end point /api/signup with status code 400 and error message", async () => {
+  it("should not create user and get end point /api/register with status code 400 and error message", async () => {
     const response = await route
-      .post("/api/signup")
+      .post("/api/register")
       .set("Content-type", "application/json")
       .send({ name: schema.u_name, email: "invalid email", password: schema.password });
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
-      message: "Please provide a valid email",
+      message: "please provide a valid email",
     });
   });
 
-  it("should not create user and get end point /api/signup with status code 500 and error message", async () => {
+  it("should not create user and get end point /api/register with status code 500 and error message", async () => {
     const response = await route
-      .post("/api/signup")
+      .post("/api/register")
       .set("Content-type", "application/json")
       .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
-    expect(response.statusCode).toBe(500);
-    expect(response.body.message).toEqual("User already exist with this email");
+    expect(response.status).toBe(500);
+    expect(response.body.message).toEqual("email already exist !");
   });
 
   it(`should authenticate user and create token`, async () => {
@@ -355,9 +352,14 @@ describe("Testing application routes functionalty: \n", () => {
       .post(`/api/login`)
       .set("Content-type", "application/json")
       .send({ email: schema.u_email, password: schema.password });
-    const { token: userToken } = response.body;
-    expect(response.status).toEqual(200);
-    expect(response.body.message).toEqual("user logged in");
+    const {
+      message,
+      token: userToken,
+      data: { u_id },
+    } = response.body;
+    expect(response.status).toBe(200);
+    expect(message).toEqual("user logged in");
+    expect(u_id).toEqual(userId);
     token = userToken;
   });
 
@@ -368,8 +370,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ email: "", password: schema.password });
     expect(response.status).toEqual(400);
     expect(response.body).toEqual({
-      status: "Error",
-      message: "Please provide your email and password",
+      message: "email and password are required",
     });
   });
 
@@ -380,12 +381,11 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ email: "invalid email", password: schema.password });
     expect(response.status).toEqual(400);
     expect(response.body).toEqual({
-      status: "Error",
-      message: "Please enter a valid email",
+      message: "please enter a valid email",
     });
   });
 
-  it(`should not authenticate user and deny access`, async () => {
+  it(`should not authenticate user and deny access with status code 401`, async () => {
     const response = await route
       .post(`/api/login`)
       .set("Content-type", "application/json")
@@ -396,14 +396,14 @@ describe("Testing application routes functionalty: \n", () => {
     });
   });
 
-  it(`should not authenticate user and deny access`, async () => {
+  it(`should not authenticate user and deny access with status code 500`, async () => {
     const response = await route
       .post(`/api/login`)
       .set("Content-type", "application/json")
       .send({ email: "XX@xx.com", password: "abc" });
     expect(response.status).toEqual(500);
     expect(response.body).toEqual({
-      message: "User does not exist !",
+      message: "user does not exist !",
     });
   });
 
@@ -423,7 +423,7 @@ describe("Testing application routes functionalty: \n", () => {
       });
     const { p_id } = response.body.data;
     pId = p_id as string;
-    expect(response.statusCode).toBe(201);
+    expect(response.status).toBe(201);
     expect(response.body.message).toEqual("Product created successfully");
     expect(response.body.data).toEqual({
       p_id: pId,
@@ -444,7 +444,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ user_id: userId, status: schema.order_status });
-    expect(response.statusCode).toBe(201);
+    expect(response.status).toBe(201);
     expect(response.body.message).toEqual("Order created successfully");
     expect(response.body.data).toEqual({
       order_id: schema.order_id,
@@ -459,7 +459,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ user_id: "123", status: schema.order_status });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Order - Please enter a valid user id !"
     );
@@ -471,7 +471,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ user_id: userId, status: "anything" });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Order - Please enter a value between [ new | active ] for order status !"
     );
@@ -483,9 +483,8 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ user_id: "", status: schema.order_status });
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
       message: "Please provide correct details before submiting !",
     });
   });
@@ -500,7 +499,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ p_id: pId, quantity: schema.quantity });
     const { created_at } = response.body.data;
     time = JSON.stringify(created_at).replaceAll(`"`, "");
-    expect(response.statusCode).toBe(201);
+    expect(response.status).toBe(201);
     expect(response.body.message).toEqual(
       `Product has been added successfully to order number (${schema.order_id})`
     );
@@ -519,7 +518,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ p_id: pId, quantity: schema.quantity });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual("Incorrect order id or order does not exist !");
   });
 
@@ -529,7 +528,7 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ p_id: "123", quantity: schema.quantity });
-    expect(response.statusCode).toBe(500);
+    expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to add product to order - Please enter a valid product id !"
     );
@@ -541,9 +540,8 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${token}`)
       .send({ p_id: "", quantity: "" });
-    expect(response.statusCode).toBe(400);
+    expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
       message: "Please provide correct details before submiting !",
     });
   });
@@ -573,7 +571,7 @@ describe("Testing application routes functionalty: \n", () => {
 
   it("should get all users", async () => {
     const result = await route.get(`/api/users`).set("Authorization", `Bearer ${token}`);
-    expect(result.statusCode).toBe(200);
+    expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Data generated successfully",
       data: [
@@ -594,8 +592,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ uid: "", password: "" });
     expect(result.status).toEqual(400);
     expect(result.body).toEqual({
-      status: "Error",
-      message: "Please provide user id and password !",
+      message: "please provide user id and password !",
     });
   });
 
@@ -608,7 +605,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(result.status).toEqual(404);
     expect(result.body).toEqual({
       message: "Update failed !",
-      data: `User with id (ffc1b750-faf5-4a19-97fc-1fcf47d42d51) doesn't exist`,
+      data: `user with id (ffc1b750-faf5-4a19-97fc-1fcf47d42d51) doesn't exist`,
     });
   });
 
@@ -662,7 +659,7 @@ describe("Testing application routes functionalty: \n", () => {
     expect(result.status).toEqual(404);
     expect(result.body).toEqual({
       message: "Delete failed !",
-      data: `User with id (9586560b-8e75-46b5-bcaf-ebd2d1033308) doesn't exist`,
+      data: `user with id (9586560b-8e75-46b5-bcaf-ebd2d1033308) doesn't exist`,
     });
   });
 
@@ -670,7 +667,7 @@ describe("Testing application routes functionalty: \n", () => {
 
   it(`should get all data from table products`, async () => {
     const response = await route.get(`/api/products`);
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: "Data generated successfully",
       data: [
@@ -689,7 +686,7 @@ describe("Testing application routes functionalty: \n", () => {
 
   it(`should get one product`, async () => {
     const response = await route.get(`/api/products/${pId}`);
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: "Product generated successfully",
       data: {
@@ -709,7 +706,7 @@ describe("Testing application routes functionalty: \n", () => {
       .put(`/api/products`)
       .set("Content-type", "application/json")
       .send({ id: pId, price: 900, popular: "yes" });
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: "Product updated successfully",
       data: {
@@ -785,7 +782,6 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ order_id: 0, status: "" });
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
-      status: "Error",
       message: "Please provide a valid order status and id !",
     });
   });
@@ -849,7 +845,6 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
-      status: "Error",
       message: "Please enter a valid order id !",
     });
   });
@@ -920,7 +915,6 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Authorization", `Bearer ${token}`);
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
-      status: "Error",
       message: "Please enter a valid op id !",
     });
   });
@@ -933,7 +927,6 @@ describe("Testing application routes functionalty: \n", () => {
       .send({ p_id: pId, quantity: 0 });
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
-      status: "Error",
       message: "Please provide correct details before updating !",
     });
   });
@@ -1001,7 +994,6 @@ describe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json");
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
-      status: "Error",
       message: "Please enter a valid op id !",
     });
   });
@@ -1012,7 +1004,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .get(`/api/users/${userId}/account/review/ordered-products`)
       .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: `Data generated successfully for user id (${userId})`,
       data: [
@@ -1030,7 +1022,7 @@ describe("Testing application routes functionalty: \n", () => {
 
   it(`should get end point /api/products/most/popular`, async () => {
     const response = await route.get("/api/products/most/popular");
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
     expect(response.body.message).toEqual("Data generated successfully");
   });
 
@@ -1038,14 +1030,14 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .get(`/api/users/${userId}/orders/${schema.order_id}/account/review/ordered-products`)
       .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
   });
 
   it(`should get end point /api/users/:uid/account/most-recent/purchases`, async () => {
     const response = await route
       .get(`/api/users/${userId}/account/most-recent/purchases`)
       .set("Authorization", `Bearer ${token}`);
-    expect(response.statusCode).toBe(200);
+    expect(response.status).toBe(200);
   });
 
   // Deleting data

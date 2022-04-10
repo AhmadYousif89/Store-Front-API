@@ -24,7 +24,7 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("unique_user_email")) {
-        errMsg = customErr(err as Error, "User already exist with this email.", ".");
+        errMsg = customErr(err as Error, "email already exist !.", ".");
       } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
@@ -83,13 +83,13 @@ class UserModel {
   }
 
   // Update user
-  async update(u_id: string, password: string): Promise<DbSchema | null> {
+  async update(uid: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
       const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name, u_email`;
       // hashing user password before updating to database
       const hash = encrypt(password);
-      const result = await conct.query(sql, [u_id, hash]);
+      const result = await conct.query(sql, [uid, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
@@ -109,7 +109,7 @@ class UserModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to update user with id (${u_id}) - ${errMsg}`);
+      throw new Error(`Unable to update user with id (${uid}) - ${errMsg}`);
     }
   }
 
@@ -170,7 +170,7 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
-        errMsg = customErr(err as Error, "User does not exist !.", ".");
+        errMsg = customErr(err as Error, "user does not exist !.", ".");
       } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {

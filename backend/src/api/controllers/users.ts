@@ -4,18 +4,20 @@ import { Error, validateEmail } from "../../utils/control";
 import { userModel } from "../models/users";
 
 let error;
-// method => POST /signup
+// method => POST /register
 // desc   => Create new user data.
-const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const { name, email, password } = req.body;
   const checkEmail = validateEmail(email);
 
   if (!name || !email || !password) {
-    res.status(400).json({ status: "Error", message: "Please fill up the registration form" });
-    return;
+    return res.status(400).json({ message: "please fill up the registration form" });
   } else if (checkEmail === false) {
-    res.status(400).json({ status: "Error", message: "Please provide a valid email" });
-    return;
+    return res.status(400).json({ message: "please provide a valid email" });
   }
   try {
     const data = await userModel.create({ u_name: name, u_email: email, password: password });
@@ -30,29 +32,30 @@ const createUser = async (req: Request, res: Response, next: NextFunction): Prom
 
 // method => POST /login
 // desc   => Authenticate user data.
-const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const { email, password } = req.body;
   const { SECRET_TOKEN } = process.env;
   const checkEmail = validateEmail(email);
 
   if (!email || !password) {
-    res.status(400).json({ status: "Error", message: "Please provide your email and password" });
-    return;
+    return res.status(400).json({ message: "email and password are required" });
   } else if (checkEmail === false) {
-    res.status(400).json({ status: "Error", message: "Please enter a valid email" });
-    return;
+    return res.status(400).json({ message: "please enter a valid email" });
   }
   try {
     const user = await userModel.authenticateUser(email, password);
     if (!user) {
-      res.status(401).json({ message: "Invalid password or email" });
-      return;
+      return res.status(401).json({ message: "Invalid password or email" });
     }
     // creating token based on user credentials and my secret token.
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     res.status(200).json({
       message: "user logged in",
-      data: { u_name: user.u_name },
+      data: { u_id: user.u_id },
       token,
     });
   } catch (err) {
@@ -63,14 +66,17 @@ const loginUser = async (req: Request, res: Response, next: NextFunction): Promi
   }
 };
 
-// method => GET /users
+// methtod => GET /users
 // desc   => Return all users data.
-const getUsers = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getUsers = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   try {
     const data = await userModel.index();
-    if (data.length === 0) {
-      res.status(404).json({ message: `No Users Were Found !` });
-      return;
+    if (!data.length) {
+      return res.status(404).json({ message: `No Users Were Found !` });
     }
     res.status(200).json({ message: "Data generated successfully", data });
   } catch (err) {
@@ -83,20 +89,22 @@ const getUsers = async (_req: Request, res: Response, next: NextFunction): Promi
 
 // method => GET /users/:id
 // desc   => Return a specific user.
-const getUserById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const uid = req.params.id;
 
   try {
     const data = await userModel.show(uid);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Request failed !",
-        data: `User with id (${uid}) doesn't exist`,
+        data: `user with id (${uid}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
-    return;
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -107,21 +115,23 @@ const getUserById = async (req: Request, res: Response, next: NextFunction): Pro
 
 // method => PUT /users
 // desc   => Update a specific user .
-const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const { uid, password } = req.body;
 
   try {
     if (!uid || !password) {
-      res.status(400).json({ status: "Error", message: "Please provide user id and password !" });
-      return;
+      return res.status(400).json({ message: "please provide user id and password !" });
     }
     const data = await userModel.update(uid, password);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Update failed !",
-        data: `User with id (${uid}) doesn't exist`,
+        data: `user with id (${uid}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {
@@ -134,17 +144,20 @@ const updateUser = async (req: Request, res: Response, next: NextFunction): Prom
 
 // method => DELETE /users/:id
 // desc   => Delete a specific user.
-const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const uid = req.params.id;
 
   try {
     const data = await userModel.delete(uid);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Delete failed !",
-        data: `User with id (${uid}) doesn't exist`,
+        data: `user with id (${uid}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {

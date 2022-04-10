@@ -13,7 +13,7 @@ const routes = Router();
 
 routes.route("/users").get(authentication, getUsers).put(authentication, updateUser);
 routes.route("/users/:id").get(authentication, getUserById).delete(authentication, deleteUser);
-routes.post("/signup", createUser);
+routes.post("/register", createUser);
 routes.post("/login", loginUser);
 
 export default routes;
