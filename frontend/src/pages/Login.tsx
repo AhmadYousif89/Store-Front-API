@@ -1,5 +1,5 @@
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { login } from "../features/users/userSlice";
+import { login, reset } from "../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
@@ -23,6 +23,7 @@ function Login() {
   useEffect(() => {
     if (isError) {
       toast.error(message);
+      dispatch(reset());
     }
     if (isSuccess) {
       toast.success(message);

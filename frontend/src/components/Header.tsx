@@ -7,7 +7,9 @@ import { toast } from "react-toastify";
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isSuccess } = useSelector((state: RootStateOrAny) => state.auth);
+  const { isSuccess, user } = useSelector(
+    (state: RootStateOrAny) => state.auth,
+  );
 
   const handleLogOut = () => {
     toast.info("logging out");
@@ -22,12 +24,17 @@ function Header() {
         <Link to="/">TechStore</Link>
       </div>
       <ul>
-        {isSuccess ? (
-          <li>
-            <div className="logout" onClick={handleLogOut}>
-              <FaSignOutAlt /> Logout
-            </div>
-          </li>
+        {user && isSuccess ? (
+          <>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+            <li>
+              <div className="logout" onClick={handleLogOut}>
+                <FaSignOutAlt /> Logout
+              </div>
+            </li>
+          </>
         ) : (
           <>
             <li>

@@ -25,7 +25,7 @@ function Register() {
     if (isError) {
       toast.error(message);
     }
-    if (isSuccess || user) {
+    if (user) {
       if (isSuccess) {
         toast.success(message);
       }
