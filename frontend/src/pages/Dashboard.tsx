@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, RootStateOrAny } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import OrderForm from "../components/dashboard/OrderForm";
 
 function Dashboard() {
@@ -17,8 +17,10 @@ function Dashboard() {
   return (
     <>
       <section className="heading">
-        <h1>Welcome {user && user.data.u_name}</h1>
-        <p>User Dashboard</p>
+        <h1>Dashboard</h1>
+        <h3>
+          Welcome <span>{user ? user.data.u_name.toUpperCase() : null}</span>
+        </h3>
       </section>
       <OrderForm />
     </>

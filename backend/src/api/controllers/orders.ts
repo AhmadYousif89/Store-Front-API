@@ -14,8 +14,7 @@ const createOrders = async (
   const status = req.body.status.toLowerCase();
 
   if (!userId || !status) {
-    res.status(400).json({ message: "Please provide correct details before submiting !" });
-    return;
+    return res.status(400).json({ message: "Please provide correct details before submiting !" });
   }
   try {
     const data = await orderModel.create({
@@ -33,14 +32,17 @@ const createOrders = async (
 
 // method => GET /user/account/orders
 // desc   => Return all Orders data.
-const getOrders = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getOrders = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   try {
     const data = await orderModel.index();
     if (data.length === 0) {
-      res.status(404).json({ message: `No Orders Were Found !` });
-      return;
+      return res.status(404).json({ message: `No Orders Were Found !` });
     }
-    res.status(200).json({ message: "Data generated successfully", data });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -51,20 +53,22 @@ const getOrders = async (_req: Request, res: Response, next: NextFunction): Prom
 
 // method => GET /user/account/orders/:id
 // desc   => Return a specific Order.
-const getOrderById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const oid = parseInt(req.params.id);
 
   if (!oid || oid <= 0) {
-    res.status(400).json({ message: "Please enter a valid order id !" });
-    return;
+    return res.status(400).json({ message: "Please enter a valid order id !" });
   }
   try {
     const data = await orderModel.show(oid);
     if (!data) {
-      res
+      return res
         .status(404)
         .json({ message: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {
@@ -77,22 +81,24 @@ const getOrderById = async (req: Request, res: Response, next: NextFunction): Pr
 
 // method => PUT /user/account/orders
 // desc   => Update a specific Order .
-const updateOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const updateOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const id = parseInt(req.body.order_id);
   const status = req.body.status.toLowerCase();
 
   if (!id || id <= 0 || !status) {
-    res.status(400).json({ message: "Please provide a valid order status and id !" });
-    return;
+    return res.status(400).json({ message: "Please provide a valid order status and id !" });
   }
   try {
     const data = await orderModel.update(id, status);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Update failed !",
         data: `Order with id (${id}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {
@@ -105,21 +111,23 @@ const updateOrder = async (req: Request, res: Response, next: NextFunction): Pro
 
 // method => DELETE /user/account/order/:id
 // desc   => Delete a specific Order.
-const deleteOrder = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const deleteOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const id = parseInt(req.params.id);
 
   if (!id || id <= 0) {
-    res.status(400).json({ message: "Please enter a valid order id !" });
-    return;
+    return res.status(400).json({ message: "Please enter a valid order id !" });
   }
   try {
     const data = await orderModel.delete(id);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Delete failed !",
         data: `Order with id (${id}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {

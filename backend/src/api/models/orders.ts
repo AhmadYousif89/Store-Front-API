@@ -36,7 +36,7 @@ class OrdersModel {
         );
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect user id or user does not exist !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -55,7 +55,7 @@ class OrdersModel {
       return result.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
+      if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -82,7 +82,7 @@ class OrdersModel {
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
+      if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -132,7 +132,7 @@ class OrdersModel {
           "Please enter value between [ active | complete ] for order status !.",
           "."
         );
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
@@ -165,7 +165,7 @@ class OrdersModel {
           "Please remove any products related to this order first !.",
           "."
         );
-      } else if ((err as Error).message?.includes("relation")) {
+      } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;

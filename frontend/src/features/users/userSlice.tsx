@@ -38,7 +38,7 @@ const login = createAsyncThunk("user/login", async (user: any, thunkAPI) => {
 });
 
 // Logout user
-const logout = createAsyncThunk("user/logout", async () => {
+const logout = createAsyncThunk("user/logout", () => {
   userService.logout();
 });
 

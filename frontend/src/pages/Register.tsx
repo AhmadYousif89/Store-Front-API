@@ -26,10 +26,8 @@ function Register() {
       toast.error(message);
     }
     if (user) {
-      if (isSuccess) {
-        toast.success(message);
-      }
-      navigate("/login");
+      if (isSuccess) toast.success(message);
+      navigate(`/dashboard/${user.data.u_name}`);
     }
     dispatch(reset());
   }, [user, isSuccess, isError, message, navigate, dispatch]);

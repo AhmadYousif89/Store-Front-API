@@ -3,15 +3,20 @@ import { Link } from "react-router-dom";
 function OrderForm() {
   return (
     <>
-      <ul className="orders form-group">
+      <ul className="flex orders">
         <li>
           <Link to={"/orders"}>
-            <div className="">Create an Order</div>
+            <div>My Orders</div>
           </Link>
         </li>
         <li>
           <Link to={"/orders"}>
-            <div className="">Order History</div>
+            <div>Create an Order</div>
+          </Link>
+        </li>
+        <li>
+          <Link to={"/orders/history"}>
+            <div>History</div>
           </Link>
         </li>
       </ul>

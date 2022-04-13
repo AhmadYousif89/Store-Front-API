@@ -25,9 +25,9 @@ function Login() {
       toast.error(message);
       dispatch(reset());
     }
-    if (isSuccess) {
-      toast.success(message);
-      navigate("/dashboard");
+    if (user) {
+      if (isSuccess) toast.success(message);
+      navigate(`/dashboard/${user.data.u_name}`);
     }
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 

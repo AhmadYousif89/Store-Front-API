@@ -5,7 +5,7 @@ const API_URL = "/api/user/account/orders";
 // Get all orders
 const indexOrders = async (token: string) => {
   const response = await axios.get(API_URL, {
-    headers: { Authorization: `Beare ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };
@@ -13,7 +13,7 @@ const indexOrders = async (token: string) => {
 // Create order
 const createOrder = async (orderData: any, token: string) => {
   const response = await axios.post(API_URL, {
-    headers: { Authorization: `Beare ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
     data: { orderData },
   });
   return response.data;
@@ -22,7 +22,7 @@ const createOrder = async (orderData: any, token: string) => {
 // Update order
 const updateOrder = async (orderData: any, token: string) => {
   const response = await axios.put(API_URL, {
-    headers: { Authorization: `Beare ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
     data: { orderData },
   });
   return response.data;
@@ -31,7 +31,7 @@ const updateOrder = async (orderData: any, token: string) => {
 // Delete Order
 const delOrder = async (orderId: number, token: string) => {
   const response = await axios.delete(API_URL + orderId, {
-    headers: { Authorization: `Beare ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };

@@ -2,10 +2,8 @@ import { useEffect } from "react";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import OrderItem from "../components/dashboard/OrderItem";
 import Spinner from "../components/Spinner";
 import { getOrders } from "../features/orders/orderSlice";
-import { reset } from "../features/users/userSlice";
 
 function Orders() {
   const navigate = useNavigate();
@@ -16,13 +14,16 @@ function Orders() {
   );
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
     if (!user) {
       navigate("/login");
     }
-    dispatch(getOrders());
+    if (isError) {
+      toast.error(message);
+    }
+    if (isSuccess) {
+      toast.success("data generated");
+    }
+    // dispatch(getOrders());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   if (isLoading) return <Spinner />;
@@ -30,14 +31,19 @@ function Orders() {
   return (
     <>
       <section className="heading">
-        <h1>Orders Page</h1>
-        <p>. . .</p>
+        <h1>My Orders</h1>
       </section>
       <section className="content">
         {orders.length > 0 ? (
-          <div className="orders">
-            {orders.map((order: { order_id: any }) => (
-              <OrderItem key={order.order_id} order={order} />
+          <div className="">
+            <p>list of orders: </p>
+            {orders.map((order: any) => (
+              <ul className="order">
+                <li key={order.order_id}>
+                  <p>order number : {order.order_id}</p>
+                  <p>order status : {order.order_status}</p>
+                </li>
+              </ul>
             ))}
           </div>
         ) : (

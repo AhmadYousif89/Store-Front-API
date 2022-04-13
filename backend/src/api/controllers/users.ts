@@ -55,7 +55,7 @@ const loginUser = async (
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     res.status(200).json({
       message: "user logged in",
-      data: { u_id: user.u_id },
+      data: { u_id: user.u_id, u_name: user.u_name },
       token,
     });
   } catch (err) {
