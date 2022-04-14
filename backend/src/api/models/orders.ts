@@ -13,9 +13,9 @@ class OrdersModel {
     try {
       conct = await pgDB.connect();
       const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
-      const result = await conct.query(sql, [values.order_status, values.u_id]);
-      if (result.rows.length) {
-        const orders = result.rows[0];
+      const query = await conct.query(sql, [values.order_status, values.user_id]);
+      if (query.rows.length) {
+        const orders = query.rows[0];
         conct.release();
         return {
           message: `Order created successfully`,
@@ -50,9 +50,9 @@ class OrdersModel {
     try {
       conct = await pgDB.connect();
       const sql = "SELECT * FROM orders";
-      const result = await conct.query(sql);
+      const query = await conct.query(sql);
       conct.release();
-      return result.rows;
+      return query.rows;
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("not exist")) {
@@ -65,13 +65,13 @@ class OrdersModel {
   }
 
   // Get one order
-  async show(id: number): Promise<DbSchema | null> {
+  async show(oid: number): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
       const sql = `SELECT * FROM orders WHERE order_id = ($1)`;
-      const result = await conct.query(sql, [id]);
-      if (result.rows.length) {
-        const orders = result.rows[0];
+      const query = await conct.query(sql, [oid]);
+      if (query.rows.length) {
+        const orders = query.rows[0];
         conct.release();
         return {
           message: `Order generated successfully`,
@@ -87,7 +87,7 @@ class OrdersModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to get order with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to get order with id (${oid}) - ${errMsg}`);
     }
   }
 
@@ -96,8 +96,8 @@ class OrdersModel {
     try {
       conct = await pgDB.connect();
       const sql1 = `SELECT * FROM orders WHERE order_id = ($1)`;
-      const rowResult = await conct.query(sql1, [oid]);
-      const order_status = rowResult.rows[0].order_status;
+      const query = await conct.query(sql1, [oid]);
+      const order_status = query.rows[0].order_status;
       // checking if order has status of (complete) or have the same incoming status
       if (order_status === "complete") {
         conct.release();
@@ -111,9 +111,9 @@ class OrdersModel {
         };
       }
       const sql2 = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
-      const updateResult = await conct.query(sql2, [oid, status]);
-      if (updateResult.rows.length) {
-        const order = updateResult.rows[0];
+      const updateQuery = await conct.query(sql2, [oid, status]);
+      if (updateQuery.rows.length) {
+        const order = updateQuery.rows[0];
         conct.release();
         return {
           message: `Order updated successfully`,
@@ -142,13 +142,13 @@ class OrdersModel {
   }
 
   // Delete Orders
-  async delete(id: number): Promise<DbSchema | null> {
+  async delete(oid: number): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
       const sql = `DELETE FROM orders WHERE order_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [id]);
-      if (result.rows.length) {
-        const orders = result.rows[0];
+      const query = await conct.query(sql, [oid]);
+      if (query.rows.length) {
+        const orders = query.rows[0];
         conct.release();
         return {
           message: `Order deleted successfully`,
@@ -170,7 +170,7 @@ class OrdersModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to delete order with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to delete order with id (${oid}) - ${errMsg}`);
     }
   }
 }

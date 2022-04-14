@@ -17,10 +17,6 @@ describe("Testing dashboard Model functions: \n", () => {
     expect(dashBoard.getUserProductsByOid).toBeDefined();
   });
 
-  it("should be a method to get all products based on popularity, list is limited by 5 items", () => {
-    expect(dashBoard.getProductByPopularity).toBeDefined();
-  });
-
   it("should be a method to get all user's purachases that he/she made, list is sorted by most recent date", () => {
     expect(dashBoard.getUserMostPurchases).toBeDefined();
   });
@@ -29,16 +25,16 @@ describe("Testing dashboard Model functions: \n", () => {
     it("should create user and a product and extract their ids", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].u_id;
+      userId = user[0].user_id;
 
-      await productModel.create({ ...schema, popular: "yes" });
+      await productModel.create({ ...schema });
       const product = await productModel.index();
       pId = product[0].p_id;
     });
 
     it(`should create new order`, async () => {
       const order = await orderModel.create({
-        u_id: userId,
+        user_id: userId,
         order_status: schema.order_status,
       });
       expect(order?.message).toEqual("Order created successfully");
@@ -74,11 +70,6 @@ describe("Testing dashboard Model functions: \n", () => {
 
     it("should get all purchases related to a user", async () => {
       const result = await dashBoard.getUserMostPurchases(userId as string);
-      expect(result).not.toBeNull();
-    });
-
-    it("should get all popular products", async () => {
-      const result = await dashBoard.getProductByPopularity();
       expect(result).not.toBeNull();
     });
   });

@@ -5,24 +5,26 @@ import { Error } from "../../utils/control";
 let error;
 // method => POST /products
 // desc   => Create new product data.
-const createProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { name, brand, maker } = req.body;
+const createProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  const { name, brand, imageUrl, description } = req.body;
   const price = parseInt(req.body.price);
   const category = req.body.category.toLowerCase();
-  const popular = req.body.popular.toLowerCase();
 
-  if (!category || !name || !brand || !maker || !price || price <= 0) {
-    res.status(400).json({ message: "Please enter a valid details before submiting !" });
-    return;
+  if (!category || !name || !brand || !imageUrl || !price || price <= 0) {
+    return res.status(400).json({ message: "Please enter a valid details before submiting !" });
   }
   try {
     const data = await productModel.create({
       category: category,
       p_name: name,
       brand: brand,
-      maker: maker,
       price: price,
-      popular: popular,
+      imageUrl: imageUrl,
+      description: description || "No description!",
     });
     res.status(201).json(data);
   } catch (err) {
@@ -34,13 +36,16 @@ const createProducts = async (req: Request, res: Response, next: NextFunction): 
 };
 
 // method => GET /products
-// desc   => Return all products data.
-const getProducts = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+// desc   =>  all products data.
+const getProducts = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   try {
     const data = await productModel.index();
-    if (data.length === 0) {
-      res.status(404).json({ message: `No Products Were Found !` });
-      return;
+    if (!data.length) {
+      return res.status(404).json({ message: `No Products Were Found !` });
     }
     res.status(200).json({ message: "Data generated successfully", data });
   } catch (err) {
@@ -52,17 +57,20 @@ const getProducts = async (_req: Request, res: Response, next: NextFunction): Pr
 };
 
 // method => GET /products/:id
-// desc   => Return a specific product by id.
-const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+// desc   =>  a specific product by id.
+const getProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const id = req.params.id;
 
   try {
     const data = await productModel.show(id);
     if (!data) {
-      res
+      return res
         .status(404)
         .json({ message: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {
@@ -75,23 +83,24 @@ const getProductById = async (req: Request, res: Response, next: NextFunction): 
 
 // method => PUT /products
 // desc   => Update a specific product .
-const updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const updateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const pid = req.body.id;
   const price = parseInt(req.body.price);
-  const popular = req.body.popular.toLowerCase();
 
   if (!pid || !price || price <= 0) {
-    res.status(400).json({ message: "Please provide a valid details before updating !" });
-    return;
+    return res.status(400).json({ message: "Please provide a valid details before updating !" });
   }
   try {
-    const data = await productModel.update(pid, price, popular);
+    const data = await productModel.update(pid, price);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Update failed !",
         data: `Product with id (${pid}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {
@@ -104,21 +113,23 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction): P
 
 // method => DELETE /products/:id
 // desc   => Delete a specific Product.
-const deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const deleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
   const pid = req.params.id;
 
   if (!pid) {
-    res.status(400).json({ message: "Please provide product id !" });
-    return;
+    return res.status(400).json({ message: "Please provide product id !" });
   }
   try {
     const data = await productModel.delete(pid);
     if (!data) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Delete failed !",
         data: `Product with id (${pid}) doesn't exist`,
       });
-      return;
     }
     res.status(200).json(data);
   } catch (err) {

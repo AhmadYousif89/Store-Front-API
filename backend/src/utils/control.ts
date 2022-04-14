@@ -1,11 +1,11 @@
 import bCrypt from "bcrypt";
 
 type DbSchema = {
-  u_id?: string;
   p_id?: string;
   op_id?: number;
-  u_name?: string;
-  u_email?: string;
+  i_at?: string;
+  name?: string;
+  email?: string;
   user_id?: string;
   order_id?: number;
   password?: string;
@@ -16,9 +16,10 @@ type DbSchema = {
   quantity?: number;
   p_name?: string;
   brand?: string;
-  maker?: string;
   price?: number;
-  popular?: string;
+  imageUrl?: string;
+  image_url?: string;
+  description?: string;
   message?: string;
   data?: string | object;
 };

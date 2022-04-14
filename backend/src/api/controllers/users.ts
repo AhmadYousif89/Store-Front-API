@@ -20,7 +20,7 @@ const createUser = async (
     return res.status(400).json({ message: "please provide a valid email" });
   }
   try {
-    const data = await userModel.create({ u_name: name, u_email: email, password: password });
+    const data = await userModel.create({ name: name, email: email, password: password });
     res.status(201).json(data);
   } catch (err) {
     error = {
@@ -54,12 +54,12 @@ const loginUser = async (
     // creating token based on user credentials and my secret token.
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     // storing user token in database with current time.
-    const now = new Date().toISOString();
-    const userToken = await userModel.userToken(user.u_id as string, token, now);
+    const time = new Date().toISOString();
+    const userToken = await userModel.userToken(user.user_id as string, token, time);
     res.status(200).json({
       message: "user logged in",
-      data: { u_id: user.u_id, u_name: user.u_name },
-      ut: userToken,
+      data: { user_id: user.user_id, name: user.name },
+      jwt: userToken,
     });
   } catch (err) {
     error = {

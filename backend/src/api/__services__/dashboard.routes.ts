@@ -4,7 +4,6 @@ import {
   getUserProducts,
   getUserProductsByOid,
   getUserMostPurchases,
-  getProductByPopularity,
 } from "./dashboard.controller";
 
 const routes = Router();
@@ -16,6 +15,5 @@ routes.get(
   getUserProductsByOid
 );
 routes.get("/users/:id/account/most-recent/purchases", Authentication, getUserMostPurchases);
-routes.get("/products/most/popular", getProductByPopularity);
 
 export default routes;

@@ -43,9 +43,9 @@ describe("Testing product Model functions: \n", () => {
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
-          maker: schema.maker,
           price: schema.price,
-          popular: schema.popular,
+          image_url: schema.imageUrl,
+          description: schema.description,
         },
       ]);
       console.log("all products");
@@ -60,16 +60,16 @@ describe("Testing product Model functions: \n", () => {
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
-          maker: schema.maker,
           price: schema.price,
-          popular: schema.popular,
+          image_url: schema.imageUrl,
+          description: schema.description,
         },
       });
       console.log("one product");
     });
 
     it(`should update the price to = (500) and popular = 'yes' for product by id`, async () => {
-      const result = await productModel.update(pId as string, 500, "yes");
+      const result = await productModel.update(pId as string, 500);
       expect(result).toEqual({
         message: "Product updated successfully",
         data: {
@@ -77,9 +77,9 @@ describe("Testing product Model functions: \n", () => {
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
-          maker: schema.maker,
           price: 500,
-          popular: "yes",
+          image_url: schema.imageUrl,
+          description: schema.description,
         },
       });
       console.log("update product");
@@ -94,9 +94,9 @@ describe("Testing product Model functions: \n", () => {
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
-          maker: schema.maker,
           price: 500,
-          popular: "yes",
+          image_url: schema.imageUrl,
+          description: schema.description,
         },
       });
       console.log("delete product");

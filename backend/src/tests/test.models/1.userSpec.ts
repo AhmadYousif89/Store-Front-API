@@ -36,12 +36,12 @@ describe("Testing user Model functions: \n", () => {
 
     it("should get all data and extract user Id", async () => {
       const result = await userModel.index();
-      userId = result[0].u_id as string;
+      userId = result[0].user_id as string;
       expect(result).toEqual([
         {
-          u_id: userId,
-          u_name: schema.u_name,
-          u_email: schema.u_email,
+          user_id: userId,
+          name: schema.name,
+          email: schema.email,
         },
       ]);
       console.log("all users");
@@ -52,9 +52,9 @@ describe("Testing user Model functions: \n", () => {
       expect(result).toEqual({
         message: `User generated successfully`,
         data: {
-          u_id: userId,
-          u_email: schema.u_email,
-          u_name: schema.u_name,
+          user_id: userId,
+          email: schema.email,
+          name: schema.name,
         },
       });
       console.log("one user");
@@ -63,22 +63,22 @@ describe("Testing user Model functions: \n", () => {
     it(`should update the password to = 123 for specific user by id`, async () => {
       const result = await userModel.update(userId, "123");
       expect(result).toEqual({
-        message: "User updated successfully",
+        message: "user updated successfully",
         data: {
-          u_id: userId,
-          u_email: schema.u_email,
-          u_name: schema.u_name,
+          user_id: userId,
+          email: schema.email,
+          name: schema.name,
         },
       });
       console.log("update user");
     });
 
     it(`should authenticate user by email and password`, async () => {
-      const result = await userModel.authenticateUser(schema.u_email as string, "123");
+      const result = await userModel.authenticateUser(schema.email as string, "123");
       expect(result).toEqual({
-        u_id: userId,
-        u_name: schema.u_name,
-        u_email: schema.u_email,
+        user_id: userId,
+        name: schema.name,
+        email: schema.email,
       });
       console.log("validate user");
     });
@@ -88,9 +88,9 @@ describe("Testing user Model functions: \n", () => {
       expect(result).toEqual({
         message: "User deleted successfully",
         data: {
-          u_id: userId,
-          u_email: schema.u_email,
-          u_name: schema.u_name,
+          user_id: userId,
+          email: schema.email,
+          name: schema.name,
         },
       });
       console.log("delete user");

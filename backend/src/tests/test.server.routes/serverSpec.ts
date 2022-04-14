@@ -9,20 +9,20 @@ export const route = supertest(app);
 let userId = "";
 let pId = "";
 let time = "";
-let token = "";
+let userToken = "";
 
 export const schema = {
-  u_name: "Ali",
-  u_email: "Ali@gmail.com",
+  name: "Ali",
+  email: "Ali@gmail.com",
   password: "123",
   order_id: 1,
   order_status: "new",
   category: "mobiles",
   p_name: "S20",
-  brand: "Galaxy",
-  maker: "Samsung",
+  brand: "Samsung Galaxy",
   price: 1000,
-  popular: "no",
+  imageUrl: "https://res.cloudinary.com/mobiles/galaxy-s20_t5hooj.webp",
+  description: "NA",
   op_id: 1,
   quantity: 10,
 } as DbSchema;
@@ -30,7 +30,6 @@ export const schema = {
 // ======================================== //
 /*   Testing routes before creating data    */
 // ======================================== //
-
 describe("Testing application end points: \n", () => {
   //  Main route
   it(`server should be running on http://localhost:${SERVER_PORT} with status code 200`, async () => {
@@ -123,9 +122,9 @@ describe("Testing application end points: \n", () => {
       .send({
         name: "",
         price: schema.price,
-        maker: schema.maker,
+        imageUrl: schema.imageUrl,
         brand: schema.brand,
-        popular: schema.popular,
+        description: schema.description,
         category: schema.category,
       });
     expect(response.status).toBe(400);
@@ -141,28 +140,10 @@ describe("Testing application end points: \n", () => {
       .send({
         name: schema.p_name,
         price: schema.price,
-        maker: schema.maker,
+        imageUrl: schema.imageUrl,
         brand: schema.brand,
-        popular: "Idk",
-        category: schema.category,
-      });
-    expect(response.status).toBe(500);
-    expect(response.body.message).toEqual(
-      "Unable to create new Product - Please choose popularity between (yes) or (no) !"
-    );
-  });
-
-  it(`should get end point /api/products and not creating new product with status code 500 and error message`, async () => {
-    const response = await route
-      .post("/api/products")
-      .set("Content-type", "application/json")
-      .send({
-        name: schema.p_name,
-        price: schema.price,
-        maker: schema.maker,
-        brand: schema.brand,
-        popular: schema.popular,
-        category: "Food",
+        description: schema.description,
+        category: "anything",
       });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
@@ -174,7 +155,7 @@ describe("Testing application end points: \n", () => {
     const response = await route
       .put("/api/products")
       .set("Content-type", "application/json")
-      .send({ id: 123, price: schema.price, popular: schema.popular });
+      .send({ id: 123, price: schema.price });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to update Product with id (123) - Please enter a valid product id !"
@@ -185,25 +166,12 @@ describe("Testing application end points: \n", () => {
     const response = await route.put("/api/products").set("Content-type", "application/json").send({
       id: "da0eecd7-2be5-4909-9c86-83728c2f39d5",
       price: schema.price,
-      popular: schema.popular,
     });
     expect(response.status).toBe(404);
     expect(response.body).toEqual({
       message: "Update failed !",
       data: `Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) doesn't exist`,
     });
-  });
-
-  it(`should get end point /api/products and not updating product with status code 500 and error message`, async () => {
-    const response = await route.put("/api/products").set("Content-type", "application/json").send({
-      id: "da0eecd7-2be5-4909-9c86-83728c2f39d5",
-      price: schema.price,
-      popular: "Idk",
-    });
-    expect(response.status).toBe(500);
-    expect(response.body.message).toEqual(
-      "Unable to update Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) - Please enter a value between [ yes | no ] for popular !"
-    );
   });
 
   it(`should get end point /api/products/:id with status code 500 and error message`, async () => {
@@ -221,12 +189,6 @@ describe("Testing application end points: \n", () => {
       message: "Delete failed !",
       data: `Product with id (da0eecd7-2be5-4909-9c86-83728c2f39d5) doesn't exist`,
     });
-  });
-
-  it(`should get end point /api/products/most/popular with status code 404 and error message`, async () => {
-    const response = await route.get("/api/products/most/popular");
-    expect(response.status).toBe(404);
-    expect(response.body.message).toEqual("No Popular Products Were Found !");
   });
 
   // Orders routes
@@ -304,15 +266,15 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/register")
       .set("Content-type", "application/json")
-      .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
-    const { u_id } = response.body.data;
-    userId = u_id as string;
+      .send({ name: schema.name, email: schema.email, password: schema.password });
+    const { user_id } = response.body.data;
+    userId = user_id as string;
     expect(response.status).toBe(201);
     expect(response.body.message).toEqual("user created successfully");
     expect(response.body.data).toEqual({
-      u_id: userId,
-      u_name: schema.u_name,
-      u_email: schema.u_email,
+      user_id: userId,
+      name: schema.name,
+      email: schema.email,
     });
   });
 
@@ -320,7 +282,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/register")
       .set("Content-type", "application/json")
-      .send({ name: "", email: schema.u_email, password: "" });
+      .send({ name: "", email: schema.email, password: "" });
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "please fill up the registration form",
@@ -331,7 +293,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/register")
       .set("Content-type", "application/json")
-      .send({ name: schema.u_name, email: "invalid email", password: schema.password });
+      .send({ name: schema.name, email: "invalid email", password: schema.password });
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "please provide a valid email",
@@ -342,7 +304,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/register")
       .set("Content-type", "application/json")
-      .send({ name: schema.u_name, email: schema.u_email, password: schema.password });
+      .send({ name: schema.name, email: schema.email, password: schema.password });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual("email already exist !");
   });
@@ -351,16 +313,16 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/login`)
       .set("Content-type", "application/json")
-      .send({ email: schema.u_email, password: schema.password });
+      .send({ email: schema.email, password: schema.password });
     const {
       message,
-      token: userToken,
-      data: { u_id },
+      jwt: { token },
+      data: { user_id },
     } = response.body;
     expect(response.status).toBe(200);
     expect(message).toEqual("user logged in");
-    expect(u_id).toEqual(userId);
-    token = userToken;
+    expect(user_id).toEqual(userId);
+    userToken = token;
   });
 
   it(`should not authenticate user and return status code 400 and error message`, async () => {
@@ -389,7 +351,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/login`)
       .set("Content-type", "application/json")
-      .send({ email: schema.u_email, password: "abc" });
+      .send({ email: schema.email, password: "abc" });
     expect(response.status).toEqual(401);
     expect(response.body).toEqual({
       message: "Invalid password or email",
@@ -416,9 +378,9 @@ describe("Testing application routes functionalty: \n", () => {
       .send({
         name: schema.p_name,
         price: schema.price,
-        maker: schema.maker,
+        imageUrl: schema.imageUrl,
         brand: schema.brand,
-        popular: schema.popular,
+        description: schema.description,
         category: schema.category,
       });
     const { p_id } = response.body.data;
@@ -427,12 +389,12 @@ describe("Testing application routes functionalty: \n", () => {
     expect(response.body.message).toEqual("Product created successfully");
     expect(response.body.data).toEqual({
       p_id: pId,
-      p_name: schema.p_name,
-      price: schema.price,
-      maker: schema.maker,
-      brand: schema.brand,
-      popular: schema.popular,
       category: schema.category,
+      p_name: schema.p_name,
+      brand: schema.brand,
+      price: schema.price,
+      image_url: schema.imageUrl,
+      description: schema.description,
     });
   });
 
@@ -442,8 +404,8 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/user/account/orders")
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ user_id: userId, status: schema.order_status });
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ userId: userId, status: schema.order_status });
     expect(response.status).toBe(201);
     expect(response.body.message).toEqual("Order created successfully");
     expect(response.body.data).toEqual({
@@ -457,8 +419,8 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/user/account/orders")
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ user_id: "123", status: schema.order_status });
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ userId: "123", status: schema.order_status });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Order - Please enter a valid user id !"
@@ -469,8 +431,8 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/user/account/orders")
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ user_id: userId, status: "anything" });
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ userId: userId, status: "anything" });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       "Unable to create new Order - Please enter a value between [ new | active ] for order status !"
@@ -481,8 +443,8 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post("/api/user/account/orders")
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
-      .send({ user_id: "", status: schema.order_status });
+      .set("Authorization", `Bearer ${userToken}`)
+      .send({ userId: "", status: schema.order_status });
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "Please provide correct details before submiting !",
@@ -495,7 +457,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/user/account/orders/${schema.order_id}/products`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ p_id: pId, quantity: schema.quantity });
     const { created_at } = response.body.data;
     time = JSON.stringify(created_at).replaceAll(`"`, "");
@@ -516,7 +478,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/user/account/orders/2/products`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ p_id: pId, quantity: schema.quantity });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual("Incorrect order id or order does not exist !");
@@ -526,7 +488,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/user/account/orders/${schema.order_id}/products`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ p_id: "123", quantity: schema.quantity });
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
@@ -538,7 +500,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .post(`/api/user/account/orders/${schema.order_id}/products`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ p_id: "", quantity: "" });
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -549,20 +511,22 @@ describe("Testing application routes functionalty: \n", () => {
   // Users
 
   it("should authenticate user and allow access", async () => {
-    const result = await route.get(`/api/users/${userId}`).set("Authorization", `Bearer ${token}`);
+    const result = await route
+      .get(`/api/users/${userId}`)
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "User generated successfully",
       data: {
-        u_id: userId,
-        u_name: schema.u_name,
-        u_email: schema.u_email,
+        user_id: userId,
+        name: schema.name,
+        email: schema.email,
       },
     });
   });
 
   it("should not get user with id (123)", async () => {
-    const result = await route.get(`/api/users/123`).set("Authorization", `Bearer ${token}`);
+    const result = await route.get(`/api/users/123`).set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(500);
     expect(result.body.message).toEqual(
       "Unable to get user with id (123) - Please enter a valid user id !"
@@ -570,15 +534,15 @@ describe("Testing application routes functionalty: \n", () => {
   });
 
   it("should get all users", async () => {
-    const result = await route.get(`/api/users`).set("Authorization", `Bearer ${token}`);
+    const result = await route.get(`/api/users`).set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Data generated successfully",
       data: [
         {
-          u_id: userId,
-          u_name: schema.u_name,
-          u_email: schema.u_email,
+          user_id: userId,
+          name: schema.name,
+          email: schema.email,
         },
       ],
     });
@@ -588,7 +552,7 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route
       .put(`/api/users`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ uid: "", password: "" });
     expect(result.status).toEqual(400);
     expect(result.body).toEqual({
@@ -600,7 +564,7 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route
       .put(`/api/users`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ uid: "ffc1b750-faf5-4a19-97fc-1fcf47d42d51", password: "abc" });
     expect(result.status).toEqual(404);
     expect(result.body).toEqual({
@@ -613,7 +577,7 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route
       .put(`/api/users`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ uid: "123", password: "abc" });
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
@@ -625,17 +589,17 @@ describe("Testing application routes functionalty: \n", () => {
     const result = await route
       .put(`/api/users`)
       .set("Content-type", "application/json")
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .send({ uid: userId, password: "abc" });
     expect(result.status).toEqual(200);
     expect(result.body).toEqual({
-      message: "User updated successfully",
-      data: { u_id: userId, u_email: schema.u_email, u_name: schema.u_name },
+      message: "user updated successfully",
+      data: { user_id: userId, email: schema.email, name: schema.name },
     });
   });
 
   it("should not delete user for wrong user id type", async () => {
-    const result = await route.delete(`/api/users/123`).set("Authorization", `Bearer ${token}`);
+    const result = await route.delete(`/api/users/123`).set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
       "Unable to delete user with id (123) - Please enter a valid user id !"
@@ -645,7 +609,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not delete user because of foregin key constrain", async () => {
     const result = await route
       .delete(`/api/users/${userId}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toEqual(500);
     expect(result.body.message).toEqual(
       `Unable to delete user with id (${userId}) - Please delete any related orders first !`
@@ -655,7 +619,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not delete user and display error message", async () => {
     const result = await route
       .delete(`/api/users/9586560b-8e75-46b5-bcaf-ebd2d1033308`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toEqual(404);
     expect(result.body).toEqual({
       message: "Delete failed !",
@@ -676,9 +640,9 @@ describe("Testing application routes functionalty: \n", () => {
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
-          maker: schema.maker,
           price: schema.price,
-          popular: schema.popular,
+          image_url: schema.imageUrl,
+          description: schema.description,
         },
       ],
     });
@@ -694,9 +658,9 @@ describe("Testing application routes functionalty: \n", () => {
         category: schema.category,
         p_name: schema.p_name,
         brand: schema.brand,
-        maker: schema.maker,
         price: schema.price,
-        popular: schema.popular,
+        image_url: schema.imageUrl,
+        description: schema.description,
       },
     });
   });
@@ -705,7 +669,7 @@ describe("Testing application routes functionalty: \n", () => {
     const response = await route
       .put(`/api/products`)
       .set("Content-type", "application/json")
-      .send({ id: pId, price: 900, popular: "yes" });
+      .send({ id: pId, price: 900 });
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: "Product updated successfully",
@@ -714,9 +678,9 @@ describe("Testing application routes functionalty: \n", () => {
         category: schema.category,
         p_name: schema.p_name,
         brand: schema.brand,
-        maker: schema.maker,
         price: 900,
-        popular: "yes",
+        image_url: schema.imageUrl,
+        description: schema.description,
       },
     });
   });
@@ -734,24 +698,21 @@ describe("Testing application routes functionalty: \n", () => {
   it("should get all orders", async () => {
     const result = await route
       .get("/api/user/account/orders")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
-    expect(result.body).toEqual({
-      message: "Data generated successfully",
-      data: [
-        {
-          order_id: schema.order_id,
-          order_status: schema.order_status,
-          user_id: userId,
-        },
-      ],
-    });
+    expect(result.body).toEqual([
+      {
+        order_id: schema.order_id,
+        order_status: schema.order_status,
+        user_id: userId,
+      },
+    ]);
   });
 
   it(`should get order number ${schema.order_id}`, async () => {
     const result = await route
       .get(`/api/user/account/orders/${schema.order_id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Order generated successfully",
@@ -766,7 +727,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not get order number (2)", async () => {
     const result = await route
       .get(`/api/user/account/orders/2`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(404);
     expect(result.body).toEqual({
       message: "Request failed !",
@@ -777,9 +738,9 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not update order status", async () => {
     const result = await route
       .put(`/api/user/account/orders`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
-      .send({ order_id: 0, status: "" });
+      .send({ oid: 0, status: "" });
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
       message: "Please provide a valid order status and id !",
@@ -789,9 +750,9 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not update order status to it's current status`, async () => {
     const result = await route
       .put(`/api/user/account/orders`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
-      .send({ order_id: schema.order_id, status: schema.order_status });
+      .send({ oid: schema.order_id, status: schema.order_status });
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: `Order number (${schema.order_id}) already has a status of (${schema.order_status}) !`,
@@ -801,9 +762,9 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not update order status to anything but (complete or active)`, async () => {
     const result = await route
       .put(`/api/user/account/orders`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
-      .send({ order_id: schema.order_id, status: "anything" });
+      .send({ oid: schema.order_id, status: "anything" });
     expect(result.status).toBe(500);
     expect(result.body.message).toEqual(
       `Unable to update orders with id (${schema.order_id}) - Please enter value between [ active | complete ] for order status !`
@@ -813,9 +774,9 @@ describe("Testing application routes functionalty: \n", () => {
   it("should update order status to (complete)", async () => {
     const result = await route
       .put(`/api/user/account/orders`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
-      .send({ order_id: schema.order_id, status: "complete" });
+      .send({ oid: schema.order_id, status: "complete" });
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Order updated successfully",
@@ -830,9 +791,9 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not update order status to any other status if it's already (complete)", async () => {
     const result = await route
       .put(`/api/user/account/orders`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
-      .send({ order_id: schema.order_id, status: schema.order_status });
+      .send({ oid: schema.order_id, status: schema.order_status });
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: `Order number (${schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
@@ -842,7 +803,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not delete order for invalid input`, async () => {
     const response = await route
       .delete(`/api/user/account/orders/anything`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
       message: "Please enter a valid order id !",
@@ -852,7 +813,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not delete order because of foregin key constrain`, async () => {
     const response = await route
       .delete(`/api/user/account/orders/${schema.order_id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(500);
     expect(response.body.message).toEqual(
       `Unable to delete order with id (${schema.order_id}) - Please remove any products related to this order first !`
@@ -864,7 +825,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not add products to order number ${schema.op_id}`, async () => {
     const result = await route
       .post(`/api/user/account/orders/${schema.order_id}/products`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ p_id: pId, quantity: 10 });
     expect(result.status).toBe(500);
@@ -876,7 +837,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should get all ordered products", async () => {
     const result = await route
       .get("/api/user/account/ordered-products")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Data generated successfully",
@@ -895,7 +856,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should get one ordered products", async () => {
     const result = await route
       .get(`/api/user/account/ordered-products/${schema.op_id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body).toEqual({
       message: "Data generated successfully",
@@ -912,7 +873,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should not get one ordered products for invalid input", async () => {
     const result = await route
       .get(`/api/user/account/ordered-products/anything`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
       message: "Please enter a valid op id !",
@@ -922,7 +883,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not update ordered product number ${schema.op_id}`, async () => {
     const result = await route
       .put(`/api/user/account/ordered-products`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ p_id: pId, quantity: 0 });
     expect(result.status).toBe(400);
@@ -934,7 +895,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not update ordered product number ${schema.op_id}`, async () => {
     const result = await route
       .put(`/api/user/account/ordered-products`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ p_id: "325b12e8-9676-4af8-8c12-34816ecb8ce1", quantity: 20 });
     expect(result.status).toBe(404);
@@ -947,7 +908,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not update ordered product number ${schema.op_id}`, async () => {
     const result = await route
       .put(`/api/user/account/ordered-products`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ p_id: "123", quantity: 20 });
     expect(result.status).toBe(500);
@@ -959,7 +920,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should update quantity of ordered product number ${schema.op_id} to (20)`, async () => {
     const result = await route
       .put(`/api/user/account/ordered-products`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ p_id: pId, quantity: 20 });
     expect(result.status).toBe(200);
@@ -978,7 +939,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not delete ordered product number (2)`, async () => {
     const result = await route
       .delete(`/api/user/account/ordered-products/2`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json");
     expect(result.status).toBe(404);
     expect(result.body).toEqual({
@@ -990,7 +951,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should not delete ordered product for invalid input`, async () => {
     const result = await route
       .delete(`/api/user/account/ordered-products/anything`)
-      .set("Authorization", `Bearer ${token}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json");
     expect(result.status).toBe(400);
     expect(result.body).toEqual({
@@ -1003,7 +964,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should get end point /api/users/:id/account/review/ordered-products`, async () => {
     const response = await route
       .get(`/api/users/${userId}/account/review/ordered-products`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       message: `Data generated successfully for user id (${userId})`,
@@ -1020,23 +981,10 @@ describe("Testing application routes functionalty: \n", () => {
     });
   });
 
-  it(`should get end point /api/products/most/popular`, async () => {
-    const response = await route.get("/api/products/most/popular");
-    expect(response.status).toBe(200);
-    expect(response.body.message).toEqual("Data generated successfully");
-  });
-
   it(`should get end point /api/users/:uid/orders/:oid/account/review/ordered-products `, async () => {
     const response = await route
       .get(`/api/users/${userId}/orders/${schema.order_id}/account/review/ordered-products`)
-      .set("Authorization", `Bearer ${token}`);
-    expect(response.status).toBe(200);
-  });
-
-  it(`should get end point /api/users/:uid/account/most-recent/purchases`, async () => {
-    const response = await route
-      .get(`/api/users/${userId}/account/most-recent/purchases`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(200);
   });
 
@@ -1045,7 +993,7 @@ describe("Testing application routes functionalty: \n", () => {
   it("should delete one row from ordered products", async () => {
     const result = await route
       .delete(`/api/user/account/ordered-products/${schema.op_id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
     expect(result.body.message).toEqual(`Row number ${schema.op_id} was deleted successfully`);
   });
@@ -1059,7 +1007,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should delete order number ${schema.order_id}`, async () => {
     const response = await route
       .delete(`/api/user/account/orders/${schema.order_id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toEqual(`Order deleted successfully`);
   });
@@ -1067,7 +1015,7 @@ describe("Testing application routes functionalty: \n", () => {
   it(`should delete one user`, async () => {
     const response = await route
       .delete(`/api/users/${userId}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(200);
     expect(response.body.message).toEqual(`User deleted successfully`);
   });

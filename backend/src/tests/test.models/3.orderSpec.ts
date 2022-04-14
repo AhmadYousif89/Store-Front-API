@@ -28,14 +28,14 @@ describe("Order Model functions: \n", () => {
     it("should create a user and extract its id", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].u_id;
+      userId = user[0].user_id;
       console.log("order has been created");
     });
 
     it(`should create new order`, async () => {
       const order = await orderModel.create({
         order_status: schema.order_status,
-        u_id: userId,
+        user_id: userId,
       });
       expect(order).toEqual({
         message: "Order created successfully",

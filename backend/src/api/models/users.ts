@@ -8,10 +8,10 @@ class UserModel {
   async create(values: DbSchema): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `INSERT INTO users (u_name, u_email, password) VALUES ($1, $2, $3) RETURNING u_id , u_name, u_email`;
+      const sql = `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING user_id , name, email`;
       // encrypting password.
       const hash = encrypt(values.password as string);
-      const result = await conct.query(sql, [values.u_name, values.u_email, hash]);
+      const result = await conct.query(sql, [values.name, values.email, hash]);
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
@@ -38,7 +38,7 @@ class UserModel {
   async index(): Promise<DbSchema[]> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT u_id, u_name, u_email FROM users`;
+      const sql = `SELECT user_id, name, email FROM users`;
       const result = await conct.query(sql);
       conct.release();
       return result.rows;
@@ -57,7 +57,7 @@ class UserModel {
   async show(uid: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT u_id, u_name, u_email FROM users WHERE u_id = $1 `;
+      const sql = `SELECT user_id, name, email FROM users WHERE user_id = ($1) `;
       const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
@@ -86,7 +86,7 @@ class UserModel {
   async update(uid: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `UPDATE users SET password = ($2) WHERE u_id = ($1) RETURNING u_id , u_name, u_email`;
+      const sql = `UPDATE users SET password = ($2) WHERE user_id = ($1) RETURNING user_id , name, email`;
       // hashing user password before updating to database
       const hash = encrypt(password);
       const result = await conct.query(sql, [uid, hash]);
@@ -94,7 +94,7 @@ class UserModel {
         const user = result.rows[0];
         conct.release();
         return {
-          message: `User updated successfully`,
+          message: `user updated successfully`,
           data: user,
         };
       }
@@ -114,11 +114,11 @@ class UserModel {
   }
 
   // Delete user
-  async delete(u_id: string): Promise<DbSchema | null> {
+  async delete(uid: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `DELETE FROM users WHERE u_id = ($1) RETURNING u_id , u_name, u_email`;
-      const result = await conct.query(sql, [u_id]);
+      const sql = `DELETE FROM users WHERE user_id = ($1) RETURNING user_id , name, email`;
+      const result = await conct.query(sql, [uid]);
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
@@ -133,25 +133,25 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("foreign")) {
+      } else if ((err as Error).message?.includes("orders_user_id_fkey")) {
         errMsg = customErr(err as Error, `Please delete any related orders first !.`, ".");
       } else if ((err as Error).message?.includes("not exist")) {
         errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to delete user with id (${u_id}) - ${errMsg}`);
+      throw new Error(`Unable to delete user with id (${uid}) - ${errMsg}`);
     }
   }
 
   // Authenticate user.
-  async authenticateUser(u_email: string, password: string): Promise<DbSchema | null> {
+  async authenticateUser(email: string, password: string): Promise<DbSchema | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `SELECT password, u_email FROM users WHERE u_email = ($1)`;
-      const result = await conct.query(sql, [u_email]);
-      const userEmail = result.rows[0].u_email;
-      if (userEmail === undefined) {
+      const sql = `SELECT password, email FROM users WHERE email = ($1)`;
+      const result = await conct.query(sql, [email]);
+      const userEmail = result.rows[0].email;
+      if (!userEmail || userEmail === undefined) {
         conct.release();
         return null;
       }
@@ -159,8 +159,8 @@ class UserModel {
         const hashed = result.rows[0].password;
         // checking user password authenticity.
         if (isPwValide(password, hashed)) {
-          const sql = `SELECT u_id, u_name, u_email FROM users WHERE u_email = ($1)`;
-          const user = await conct.query(sql, [u_email]);
+          const sql = `SELECT user_id, name, email FROM users WHERE email = ($1)`;
+          const user = await conct.query(sql, [email]);
           conct.release();
           return user.rows[0];
         }
@@ -180,13 +180,13 @@ class UserModel {
     }
   }
 
-  async userToken<T>(user_id: string, token: string, now: string): Promise<T> {
+  async userToken<T>(user_id: string, token: string, time: string): Promise<T> {
     try {
       conct = await pgDB.connect();
-      const sql1 = `INSERT INTO user_tokens (user_id, token) VALUES ($1, $2) ON CONFLICT DO NOTHING`;
-      await pgDB.query(sql1, [user_id, token]);
+      const sql1 = `INSERT INTO user_tokens (user_id, token, i_at) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`;
+      await pgDB.query(sql1, [user_id, token, time]);
       const sql2 = `UPDATE user_tokens SET token = ($2) , i_at = ($3) WHERE user_id = ($1) RETURNING token, i_at`;
-      const query = await pgDB.query(sql2, [user_id, token, now]);
+      const query = await pgDB.query(sql2, [user_id, token, time]);
       conct.release();
       return query.rows[0];
     } catch (err) {

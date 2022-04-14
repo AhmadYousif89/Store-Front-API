@@ -33,7 +33,7 @@ describe("OrderedProducts Model functions: \n", () => {
     it("should create user and a product and extract their ids", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].u_id;
+      userId = user[0].user_id;
 
       await productModel.create(schema);
       const product = await productModel.index();
@@ -43,7 +43,7 @@ describe("OrderedProducts Model functions: \n", () => {
 
     it(`should create new order`, async () => {
       const order = await orderModel.create({
-        u_id: userId,
+        user_id: userId,
         order_status: schema.order_status,
       });
       expect(order?.message).toEqual("Order created successfully");

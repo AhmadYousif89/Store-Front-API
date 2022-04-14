@@ -10,7 +10,7 @@ const createOrders = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const userId = req.body.user_id;
+  const userId = req.body.userId;
   const status = req.body.status.toLowerCase();
 
   if (!userId || !status) {
@@ -19,7 +19,7 @@ const createOrders = async (
   try {
     const data = await orderModel.create({
       order_status: status,
-      u_id: userId,
+      user_id: userId,
     });
     res.status(201).json(data);
   } catch (err) {
@@ -39,7 +39,7 @@ const getOrders = async (
 ): Promise<void | Response> => {
   try {
     const data = await orderModel.index();
-    if (data.length === 0) {
+    if (!data.length) {
       return res.status(404).json({ message: `No Orders Were Found !` });
     }
     res.status(200).json(data);
@@ -86,7 +86,7 @@ const updateOrder = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const id = parseInt(req.body.order_id);
+  const id = parseInt(req.body.oid);
   const status = req.body.status.toLowerCase();
 
   if (!id || id <= 0 || !status) {

@@ -101,22 +101,6 @@ class Dashboard {
       throw new Error(`Unable to get User products data - ${errMsg}`);
     }
   }
-
-  // Get Popular Products
-  async getProductByPopularity(): Promise<DbSchema[]> {
-    try {
-      conct = await pgDB.connect();
-      const sql =
-        "SELECT p_id, price, popular FROM products WHERE popular = 'yes' ORDER BY price DESC LIMIT 5";
-      const result = await conct.query(sql);
-      conct.release();
-      return result.rows;
-    } catch (err) {
-      conct.release();
-      errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
-      throw new Error(`Unable to get data - ${errMsg}`);
-    }
-  }
 }
 
 export const dashBoard = new Dashboard();
