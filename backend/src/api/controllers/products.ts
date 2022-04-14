@@ -23,7 +23,7 @@ const createProducts = async (
       p_name: name,
       brand: brand,
       price: price,
-      imageUrl: imageUrl,
+      image_url: imageUrl,
       description: description || "No description!",
     });
     res.status(201).json(data);
@@ -63,14 +63,14 @@ const getProductById = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const id = req.params.id;
+  const pid = req.params.id;
 
   try {
-    const data = await productModel.show(id);
+    const data = await productModel.show({ p_id: pid });
     if (!data) {
       return res
         .status(404)
-        .json({ message: "Request failed !", data: `Product with id (${id}) Doesn't Exist !` });
+        .json({ message: "Request failed !", data: `Product with id (${pid}) Doesn't Exist !` });
     }
     res.status(200).json(data);
   } catch (err) {
@@ -95,7 +95,7 @@ const updateProduct = async (
     return res.status(400).json({ message: "Please provide a valid details before updating !" });
   }
   try {
-    const data = await productModel.update(pid, price);
+    const data = await productModel.update({ p_id: pid, price: price });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
@@ -124,7 +124,7 @@ const deleteProduct = async (
     return res.status(400).json({ message: "Please provide product id !" });
   }
   try {
-    const data = await productModel.delete(pid);
+    const data = await productModel.delete({ p_id: pid });
     if (!data) {
       return res.status(404).json({
         message: "Delete failed !",

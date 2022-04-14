@@ -1,11 +1,11 @@
 import { PoolClient } from "pg";
 import pgDB from "../../database";
-import { Error, customErr, DbSchema } from "../../utils/control";
+import { Error, customErr, Orders } from "../../utils/control";
 
 let conct: PoolClient;
 let errMsg: string | undefined;
 class OrdersModel {
-  async create(values: DbSchema): Promise<DbSchema | null> {
+  async create(values: Orders): Promise<Orders | null> {
     // don't set new orders as complete.
     if (values.order_status === "complete") {
       return { message: `New orders can not be set as (${values.order_status})` };
@@ -46,7 +46,7 @@ class OrdersModel {
   }
 
   // Get orders
-  async index(): Promise<DbSchema[]> {
+  async index(): Promise<Orders[]> {
     try {
       conct = await pgDB.connect();
       const sql = "SELECT * FROM orders";
@@ -65,11 +65,11 @@ class OrdersModel {
   }
 
   // Get one order
-  async show(oid: number): Promise<DbSchema | null> {
+  async show({ order_id }: Orders): Promise<Orders | null> {
     try {
       conct = await pgDB.connect();
       const sql = `SELECT * FROM orders WHERE order_id = ($1)`;
-      const query = await conct.query(sql, [oid]);
+      const query = await conct.query(sql, [order_id]);
       if (query.rows.length) {
         const orders = query.rows[0];
         conct.release();
@@ -87,31 +87,31 @@ class OrdersModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to get order with id (${oid}) - ${errMsg}`);
+      throw new Error(`Unable to get order with id (${order_id}) - ${errMsg}`);
     }
   }
 
   // Update Orders
-  async update(oid: number, status: string): Promise<DbSchema | null> {
+  async update(values: Orders): Promise<Orders | null> {
     try {
       conct = await pgDB.connect();
       const sql1 = `SELECT * FROM orders WHERE order_id = ($1)`;
-      const query = await conct.query(sql1, [oid]);
-      const order_status = query.rows[0].order_status;
+      const query = await conct.query(sql1, [values.order_id]);
+      const status = query.rows[0].order_status;
       // checking if order has status of (complete) or have the same incoming status
-      if (order_status === "complete") {
+      if (status === "complete") {
         conct.release();
         return {
-          message: `Order number (${oid}) already has a status of (complete) - you may review your order or delete it if you want !`,
+          message: `Order number (${values.order_id}) already has a status of (${status}) - you may review your order or delete it if you want !`,
         };
-      } else if (order_status === status) {
+      } else if (values.order_status === status) {
         conct.release();
         return {
-          message: `Order number (${oid}) already has a status of (${order_status}) !`,
+          message: `Order number (${values.order_id}) already has a status of (${status}) !`,
         };
       }
       const sql2 = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
-      const updateQuery = await conct.query(sql2, [oid, status]);
+      const updateQuery = await conct.query(sql2, [values.order_id, values.order_status]);
       if (updateQuery.rows.length) {
         const order = updateQuery.rows[0];
         conct.release();
@@ -137,16 +137,16 @@ class OrdersModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to update orders with id (${oid}) - ${errMsg}`);
+      throw new Error(`Unable to update orders with id (${values.order_id}) - ${errMsg}`);
     }
   }
 
   // Delete Orders
-  async delete(oid: number): Promise<DbSchema | null> {
+  async delete({ order_id }: Orders): Promise<Orders | null> {
     try {
       conct = await pgDB.connect();
       const sql = `DELETE FROM orders WHERE order_id = ($1) RETURNING *`;
-      const query = await conct.query(sql, [oid]);
+      const query = await conct.query(sql, [order_id]);
       if (query.rows.length) {
         const orders = query.rows[0];
         conct.release();
@@ -170,7 +170,7 @@ class OrdersModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to delete order with id (${oid}) - ${errMsg}`);
+      throw new Error(`Unable to delete order with id (${order_id}) - ${errMsg}`);
     }
   }
 }

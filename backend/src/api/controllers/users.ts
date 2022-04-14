@@ -47,7 +47,7 @@ const loginUser = async (
     return res.status(400).json({ message: "please enter a valid email" });
   }
   try {
-    const user = await userModel.authenticateUser(email, password);
+    const user = await userModel.authenticateUser({ email: email, password: password });
     if (!user) {
       return res.status(401).json({ message: "Invalid password or email" });
     }
@@ -55,7 +55,11 @@ const loginUser = async (
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     // storing user token in database with current time.
     const time = new Date().toISOString();
-    const userToken = await userModel.userToken(user.user_id as string, token, time);
+    const userToken = await userModel.userToken({
+      user_id: user.user_id as string,
+      token: token,
+      i_at: time,
+    });
     res.status(200).json({
       message: "user logged in",
       data: { user_id: user.user_id, name: user.name },
@@ -100,7 +104,7 @@ const getUserById = async (
   const uid = req.params.id;
 
   try {
-    const data = await userModel.show(uid);
+    const data = await userModel.show({ user_id: uid });
     if (!data) {
       return res.status(404).json({
         message: "Request failed !",
@@ -129,7 +133,7 @@ const updateUser = async (
     if (!uid || !password) {
       return res.status(400).json({ message: "please provide user id and password !" });
     }
-    const data = await userModel.update(uid, password);
+    const data = await userModel.update({ user_id: uid, password: password });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
@@ -155,7 +159,7 @@ const deleteUser = async (
   const uid = req.params.id;
 
   try {
-    const data = await userModel.delete(uid);
+    const data = await userModel.delete({ user_id: uid });
     if (!data) {
       return res.status(404).json({
         message: "Delete failed !",

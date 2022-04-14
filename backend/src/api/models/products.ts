@@ -1,11 +1,11 @@
 import { PoolClient } from "pg";
 import pgDB from "../../database";
-import { Error, customErr, DbSchema } from "../../utils/control";
+import { Error, customErr, Products } from "../../utils/control";
 
 let conct: PoolClient;
 let errMsg: string | undefined;
 class ProductModel {
-  async create(values: DbSchema): Promise<DbSchema | null> {
+  async create(values: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
       const sql = `INSERT INTO products (category, p_name, brand, price, image_url, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
@@ -14,7 +14,7 @@ class ProductModel {
         values.p_name,
         values.brand,
         values.price,
-        values.imageUrl,
+        values.image_url,
         values.description,
       ]);
       if (result.rows.length) {
@@ -45,7 +45,7 @@ class ProductModel {
   }
 
   // Get Products
-  async index(): Promise<DbSchema[]> {
+  async index(): Promise<Products[]> {
     try {
       conct = await pgDB.connect();
       const sql = "SELECT * FROM products";
@@ -64,11 +64,11 @@ class ProductModel {
   }
 
   // Get one Product
-  async show(id: string): Promise<DbSchema | null> {
+  async show({ p_id }: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
       const sql = `SELECT * FROM products WHERE p_id = ($1)`;
-      const result = await conct.query(sql, [id]);
+      const result = await conct.query(sql, [p_id]);
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
@@ -88,16 +88,16 @@ class ProductModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to get Product with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to get Product with id (${p_id}) - ${errMsg}`);
     }
   }
 
   // Update Product
-  async update(id: string, price: number): Promise<DbSchema | null> {
+  async update({ p_id, price }: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
       const sql = `UPDATE Products SET price = ($2) WHERE p_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [id, price]);
+      const result = await conct.query(sql, [p_id, price]);
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
@@ -117,16 +117,16 @@ class ProductModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to update Product with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to update Product with id (${p_id}) - ${errMsg}`);
     }
   }
 
   // Delete Product
-  async delete(id: string): Promise<DbSchema | null> {
+  async delete({ p_id }: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
       const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [id]);
+      const result = await conct.query(sql, [p_id]);
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
@@ -152,7 +152,7 @@ class ProductModel {
       } else {
         errMsg = err as string;
       }
-      throw new Error(`Unable to delete Product with id (${id}) - ${errMsg}`);
+      throw new Error(`Unable to delete Product with id (${p_id}) - ${errMsg}`);
     }
   }
 }

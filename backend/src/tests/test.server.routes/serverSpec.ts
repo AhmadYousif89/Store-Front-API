@@ -1,14 +1,13 @@
 import app from "../../server";
 import pgDB from "../../database";
 import supertest from "supertest";
-import { DbSchema } from "../../utils/control";
 
 const { SERVER_PORT } = process.env;
 export const route = supertest(app);
 
-let userId = "";
 let pId = "";
 let time = "";
+let userId = "";
 let userToken = "";
 
 export const schema = {
@@ -21,11 +20,11 @@ export const schema = {
   p_name: "S20",
   brand: "Samsung Galaxy",
   price: 1000,
-  imageUrl: "https://res.cloudinary.com/mobiles/galaxy-s20_t5hooj.webp",
+  image_url: "https://res.cloudinary.com/mobiles/galaxy-s20_t5hooj.webp",
   description: "NA",
   op_id: 1,
   quantity: 10,
-} as DbSchema;
+};
 
 // ======================================== //
 /*   Testing routes before creating data    */
@@ -122,7 +121,7 @@ describe("Testing application end points: \n", () => {
       .send({
         name: "",
         price: schema.price,
-        imageUrl: schema.imageUrl,
+        imageUrl: schema.image_url,
         brand: schema.brand,
         description: schema.description,
         category: schema.category,
@@ -140,7 +139,7 @@ describe("Testing application end points: \n", () => {
       .send({
         name: schema.p_name,
         price: schema.price,
-        imageUrl: schema.imageUrl,
+        imageUrl: schema.image_url,
         brand: schema.brand,
         description: schema.description,
         category: "anything",
@@ -378,7 +377,7 @@ describe("Testing application routes functionalty: \n", () => {
       .send({
         name: schema.p_name,
         price: schema.price,
-        imageUrl: schema.imageUrl,
+        imageUrl: schema.image_url,
         brand: schema.brand,
         description: schema.description,
         category: schema.category,
@@ -393,7 +392,7 @@ describe("Testing application routes functionalty: \n", () => {
       p_name: schema.p_name,
       brand: schema.brand,
       price: schema.price,
-      image_url: schema.imageUrl,
+      image_url: schema.image_url,
       description: schema.description,
     });
   });
@@ -641,7 +640,7 @@ describe("Testing application routes functionalty: \n", () => {
           p_name: schema.p_name,
           brand: schema.brand,
           price: schema.price,
-          image_url: schema.imageUrl,
+          image_url: schema.image_url,
           description: schema.description,
         },
       ],
@@ -659,7 +658,7 @@ describe("Testing application routes functionalty: \n", () => {
         p_name: schema.p_name,
         brand: schema.brand,
         price: schema.price,
-        image_url: schema.imageUrl,
+        image_url: schema.image_url,
         description: schema.description,
       },
     });
@@ -679,7 +678,7 @@ describe("Testing application routes functionalty: \n", () => {
         p_name: schema.p_name,
         brand: schema.brand,
         price: 900,
-        image_url: schema.imageUrl,
+        image_url: schema.image_url,
         description: schema.description,
       },
     });

@@ -60,7 +60,7 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should get one order by id`, async () => {
-      const order = await orderModel.show(schema.order_id as number);
+      const order = await orderModel.show({ order_id: schema.order_id });
       expect(order).toEqual({
         message: "Order generated successfully",
         data: {
@@ -73,7 +73,7 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should update the status of one order by id`, async () => {
-      const order = await orderModel.update(schema.order_id as number, "active");
+      const order = await orderModel.update({ order_id: schema.order_id, order_status: "active" });
       expect(order).toEqual({
         message: "Order updated successfully",
         data: {
@@ -86,7 +86,7 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should delete one order by id`, async () => {
-      const order = await orderModel.delete(schema.order_id as number);
+      const order = await orderModel.delete({ order_id: schema.order_id });
       expect(order).toEqual({
         message: "Order deleted successfully",
         data: {

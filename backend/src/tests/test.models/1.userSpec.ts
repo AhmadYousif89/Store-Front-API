@@ -48,7 +48,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should return the correct user by id", async () => {
-      const result = await userModel.show(userId);
+      const result = await userModel.show({ user_id: userId });
       expect(result).toEqual({
         message: `User generated successfully`,
         data: {
@@ -61,7 +61,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it(`should update the password to = 123 for specific user by id`, async () => {
-      const result = await userModel.update(userId, "123");
+      const result = await userModel.update({ user_id: userId, password: "123" });
       expect(result).toEqual({
         message: "user updated successfully",
         data: {
@@ -74,7 +74,10 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it(`should authenticate user by email and password`, async () => {
-      const result = await userModel.authenticateUser(schema.email as string, "123");
+      const result = await userModel.authenticateUser({
+        email: schema.email,
+        password: "123",
+      });
       expect(result).toEqual({
         user_id: userId,
         name: schema.name,
@@ -84,7 +87,7 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should delete the selected user by id", async () => {
-      const result = await userModel.delete(userId);
+      const result = await userModel.delete({ user_id: userId });
       expect(result).toEqual({
         message: "User deleted successfully",
         data: {

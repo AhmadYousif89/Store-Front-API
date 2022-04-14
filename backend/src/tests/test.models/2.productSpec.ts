@@ -44,7 +44,7 @@ describe("Testing product Model functions: \n", () => {
           p_name: schema.p_name,
           brand: schema.brand,
           price: schema.price,
-          image_url: schema.imageUrl,
+          image_url: schema.image_url,
           description: schema.description,
         },
       ]);
@@ -52,7 +52,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it("should return the correct product by id", async () => {
-      const result = await productModel.show(pId as string);
+      const result = await productModel.show({ p_id: pId });
       expect(result).toEqual({
         message: "Product generated successfully",
         data: {
@@ -61,15 +61,15 @@ describe("Testing product Model functions: \n", () => {
           p_name: schema.p_name,
           brand: schema.brand,
           price: schema.price,
-          image_url: schema.imageUrl,
+          image_url: schema.image_url,
           description: schema.description,
         },
       });
       console.log("one product");
     });
 
-    it(`should update the price to = (500) and popular = 'yes' for product by id`, async () => {
-      const result = await productModel.update(pId as string, 500);
+    it(`should update the price to = (500) for product by id`, async () => {
+      const result = await productModel.update({ p_id: pId, price: 500 });
       expect(result).toEqual({
         message: "Product updated successfully",
         data: {
@@ -78,7 +78,7 @@ describe("Testing product Model functions: \n", () => {
           p_name: schema.p_name,
           brand: schema.brand,
           price: 500,
-          image_url: schema.imageUrl,
+          image_url: schema.image_url,
           description: schema.description,
         },
       });
@@ -86,7 +86,7 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it(`should delete the selected product by ID`, async () => {
-      const result = await productModel.delete(pId as string);
+      const result = await productModel.delete({ p_id: pId });
       expect(result).toEqual({
         message: "Product deleted successfully",
         data: {
@@ -95,7 +95,7 @@ describe("Testing product Model functions: \n", () => {
           p_name: schema.p_name,
           brand: schema.brand,
           price: 500,
-          image_url: schema.imageUrl,
+          image_url: schema.image_url,
           description: schema.description,
         },
       });

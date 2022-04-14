@@ -1,29 +1,45 @@
 import bCrypt from "bcrypt";
 
-type DbSchema = {
-  p_id?: string;
-  op_id?: number;
-  i_at?: string;
+type Users = {
+  user_id?: string;
   name?: string;
   email?: string;
-  user_id?: string;
-  order_id?: number;
   password?: string;
-  product_id?: string;
+  message?: string;
+  data?: string | object;
+};
+type UserToken = {
+  user_id?: string;
+  token?: string;
+  i_at?: string;
+};
+type Orders = {
+  order_id?: number;
   order_status?: string;
-  created_at?: string;
+  user_id?: string;
+  message?: string;
+  data?: string | object;
+};
+type Products = {
+  p_id?: string;
   category?: string;
-  quantity?: number;
   p_name?: string;
   brand?: string;
   price?: number;
-  imageUrl?: string;
   image_url?: string;
   description?: string;
   message?: string;
   data?: string | object;
 };
-
+type OP = {
+  op_id?: number;
+  order_id?: number;
+  product_id?: string;
+  quantity?: number;
+  created_at?: string;
+  message?: string;
+  data?: string | object;
+};
 type Error = {
   name?: string;
   message?: string;
@@ -52,4 +68,15 @@ const validateEmail = (email: string): boolean => {
   return emailPattern.test(email);
 };
 
-export { DbSchema, Error, encrypt, isPwValide, customErr, validateEmail };
+export {
+  Users,
+  UserToken,
+  Orders,
+  Products,
+  OP,
+  Error,
+  encrypt,
+  isPwValide,
+  customErr,
+  validateEmail,
+};

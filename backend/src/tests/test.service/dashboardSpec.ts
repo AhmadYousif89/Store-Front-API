@@ -43,7 +43,7 @@ describe("Testing dashboard Model functions: \n", () => {
     it(`should add product to order`, async () => {
       const op = await OPT.addProducts({
         ...schema,
-        p_id: pId,
+        product_id: pId,
       });
       expect(op?.message).toEqual(
         `Product has been added successfully to order number (${schema.order_id})`
@@ -51,7 +51,10 @@ describe("Testing dashboard Model functions: \n", () => {
     });
 
     it(`should update order status`, async () => {
-      const order = await orderModel.update(schema.order_id as number, "complete");
+      const order = await orderModel.update({
+        order_id: schema.order_id,
+        order_status: "complete",
+      });
       expect(order?.message).toEqual("Order updated successfully");
     });
 

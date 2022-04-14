@@ -51,7 +51,7 @@ describe("OrderedProducts Model functions: \n", () => {
 
     it(`should add product to order`, async () => {
       const op = await OPT.addProducts({
-        p_id: pId,
+        product_id: pId,
         order_id: schema.order_id,
         quantity: schema.quantity,
       });
@@ -70,19 +70,19 @@ describe("OrderedProducts Model functions: \n", () => {
     });
 
     it(`should get one ordered product by id`, async () => {
-      const op = await OPT.show(schema.op_id as number);
+      const op = await OPT.show({ op_id: schema.op_id });
       expect(op?.message).toEqual("Data generated successfully");
       console.log("one ordered product");
     });
 
     it(`should update the quantity of one ordered products by id`, async () => {
-      const op = await OPT.update(pId as string, 50);
+      const op = await OPT.update({ product_id: pId, quantity: 50 });
       expect(op?.message).toEqual("Product quantity updated successfully");
       console.log("update ordered product");
     });
 
     it(`should delete one ordered products by id`, async () => {
-      const op = await OPT.delete(schema.op_id as number);
+      const op = await OPT.delete({ op_id: schema.op_id });
       expect(op?.message).toEqual(`Row number ${schema.op_id} was deleted successfully`);
       console.log("delete ordered product");
     });

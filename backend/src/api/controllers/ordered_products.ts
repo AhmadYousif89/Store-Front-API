@@ -21,7 +21,7 @@ const addProductToOrder = async (
   try {
     const data = await OPT.addProducts({
       order_id: oId,
-      p_id: pId,
+      product_id: pId,
       quantity: quantity,
     });
     res.status(201).json(data);
@@ -67,7 +67,7 @@ const getOPsById = async (
     return res.status(400).json({ message: "Please enter a valid op id !" });
   }
   try {
-    const data = await OPT.show(opId);
+    const data = await OPT.show({ op_id: opId });
     if (!data) {
       return res.status(404).json({
         message: "Request failed !",
@@ -97,7 +97,7 @@ const updateOrderedProduct = async (
     return res.status(400).json({ message: "Please provide correct details before updating !" });
   }
   try {
-    const data = await OPT.update(pId, quantity);
+    const data = await OPT.update({ product_id: pId, quantity: quantity });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
@@ -126,7 +126,7 @@ const delOrderedProduct = async (
     return res.status(400).json({ message: "Please enter a valid op id !" });
   }
   try {
-    const data = await OPT.delete(opId);
+    const data = await OPT.delete({ op_id: opId });
     if (!data) {
       return res.status(404).json({
         message: "Delete failed !",

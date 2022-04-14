@@ -64,7 +64,7 @@ const getOrderById = async (
     return res.status(400).json({ message: "Please enter a valid order id !" });
   }
   try {
-    const data = await orderModel.show(oid);
+    const data = await orderModel.show({ order_id: oid });
     if (!data) {
       return res
         .status(404)
@@ -86,18 +86,18 @@ const updateOrder = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const id = parseInt(req.body.oid);
+  const oid = parseInt(req.body.oid);
   const status = req.body.status.toLowerCase();
 
-  if (!id || id <= 0 || !status) {
+  if (!oid || oid <= 0 || !status) {
     return res.status(400).json({ message: "Please provide a valid order status and id !" });
   }
   try {
-    const data = await orderModel.update(id, status);
+    const data = await orderModel.update({ order_id: oid, order_status: status });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
-        data: `Order with id (${id}) doesn't exist`,
+        data: `Order with id (${oid}) doesn't exist`,
       });
     }
     res.status(200).json(data);
@@ -116,17 +116,17 @@ const deleteOrder = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const id = parseInt(req.params.id);
+  const oid = parseInt(req.params.id);
 
-  if (!id || id <= 0) {
+  if (!oid || oid <= 0) {
     return res.status(400).json({ message: "Please enter a valid order id !" });
   }
   try {
-    const data = await orderModel.delete(id);
+    const data = await orderModel.delete({ order_id: oid });
     if (!data) {
       return res.status(404).json({
         message: "Delete failed !",
-        data: `Order with id (${id}) doesn't exist`,
+        data: `Order with id (${oid}) doesn't exist`,
       });
     }
     res.status(200).json(data);
