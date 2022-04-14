@@ -20,10 +20,7 @@ class ProductModel {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product created successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;
@@ -72,10 +69,7 @@ class ProductModel {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product generated successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;
@@ -101,10 +95,7 @@ class ProductModel {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product updated successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;
@@ -130,10 +121,7 @@ class ProductModel {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product deleted successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;

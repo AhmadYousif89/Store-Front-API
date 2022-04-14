@@ -21,7 +21,10 @@ const createUser = async (
   }
   try {
     const data = await userModel.create({ name: name, email: email, password: password });
-    res.status(201).json(data);
+    res.status(201).json({
+      message: `user created successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -111,7 +114,10 @@ const getUserById = async (
         data: `user with id (${uid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `User generated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -140,7 +146,10 @@ const updateUser = async (
         data: `user with id (${uid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `user updated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -166,7 +175,10 @@ const deleteUser = async (
         data: `user with id (${uid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `user deleted successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

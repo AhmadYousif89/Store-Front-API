@@ -746,15 +746,15 @@ describe("Testing application routes functionalty: \n", () => {
     });
   });
 
-  it(`should not update order status to it's current status`, async () => {
+  it(`should not update order status to it's current status with code 500`, async () => {
     const result = await route
       .put(`/api/user/account/orders`)
       .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ oid: schema.order_id, status: schema.order_status });
-    expect(result.status).toBe(200);
+    expect(result.status).toBe(500);
     expect(result.body).toEqual({
-      message: `Order number (${schema.order_id}) already has a status of (${schema.order_status}) !`,
+      message: `Error: Order number (${schema.order_id}) already has a status of (${schema.order_status}) !`,
     });
   });
 
@@ -787,15 +787,15 @@ describe("Testing application routes functionalty: \n", () => {
     });
   });
 
-  it("should not update order status to any other status if it's already (complete)", async () => {
+  it("should not update order status to any other status if it's already (complete) with code 500", async () => {
     const result = await route
       .put(`/api/user/account/orders`)
       .set("Authorization", `Bearer ${userToken}`)
       .set("Content-type", "application/json")
       .send({ oid: schema.order_id, status: schema.order_status });
-    expect(result.status).toBe(200);
+    expect(result.status).toBe(500);
     expect(result.body).toEqual({
-      message: `Order number (${schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
+      message: `Error: Order number (${schema.order_id}) already has a status of (complete) - you may review your order or delete it if you want !`,
     });
   });
 
@@ -1016,7 +1016,7 @@ describe("Testing application routes functionalty: \n", () => {
       .delete(`/api/users/${userId}`)
       .set("Authorization", `Bearer ${userToken}`);
     expect(response.status).toBe(200);
-    expect(response.body.message).toEqual(`User deleted successfully`);
+    expect(response.body.message).toEqual(`user deleted successfully`);
   });
 
   afterAll(async () => {

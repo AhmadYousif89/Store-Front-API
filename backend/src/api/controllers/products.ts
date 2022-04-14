@@ -26,7 +26,10 @@ const createProducts = async (
       image_url: imageUrl,
       description: description || "No description!",
     });
-    res.status(201).json(data);
+    res.status(201).json({
+      message: `Product created successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -72,7 +75,10 @@ const getProductById = async (
         .status(404)
         .json({ message: "Request failed !", data: `Product with id (${pid}) Doesn't Exist !` });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Product generated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -102,7 +108,10 @@ const updateProduct = async (
         data: `Product with id (${pid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Product updated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -131,7 +140,10 @@ const deleteProduct = async (
         data: `Product with id (${pid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Product deleted successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

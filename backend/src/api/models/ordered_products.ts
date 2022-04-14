@@ -36,10 +36,7 @@ class OrderedProducts {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product has been added successfully to order number (${values.order_id})`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;
@@ -86,10 +83,7 @@ class OrderedProducts {
       if (result.rows.length) {
         const data = result.rows[0];
         conct.release();
-        return {
-          message: "Data generated successfully",
-          data: data,
-        };
+        return data;
       }
       conct.release();
       return null;
@@ -113,10 +107,7 @@ class OrderedProducts {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Product quantity updated successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;
@@ -142,10 +133,7 @@ class OrderedProducts {
       if (result.rows.length) {
         const product = result.rows[0];
         conct.release();
-        return {
-          message: `Row number ${op_id} was deleted successfully`,
-          data: product,
-        };
+        return product;
       }
       conct.release();
       return null;

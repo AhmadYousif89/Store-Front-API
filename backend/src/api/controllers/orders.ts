@@ -21,7 +21,10 @@ const createOrders = async (
       order_status: status,
       user_id: userId,
     });
-    res.status(201).json(data);
+    res.status(201).json({
+      message: `Order created successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -70,7 +73,10 @@ const getOrderById = async (
         .status(404)
         .json({ message: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Order generated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -100,7 +106,10 @@ const updateOrder = async (
         data: `Order with id (${oid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Order updated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -129,7 +138,10 @@ const deleteOrder = async (
         data: `Order with id (${oid}) doesn't exist`,
       });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `Order deleted successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

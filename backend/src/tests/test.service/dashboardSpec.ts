@@ -7,7 +7,7 @@ import { dashBoard } from "./../../api/__services__/dashboard";
 
 let pId: string | undefined;
 let userId: string | undefined;
-
+let time = "";
 describe("Testing dashboard Model functions: \n", () => {
   it("should be a method to get all products related to a user", () => {
     expect(dashBoard.getUserProducts).toBeDefined();
@@ -37,7 +37,11 @@ describe("Testing dashboard Model functions: \n", () => {
         user_id: userId,
         order_status: schema.order_status,
       });
-      expect(order?.message).toEqual("Order created successfully");
+      expect(order).toEqual({
+        order_id: schema.order_id,
+        order_status: schema.order_status,
+        user_id: userId,
+      });
     });
 
     it(`should add product to order`, async () => {
@@ -45,9 +49,15 @@ describe("Testing dashboard Model functions: \n", () => {
         ...schema,
         product_id: pId,
       });
-      expect(op?.message).toEqual(
-        `Product has been added successfully to order number (${schema.order_id})`
-      );
+      const created_at = op?.created_at;
+      time = created_at as string;
+      expect(op).toEqual({
+        op_id: schema.op_id,
+        order_id: schema.order_id,
+        product_id: pId,
+        quantity: schema.quantity,
+        created_at: time,
+      });
     });
 
     it(`should update order status`, async () => {
@@ -55,7 +65,11 @@ describe("Testing dashboard Model functions: \n", () => {
         order_id: schema.order_id,
         order_status: "complete",
       });
-      expect(order?.message).toEqual("Order updated successfully");
+      expect(order).toEqual({
+        order_id: schema.order_id,
+        order_status: "complete",
+        user_id: userId,
+      });
     });
 
     it("should get all products related to a user", async () => {

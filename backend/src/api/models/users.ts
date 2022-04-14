@@ -15,10 +15,7 @@ class UserModel {
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
-        return {
-          message: `user created successfully`,
-          data: user,
-        };
+        return user;
       }
       return null;
     } catch (err) {
@@ -62,10 +59,7 @@ class UserModel {
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
-        return {
-          message: `User generated successfully`,
-          data: user,
-        };
+        return user;
       }
       conct.release();
       return null;
@@ -93,10 +87,7 @@ class UserModel {
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
-        return {
-          message: `user updated successfully`,
-          data: user,
-        };
+        return user;
       }
       conct.release();
       return null;
@@ -122,10 +113,7 @@ class UserModel {
       if (result.rows.length) {
         const user = result.rows[0];
         conct.release();
-        return {
-          message: `User deleted successfully`,
-          data: user,
-        };
+        return user;
       }
       conct.release();
       return null;

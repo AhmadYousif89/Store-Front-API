@@ -5,8 +5,6 @@ type Users = {
   name?: string;
   email?: string;
   password?: string;
-  message?: string;
-  data?: string | object;
 };
 type UserToken = {
   user_id?: string;
@@ -17,8 +15,6 @@ type Orders = {
   order_id?: number;
   order_status?: string;
   user_id?: string;
-  message?: string;
-  data?: string | object;
 };
 type Products = {
   p_id?: string;
@@ -28,8 +24,6 @@ type Products = {
   price?: number;
   image_url?: string;
   description?: string;
-  message?: string;
-  data?: string | object;
 };
 type OP = {
   op_id?: number;
@@ -37,8 +31,6 @@ type OP = {
   product_id?: string;
   quantity?: number;
   created_at?: string;
-  message?: string;
-  data?: string | object;
 };
 type Error = {
   name?: string;

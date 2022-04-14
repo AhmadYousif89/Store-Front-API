@@ -1,13 +1,13 @@
 import { PoolClient } from "pg";
 import pgDB from "../../database";
-import { customErr, DbSchema } from "../../utils/control";
+import { customErr } from "../../utils/control";
 
 let conct: PoolClient;
 let errMsg;
 // Business logic functions.
 class Dashboard {
   // Get ordered products for specific user.
-  async getUserProducts(uid: string): Promise<DbSchema[] | null> {
+  async getUserProducts<T>(uid: string): Promise<T[] | null> {
     try {
       conct = await pgDB.connect();
       const sql = `
@@ -38,7 +38,7 @@ class Dashboard {
   }
 
   // Get ordered products for specific user by order id.
-  async getUserProductsByOid(uid: string, oid: number): Promise<DbSchema[] | null> {
+  async getUserProductsByOid<T>(uid: string, oid: number): Promise<T[] | null> {
     try {
       conct = await pgDB.connect();
       const sql = `
@@ -71,7 +71,7 @@ class Dashboard {
   }
 
   // Get user most recent purchases .
-  async getUserMostPurchases(uid: string): Promise<DbSchema[] | null> {
+  async getUserMostPurchases<T>(uid: string): Promise<T[] | null> {
     try {
       conct = await pgDB.connect();
       const sql = `

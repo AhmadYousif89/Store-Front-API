@@ -38,12 +38,9 @@ describe("Order Model functions: \n", () => {
         user_id: userId,
       });
       expect(order).toEqual({
-        message: "Order created successfully",
-        data: {
-          order_id: schema.order_id,
-          order_status: schema.order_status,
-          user_id: userId,
-        },
+        order_id: schema.order_id,
+        order_status: schema.order_status,
+        user_id: userId,
       });
     });
 
@@ -62,12 +59,9 @@ describe("Order Model functions: \n", () => {
     it(`should get one order by id`, async () => {
       const order = await orderModel.show({ order_id: schema.order_id });
       expect(order).toEqual({
-        message: "Order generated successfully",
-        data: {
-          order_id: schema.order_id,
-          order_status: schema.order_status,
-          user_id: userId,
-        },
+        order_id: schema.order_id,
+        order_status: schema.order_status,
+        user_id: userId,
       });
       console.log("one order");
     });
@@ -75,12 +69,9 @@ describe("Order Model functions: \n", () => {
     it(`should update the status of one order by id`, async () => {
       const order = await orderModel.update({ order_id: schema.order_id, order_status: "active" });
       expect(order).toEqual({
-        message: "Order updated successfully",
-        data: {
-          order_id: schema.order_id,
-          order_status: "active",
-          user_id: userId,
-        },
+        order_id: schema.order_id,
+        order_status: "active",
+        user_id: userId,
       });
       console.log("update order");
     });
@@ -88,12 +79,9 @@ describe("Order Model functions: \n", () => {
     it(`should delete one order by id`, async () => {
       const order = await orderModel.delete({ order_id: schema.order_id });
       expect(order).toEqual({
-        message: "Order deleted successfully",
-        data: {
-          order_id: schema.order_id,
-          order_status: "active",
-          user_id: userId,
-        },
+        order_id: schema.order_id,
+        order_status: "active",
+        user_id: userId,
       });
       console.log("delete order");
     });
