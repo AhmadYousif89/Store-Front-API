@@ -1,5 +1,5 @@
 import { userModel } from "../../api/models/users";
-import { schema } from "../test.server.routes/serverSpec";
+import { schema } from "../test.server.routes/server.spec";
 
 let userId = "";
 let userPw = "";

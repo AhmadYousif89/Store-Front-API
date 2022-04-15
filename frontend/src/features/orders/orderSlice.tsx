@@ -6,9 +6,9 @@ let token;
 // Create a order
 const createOrder = createAsyncThunk(
   "orders/create",
-  async (order: any, thunkAPI: RootStateOrAny) => {
+  async (order: object, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.token;
+      token = thunkAPI.getState().auth.user.jwt.token;
       return await orderService.createOrder(order, token);
     } catch (err) {
       const message =
@@ -27,8 +27,8 @@ const getOrders = createAsyncThunk(
   "orders/getAll",
   async (_, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.token;
-      return await orderService.indexOrders(token);
+      token = thunkAPI.getState().auth.user.jwt.token;
+      return await orderService.getOrders(token);
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -44,10 +44,10 @@ const getOrders = createAsyncThunk(
 // Update order
 const updateOrder = createAsyncThunk(
   "orders/update",
-  async (orderData: string, thunkAPI: RootStateOrAny) => {
+  async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.token;
-      return await orderService.updateOrder(orderData, token);
+      token = thunkAPI.getState().auth.user.jwt.token;
+      return await orderService.updateOrder(orderId, token);
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -65,7 +65,7 @@ const delOrder = createAsyncThunk(
   "orders/delete",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.token;
+      token = thunkAPI.getState().auth.user.jwt.token;
       return await orderService.delOrder(orderId, token);
     } catch (err) {
       const message =
@@ -91,7 +91,7 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder

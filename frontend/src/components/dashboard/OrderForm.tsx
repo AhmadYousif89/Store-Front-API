@@ -5,17 +5,17 @@ function OrderForm() {
     <>
       <ul className="flex orders">
         <li>
-          <Link to={"/orders"}>
+          <Link to={"/me/orders"}>
             <div>My Orders</div>
           </Link>
         </li>
         <li>
-          <Link to={"/orders"}>
+          <Link to={"/me/orders/add"}>
             <div>Create an Order</div>
           </Link>
         </li>
         <li>
-          <Link to={"/orders/history"}>
+          <Link to={"/me/orders/history"}>
             <div>History</div>
           </Link>
         </li>

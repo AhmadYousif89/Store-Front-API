@@ -193,10 +193,10 @@ h3 {
   animation: spin 1.2s linear infinite;
 }
 
-.registe {
+.register {
   font-size: 0.75rem;
 }
-.registe:hover {
+.register:hover {
   color: red;
 }
 

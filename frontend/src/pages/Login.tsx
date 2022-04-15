@@ -25,9 +25,9 @@ function Login() {
       toast.error(message);
       dispatch(reset());
     }
-    if (user) {
-      if (isSuccess) toast.success(message);
-      navigate(`/dashboard/${user.data.u_name}`);
+    if (isSuccess) {
+      toast.success(message);
+      navigate(`/dashboard/${user.data.name}`);
     }
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
@@ -86,9 +86,11 @@ function Login() {
           </div>
         </form>
       </section>
-      <Link to="/register" className="registe">
-        create new account ?
-      </Link>
+      {user ? null : (
+        <Link to="/register" className="register">
+          create new account ?
+        </Link>
+      )}
     </>
   );
 }

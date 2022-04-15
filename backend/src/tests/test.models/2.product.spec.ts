@@ -1,4 +1,4 @@
-import { schema } from "../test.server.routes/serverSpec";
+import { schema } from "../test.server.routes/server.spec";
 import { productModel } from "../../api/models/products";
 
 let pId = "";

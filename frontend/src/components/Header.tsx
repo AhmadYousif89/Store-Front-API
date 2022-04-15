@@ -4,7 +4,6 @@ import {
   FaSignOutAlt,
   FaUser,
   FaCartArrowDown,
-  FaShoppingBag,
 } from "react-icons/fa";
 import { logout, reset } from "../features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,20 +28,35 @@ function Header() {
       </div>
       <ul className="flex">
         {user ? (
-          <>
-            <li>
-              <Link to={user ? `dashboard/${user.data.u_name}` : "dashboard"}>
-                <div>
-                  <span className="cart-count">0</span> <FaCartArrowDown />
+          user.jwt !== undefined ? (
+            <>
+              <li>
+                <Link to={user ? `dashboard/${user.data.name}` : "dashboard"}>
+                  <div>
+                    <span className="cart-count">0</span> <FaCartArrowDown />
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <div className="logout" onClick={handleLogOut}>
+                  <FaSignOutAlt /> Logout
                 </div>
-              </Link>
-            </li>
-            <li>
-              <div className="logout" onClick={handleLogOut}>
-                <FaSignOutAlt /> Logout
-              </div>
-            </li>
-          </>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to="/register">
+                  <FaUser /> Register
+                </Link>
+              </li>
+              <li>
+                <Link to="/login">
+                  <FaSignInAlt /> Login
+                </Link>
+              </li>
+            </>
+          )
         ) : (
           <>
             <li>

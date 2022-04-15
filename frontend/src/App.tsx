@@ -28,10 +28,10 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route
-              path={user ? `dashboard/${user.data.u_name}` : "dashboard"}
+              path={user ? `dashboard/${user.data.name}` : "dashboard"}
               element={<Dashboard />}
             />
-            <Route path="orders" element={<Orders />} />
+            <Route path="me/orders" element={<Orders />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

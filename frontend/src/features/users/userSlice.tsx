@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootStateOrAny } from "react-redux";
 import userService from "./userServices";
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem("user") as string);
+let token = "";
 
 // Register a user
 const register = createAsyncThunk(
   "user/register",
-  async (user: any, thunkAPI) => {
+  async (user: object, thunkAPI) => {
     try {
       return await userService.registration(user);
     } catch (err) {
@@ -23,7 +25,7 @@ const register = createAsyncThunk(
 );
 
 // Login user
-const login = createAsyncThunk("user/login", async (user: any, thunkAPI) => {
+const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
   try {
     return await userService.login(user);
   } catch (err) {
@@ -36,6 +38,44 @@ const login = createAsyncThunk("user/login", async (user: any, thunkAPI) => {
     return thunkAPI.rejectWithValue(message);
   }
 });
+
+// Update user
+const update = createAsyncThunk(
+  `user/update/${user ? user.data.name : ""}`,
+  async (user: string, thunkAPI: RootStateOrAny) => {
+    try {
+      token = thunkAPI.getState().auth.user.jwt.token;
+      return await userService.updateUser(user, token);
+    } catch (err) {
+      const message =
+        ((err as any).response &&
+          (err as any).response.data &&
+          (err as any).response.data.message) ||
+        (err as any).message ||
+        (err as any).toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
+// Delete user
+const delUser = createAsyncThunk(
+  `user/delete/${user ? user.data.name : ""}`,
+  async (user: string, thunkAPI: RootStateOrAny) => {
+    try {
+      token = thunkAPI.getState().auth.user.jwt.token;
+      return await userService.delUser(user, token);
+    } catch (err) {
+      const message =
+        ((err as any).response &&
+          (err as any).response.data &&
+          (err as any).response.data.message) ||
+        (err as any).message ||
+        (err as any).toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
 
 // Logout user
 const logout = createAsyncThunk("user/logout", () => {
@@ -102,5 +142,5 @@ const userSlice = createSlice({
 
 const { reset } = userSlice.actions;
 
-export { reset, register, login, logout };
+export { reset, register, login, update, delUser, logout };
 export default userSlice.reducer;

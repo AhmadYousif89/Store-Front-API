@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "/api/user/account/orders";
 
 // Get all orders
-const indexOrders = async (token: string) => {
+const getOrders = async (token: string) => {
   const response = await axios.get(API_URL, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -11,7 +11,7 @@ const indexOrders = async (token: string) => {
 };
 
 // Create order
-const createOrder = async (orderData: any, token: string) => {
+const createOrder = async (orderData: object, token: string) => {
   const response = await axios.post(API_URL, {
     headers: { Authorization: `Bearer ${token}` },
     data: { orderData },
@@ -20,10 +20,10 @@ const createOrder = async (orderData: any, token: string) => {
 };
 
 // Update order
-const updateOrder = async (orderData: any, token: string) => {
+const updateOrder = async (orderId: number, token: string) => {
   const response = await axios.put(API_URL, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { orderData },
+    data: { orderId },
   });
   return response.data;
 };
@@ -37,7 +37,7 @@ const delOrder = async (orderId: number, token: string) => {
 };
 
 const orderService = {
-  indexOrders,
+  getOrders,
   createOrder,
   updateOrder,
   delOrder,

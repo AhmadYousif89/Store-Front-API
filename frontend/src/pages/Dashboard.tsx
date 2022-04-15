@@ -19,7 +19,7 @@ function Dashboard() {
       <section className="heading">
         <h1>Dashboard</h1>
         <h3>
-          Welcome <span>{user ? user.data.u_name.toUpperCase() : null}</span>
+          Welcome <span>{user ? user.data.name.toUpperCase() : null}</span>
         </h3>
       </section>
       <OrderForm />

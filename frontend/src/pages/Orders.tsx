@@ -17,13 +17,13 @@ function Orders() {
     if (!user) {
       navigate("/login");
     }
+    dispatch(getOrders);
     if (isError) {
       toast.error(message);
     }
     if (isSuccess) {
       toast.success("data generated");
     }
-    // dispatch(getOrders());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   if (isLoading) return <Spinner />;

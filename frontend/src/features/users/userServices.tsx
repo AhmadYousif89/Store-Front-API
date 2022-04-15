@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "/api/";
 
 // Register user
-const registration = async (userData: any) => {
+const registration = async (userData: object) => {
   const response = await axios.post(API_URL + "register", userData);
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
@@ -12,7 +12,7 @@ const registration = async (userData: any) => {
 };
 
 // Login user
-const login = async (userData: any) => {
+const login = async (userData: object) => {
   const response = await axios.post(API_URL + "login", userData);
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
@@ -21,8 +21,11 @@ const login = async (userData: any) => {
 };
 
 // Update user
-const updateUser = async (userData: any) => {
-  const response = await axios.put(API_URL + "users", userData);
+const updateUser = async (userId: string, token: string) => {
+  const response = await axios.put(API_URL + "users", {
+    headers: { Authorization: `Bearer ${token}` },
+    data: { userId },
+  });
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
@@ -30,8 +33,10 @@ const updateUser = async (userData: any) => {
 };
 
 // Delete user
-const delUser = async (userData: any) => {
-  const response = await axios.delete(API_URL + "users/:id", userData);
+const delUser = async (userId: string, token: string) => {
+  const response = await axios.delete(API_URL + userId, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
