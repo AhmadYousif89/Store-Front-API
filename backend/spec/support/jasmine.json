@@ -5,6 +5,5 @@
   "env": {
     "stopSpecOnExpectationFailure": false,
     "random": false
-  },
-  "jasmineExplorer.nodeArgv": ["-r", "ts-node/register"]
+  }
 }
