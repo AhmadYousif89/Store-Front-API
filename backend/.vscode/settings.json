@@ -1,0 +1,6 @@
+{
+  "testExplorer.showOnRun": true,
+  "testExplorer.useNativeTesting": false,
+  "jasmineExplorer.config": "spec/support/jasmine.json",
+  "jasmineExplorer.nodeArgv": ["-r", "ts-node/register"]
+}
