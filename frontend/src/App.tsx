@@ -16,6 +16,7 @@ function App() {
     <>
       <BR>
         <ToastContainer
+          theme="colored"
           autoClose={2000}
           position={"top-center"}
           hideProgressBar={true}

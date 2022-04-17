@@ -1,9 +1,15 @@
 function OrderItem(props: any) {
-  const time = new Date().getMonth().toLocaleString();
   return (
-    <div className="order">
-      <div>{time}</div>
-      <h3>{props.order}</h3>
+    <div className="order_list grid">
+      {props.orders.map((order: any) => (
+        <ul key={order.order_id} className="order">
+          <li>
+            <p>order number : {order.order_id}</p>
+            <p>order status : {order.order_status}</p>
+            <p>created_at : {order.created_at}</p>
+          </li>
+        </ul>
+      ))}
     </div>
   );
 }

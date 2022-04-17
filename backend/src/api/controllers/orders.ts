@@ -45,7 +45,10 @@ const getOrders = async (
     if (!data.length) {
       return res.status(404).json({ message: `No Orders Were Found !` });
     }
-    res.status(200).json(data);
+    res.status(200).json({
+      message: `orders generated successfully`,
+      data,
+    });
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -99,7 +102,8 @@ const updateOrder = async (
     return res.status(400).json({ message: "Please provide a valid order status and id !" });
   }
   try {
-    const data = await orderModel.update({ order_id: oid, order_status: status });
+    const time = new Date().toISOString();
+    const data = await orderModel.update({ order_id: oid, order_status: status, updated_at: time });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
@@ -150,4 +154,29 @@ const deleteOrder = async (
   }
 };
 
-export { createOrders, getOrders, getOrderById, updateOrder, deleteOrder };
+// method => GET /user/:id/account/orders
+// desc   => Return all Orders data.
+const getUserOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  const uid = req.params.id;
+  try {
+    const data = await orderModel.getUserOrders({ user_id: uid });
+    if (!data.length) {
+      return res.status(404).json({ message: `No Orders Were Found` });
+    }
+    res.status(200).json({
+      message: `orders generated successfully`,
+      data,
+    });
+  } catch (err) {
+    error = {
+      message: `${(err as Error).message}`,
+    };
+    next(error);
+  }
+};
+
+export { createOrders, getOrders, getOrderById, updateOrder, deleteOrder, getUserOrders };

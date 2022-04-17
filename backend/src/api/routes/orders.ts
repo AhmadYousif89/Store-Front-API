@@ -5,6 +5,7 @@ import {
   getOrderById,
   updateOrder,
   deleteOrder,
+  getUserOrders,
 } from "../controllers/orders";
 import authentication from "../../middlewares/auth.middleware";
 
@@ -19,5 +20,6 @@ routes
   .route("/user/account/orders/:id")
   .get(authentication, getOrderById)
   .delete(authentication, deleteOrder);
+routes.get("/user/:id/account/orders", authentication, getUserOrders);
 
 export default routes;

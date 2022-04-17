@@ -32,8 +32,6 @@ class ProductModel {
           "Please enter category between (electronics) and (mobiles) !.",
           "."
         );
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -51,12 +49,7 @@ class ProductModel {
       return result.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get data - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -77,8 +70,6 @@ class ProductModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -103,8 +94,6 @@ class ProductModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -135,8 +124,6 @@ class ProductModel {
           "Product can not be deleted - remove this product from any related orders !.",
           "."
         );
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }

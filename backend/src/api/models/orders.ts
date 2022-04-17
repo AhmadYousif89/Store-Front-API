@@ -33,8 +33,6 @@ class OrdersModel {
         );
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect user id or user does not exist !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -52,12 +50,7 @@ class OrdersModel {
       return query.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get data - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -76,12 +69,7 @@ class OrdersModel {
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get order with id (${order_id}) - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -104,16 +92,18 @@ class OrdersModel {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
       throw new Error(`${errMsg}`);
     }
     try {
-      const sql = `UPDATE orders SET order_status = ($2) WHERE order_id = ($1) RETURNING *`;
-      const query = await conct.query(sql, [values.order_id, values.order_status]);
+      const sql = `UPDATE orders SET order_status = ($2) , updated_at = ($3) WHERE order_id = ($1) RETURNING *`;
+      const query = await conct.query(sql, [
+        values.order_id,
+        values.order_status,
+        values.updated_at,
+      ]);
       if (query.rows.length) {
         const order = query.rows[0];
         conct.release();
@@ -129,8 +119,6 @@ class OrdersModel {
           "Please enter value between [ active | complete ] for order status !.",
           "."
         );
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -159,12 +147,29 @@ class OrdersModel {
           "Please remove any products related to this order first !.",
           "."
         );
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
       throw new Error(`Unable to delete order with id (${order_id}) - ${errMsg}`);
+    }
+  }
+
+  // Get user orders.
+  async getUserOrders({ user_id }: Orders): Promise<Orders[]> {
+    try {
+      conct = await pgDB.connect();
+      const sql = `SELECT order_id, order_status, created_at FROM orders WHERE user_id = ($1)`;
+      const result = await conct.query(sql, [user_id]);
+      conct.release();
+      return result.rows;
+    } catch (err) {
+      conct.release();
+      if ((err as Error).message?.includes("uuid")) {
+        errMsg = customErr(err as Error, "please enter a valid user id !.", ".");
+      } else {
+        errMsg = err as string;
+      }
+      throw new Error(`${errMsg}`);
     }
   }
 }

@@ -36,6 +36,7 @@ const updateUser = async (userId: string, token: string) => {
 const delUser = async (userId: string, token: string) => {
   const response = await axios.delete(API_URL + userId, {
     headers: { Authorization: `Bearer ${token}` },
+    data: { userId },
   });
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));

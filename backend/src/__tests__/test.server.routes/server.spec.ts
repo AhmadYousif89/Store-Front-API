@@ -259,7 +259,7 @@ describe("Testing application end points: \n", () => {
 /*    Testing routes after creating data    */
 // ======================================== //
 
-describe("Testing application routes functionalty: \n", () => {
+fdescribe("Testing application routes functionalty: \n", () => {
   // Create a user
   it("should get end point /api/register and create user and extract id", async () => {
     const response = await route
@@ -699,7 +699,8 @@ describe("Testing application routes functionalty: \n", () => {
       .get("/api/user/account/orders")
       .set("Authorization", `Bearer ${userToken}`);
     expect(result.status).toBe(200);
-    expect(result.body).toEqual([
+    expect(result.body.message).toBe("orders generated successfully");
+    expect(result.body.data).toEqual([
       {
         order_id: schema.order_id,
         order_status: schema.order_status,

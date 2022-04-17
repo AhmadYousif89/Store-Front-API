@@ -22,8 +22,6 @@ class OrderedProducts {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "Incorrect order id or order does not exist !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "Table (orders) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -46,8 +44,6 @@ class OrderedProducts {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect product id or product does not exist !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -65,12 +61,7 @@ class OrderedProducts {
       return result.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get data - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -89,12 +80,7 @@ class OrderedProducts {
       return null;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get data - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -115,8 +101,6 @@ class OrderedProducts {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -147,8 +131,6 @@ class OrderedProducts {
           "Product can not be deleted - remove this product from any related orders !.",
           "."
         );
-      } else if ((err as Error).message?.includes("relation")) {
-        errMsg = customErr(err as Error, "TABLE (ordered_products) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }

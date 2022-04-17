@@ -22,8 +22,6 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("unique_user_email")) {
         errMsg = customErr(err as Error, "email already exist !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -41,12 +39,7 @@ class UserModel {
       return result.rows;
     } catch (err) {
       conct.release();
-      if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get Users - ${errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -67,8 +60,6 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -95,8 +86,6 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -123,8 +112,6 @@ class UserModel {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
       } else if ((err as Error).message?.includes("orders_user_id_fkey")) {
         errMsg = customErr(err as Error, `Please delete any related orders first !.`, ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -159,8 +146,6 @@ class UserModel {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
         errMsg = customErr(err as Error, "user does not exist !.", ".");
-      } else if ((err as Error).message?.includes("not exist")) {
-        errMsg = customErr(err as Error, "TABLE (users) does not exist !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -179,7 +164,7 @@ class UserModel {
       return query.rows[0];
     } catch (err) {
       conct.release();
-      throw new Error(`user-token: ${err}`);
+      throw new Error(`${err}`);
     }
   }
 }

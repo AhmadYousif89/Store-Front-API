@@ -41,7 +41,7 @@ const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
 
 // Update user
 const update = createAsyncThunk(
-  `user/update/${user ? user.data.name : ""}`,
+  `user/update`,
   async (user: string, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
@@ -60,7 +60,7 @@ const update = createAsyncThunk(
 
 // Delete user
 const delUser = createAsyncThunk(
-  `user/delete/${user ? user.data.name : ""}`,
+  `user/delete`,
   async (user: string, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
@@ -111,7 +111,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = action.payload.message as string;
+        state.message = action.payload.message;
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -126,7 +126,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = action.payload.message as string;
+        state.message = action.payload.message;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;

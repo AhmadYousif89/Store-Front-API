@@ -5,7 +5,11 @@ import {
   FaUser,
   FaCartArrowDown,
 } from "react-icons/fa";
-import { logout, reset } from "../features/users/userSlice";
+import { logout, reset as userReset } from "../features/users/userSlice";
+import {
+  reset as orderReset,
+  removeOrders,
+} from "../features/orders/orderSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -17,7 +21,9 @@ function Header() {
   const handleLogOut = () => {
     toast.info("logging out");
     dispatch(logout());
-    dispatch(reset());
+    dispatch(userReset());
+    dispatch(orderReset());
+    dispatch(removeOrders());
     navigate("/");
   };
 

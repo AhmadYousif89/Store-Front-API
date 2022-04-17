@@ -2,7 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
 import orderService from "./orderServices";
 
+// Get user orders from localStorage
+const orders = JSON.parse(localStorage.getItem("orders") as string);
 let token;
+
 // Create a order
 const createOrder = createAsyncThunk(
   "orders/create",
@@ -28,7 +31,8 @@ const getOrders = createAsyncThunk(
   async (_, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.getOrders(token);
+      const user_id = thunkAPI.getState().auth.user.data.user_id;
+      return await orderService.getUserOrders(user_id, token);
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -79,8 +83,13 @@ const delOrder = createAsyncThunk(
   },
 );
 
+// Remove user orders
+const removeOrders = createAsyncThunk("orders/remove", () => {
+  orderService.removeOrders();
+});
+
 const initialState = {
-  orders: [],
+  orders: orders ? orders : [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -91,7 +100,12 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -101,13 +115,17 @@ const orderSlice = createSlice({
       .addCase(getOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.orders = action.payload;
-        state.message = action.payload as string;
+        state.orders = action.payload.data;
+        state.message = action.payload.message;
       })
       .addCase(getOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.orders = [];
         state.message = action.payload as string;
+      })
+      .addCase(removeOrders.fulfilled, (state) => {
+        state.orders = [];
       });
     // .addCase(createOrder.pending, (state) => {
     //   state.isLoading = true;
@@ -155,5 +173,5 @@ const orderSlice = createSlice({
 
 const { reset } = orderSlice.actions;
 
-export { reset, getOrders, createOrder, updateOrder, delOrder };
+export { reset, getOrders, createOrder, updateOrder, delOrder, removeOrders };
 export default orderSlice.reducer;

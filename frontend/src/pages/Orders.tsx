@@ -1,7 +1,9 @@
 import { useEffect } from "react";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import OrderItem from "../components/dashboard/OrderItem";
 import Spinner from "../components/Spinner";
 import { getOrders } from "../features/orders/orderSlice";
 
@@ -13,17 +15,18 @@ function Orders() {
     (state: RootStateOrAny) => state.orders,
   );
 
+  const customId = "orders message";
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
-    dispatch(getOrders);
     if (isError) {
       toast.error(message);
     }
     if (isSuccess) {
-      toast.success("data generated");
+      toast.success(message, { toastId: customId });
     }
+    dispatch(getOrders());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   if (isLoading) return <Spinner />;
@@ -37,19 +40,17 @@ function Orders() {
         {orders.length > 0 ? (
           <div className="">
             <p>list of orders: </p>
-            {orders.map((order: any) => (
-              <ul className="order">
-                <li key={order.order_id}>
-                  <p>order number : {order.order_id}</p>
-                  <p>order status : {order.order_status}</p>
-                </li>
-              </ul>
-            ))}
+            <OrderItem orders={orders} />
           </div>
         ) : (
-          <h3>You have not set any orders</h3>
+          <h3>You don't have any orders...</h3>
         )}
       </section>
+      <Link className="flex" to={`/dashboard/${user.data.name}`}>
+        <div className="go_back">
+          <FaAngleLeft /> Go Back <FaAngleRight />
+        </div>
+      </Link>
     </>
   );
 }

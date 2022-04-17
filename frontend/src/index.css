@@ -37,6 +37,7 @@ h3 {
 
 .flex {
   display: flex;
+  justify-content: center;
 }
 
 .grid {
@@ -100,11 +101,15 @@ h3 {
 
 .order {
   background-color: #eee;
-  width: fit-content;
   text-align: left;
+  border-radius: 10px;
   margin: 10px 0;
   padding: 10px;
-  position: relative;
+}
+
+.order_list {
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .form,
@@ -151,11 +156,6 @@ h3 {
   margin-right: 8px;
 }
 
-.btn-reverse {
-  background: #fff;
-  color: #000;
-}
-
 .btn-block {
   width: 100%;
   margin-bottom: 20px;
@@ -163,6 +163,19 @@ h3 {
 
 .btn:hover {
   transform: scale(0.99);
+}
+
+.go_back {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.go_back:hover {
+  color: #777;
+  cursor: pointer;
 }
 
 .logout {
