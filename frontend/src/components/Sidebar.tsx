@@ -1,5 +1,7 @@
 import { useState } from "react";
 import * as FaIcons from "react-icons/fa";
+import * as GrIcons from "react-icons/gr";
+import * as HiIcons from "react-icons/hi";
 import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
 import "./styles/Sidebar.css";
@@ -11,8 +13,9 @@ function Sidebar() {
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
 
   const handleSidebar = () => {
-    setSidebar(!sidebar);
+    setSidebar((pv) => !pv);
   };
+
   return (
     <>
       <div id="nav">
@@ -21,22 +24,22 @@ function Sidebar() {
         </Link>
       </div>
       <nav
-        onMouseLeave={handleSidebar}
+        onMouseUp={handleSidebar}
         className={!sidebar ? "sidebar-menu show" : "sidebar-menu"}>
         <ul className="sidebar-items">
           <li>
             <Link className="sidebar-link" to={"/"}>
-              <FaIcons.FaHome /> Home
+              <HiIcons.HiHome /> Home
             </Link>
           </li>
           <li>
             <Link className="sidebar-link" to={`dashboard/${user.data.name}`}>
-              <FaIcons.FaDashcube /> Dashboard
+              <AiIcons.AiFillSetting /> Dashboard
             </Link>
           </li>
           <li>
             <Link className="sidebar-link" to={"me/orders"}>
-              <FaIcons.FaJediOrder /> My Orders
+              <HiIcons.HiClipboardList /> My Orders
             </Link>
           </li>
           <li>
@@ -46,12 +49,17 @@ function Sidebar() {
           </li>
           <li>
             <Link className="sidebar-link" to={"me/orders/cart"}>
-              <FaIcons.FaShoppingBag /> Shopping Cart
+              <FaIcons.FaShoppingCart /> Shopping Cart
+            </Link>
+          </li>
+          <li>
+            <Link className="sidebar-link" to={"me/contact"}>
+              <GrIcons.GrContactInfo /> Contact
             </Link>
           </li>
           <li>
             <Link className="sidebar-link" to={"me/about"}>
-              <FaIcons.FaUser /> About
+              <FaIcons.FaInfoCircle /> About
             </Link>
           </li>
         </ul>

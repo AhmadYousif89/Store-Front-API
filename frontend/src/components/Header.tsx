@@ -25,7 +25,7 @@ function Header() {
   };
 
   return (
-    <header className="flex header">
+    <header className="header">
       <div id="logo">
         <Link to="/">TechStore</Link>
       </div>
@@ -33,7 +33,7 @@ function Header() {
         {user ? (
           user.jwt !== undefined ? (
             <>
-              <ul className="flex nav-container">
+              <ul className="nav-container">
                 <li>
                   <Link to={user ? `dashboard/${user.data.name}` : "dashboard"}>
                     <div className="cart-count">
@@ -43,7 +43,7 @@ function Header() {
                 </li>
                 <li>
                   <div className="logout" onClick={handleLogOut}>
-                    <FaIcons.FaSignOutAlt /> Logout
+                    Logout <FaIcons.FaSignOutAlt />
                   </div>
                 </li>
                 <Sidebar />
@@ -65,7 +65,7 @@ function Header() {
           )
         ) : (
           <>
-            <ul className="flex nav-container">
+            <ul className="nav-container">
               <li>
                 <Link className="icon" to="/register">
                   <FaIcons.FaUser /> Register

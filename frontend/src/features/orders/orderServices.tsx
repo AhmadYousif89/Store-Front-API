@@ -1,6 +1,14 @@
 import axios from "axios";
 
-const API_URL = "/api/user/account/orders";
+const API_URL = "/api/user/account/orders/";
+
+// Create order
+const createOrder = async (userId: object, token: string) => {
+  const response = await axios.post(API_URL, userId, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
 
 // Get all orders
 const getUserOrders = async (userId: string, token: string) => {
@@ -10,14 +18,6 @@ const getUserOrders = async (userId: string, token: string) => {
   if (response.data) {
     localStorage.setItem("orders", JSON.stringify(response.data));
   }
-  return response.data;
-};
-
-// Create order
-const createOrder = async (userId: string, token: string) => {
-  const response = await axios.post(API_URL, userId, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
   return response.data;
 };
 
@@ -34,6 +34,7 @@ const updateOrder = async (orderId: number, token: string) => {
 const delOrder = async (orderId: number, token: string) => {
   const response = await axios.delete(API_URL + orderId, {
     headers: { Authorization: `Bearer ${token}` },
+    data: orderId,
   });
   return response.data;
 };

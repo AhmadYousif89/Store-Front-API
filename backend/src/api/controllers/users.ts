@@ -57,11 +57,9 @@ const loginUser = async (
     // creating token based on user credentials and my secret token.
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     // storing user token in database with current time.
-    const time = new Date().toISOString();
     const userToken = await userModel.userToken({
       user_id: user.user_id as string,
       token: token,
-      i_at: time,
     });
     res.status(200).json({
       message: "user logged in",

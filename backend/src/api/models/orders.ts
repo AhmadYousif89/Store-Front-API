@@ -93,7 +93,7 @@ class OrdersModel {
     }
     try {
       const sql = `UPDATE orders SET order_status = ($2) , updated_at = NOW() WHERE order_id = ($1) RETURNING *`;
-      const query = await conct.query(sql, [values.order_id, values.order_status]);
+      const query = await conct.query(sql, [values.order_id, values.order_status?.toLowerCase()]);
       if (query.rows.length) {
         const order = query.rows[0];
         conct.release();

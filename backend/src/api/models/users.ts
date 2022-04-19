@@ -156,10 +156,10 @@ class UserModel {
   async userToken(values: UserToken): Promise<UserToken> {
     try {
       conct = await pgDB.connect();
-      const sql1 = `INSERT INTO user_tokens (user_id, token, i_at) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`;
-      await pgDB.query(sql1, [values.user_id, values.token, values.i_at]);
-      const sql2 = `UPDATE user_tokens SET token = ($2) , i_at = ($3) WHERE user_id = ($1) RETURNING token, i_at`;
-      const query = await pgDB.query(sql2, [values.user_id, values.token, values.i_at]);
+      const sql1 = `INSERT INTO user_tokens (user_id, token) VALUES ($1, $2) ON CONFLICT DO NOTHING`;
+      await pgDB.query(sql1, [values.user_id, values.token]);
+      const sql2 = `UPDATE user_tokens SET token = ($2) , i_at = NOW() WHERE user_id = ($1) RETURNING token, i_at`;
+      const query = await pgDB.query(sql2, [values.user_id, values.token]);
       conct.release();
       return query.rows[0];
     } catch (err) {

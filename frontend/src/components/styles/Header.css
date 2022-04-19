@@ -1,4 +1,5 @@
 .header {
+  display: flex;
   align-items: center;
   padding: 1rem 0;
   border-bottom: 1px solid #e6e6e6;
@@ -14,6 +15,7 @@
 }
 
 .logout {
+  display: flex;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -30,6 +32,7 @@
 }
 
 .nav-container {
-  gap: 1rem;
+  display: flex;
+  gap: 2rem;
   align-items: center;
 }

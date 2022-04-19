@@ -1,11 +1,11 @@
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import OrderForm from "../components/dashboard/OrderForm";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { getProducts } from "../features/products/productSlice";
-import ProductItems from "../components/dashboard/ProductItems";
+import ProductItems from "../components/ProductItems";
+import "./styles/Dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -21,12 +21,8 @@ function Dashboard() {
       navigate("/login");
       toast.error("Access denied");
     }
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess) {
-      toast.success(message);
-    }
+    if (isError) toast.error(message);
+    if (isSuccess) toast.success(message);
     dispatch(getProducts());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
@@ -40,16 +36,9 @@ function Dashboard() {
         </h3>
         <h1>New Arrivals</h1>
       </section>
-      <div className="grid product_container">
-        <div className="sidebar">
-          <OrderForm />
-        </div>
-        <div className="content">
-          <section className="grid products">
-            <ProductItems products={products} />
-          </section>
-        </div>
-      </div>
+      <section className="products">
+        <ProductItems products={products} />
+      </section>
     </>
   );
 }
