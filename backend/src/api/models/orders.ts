@@ -12,8 +12,8 @@ class OrdersModel {
     }
     try {
       conct = await pgDB.connect();
-      const sql = `INSERT INTO orders (order_status, user_id) VALUES ($1, $2) RETURNING *`;
-      const query = await conct.query(sql, [values.order_status, values.user_id]);
+      const sql = `INSERT INTO orders (user_id) VALUES ($1) RETURNING *`;
+      const query = await conct.query(sql, [values.user_id]);
       if (query.rows.length) {
         const orders = query.rows[0];
         conct.release();
@@ -25,12 +25,6 @@ class OrdersModel {
       conct.release();
       if ((err as Error).message?.includes("uuid")) {
         errMsg = customErr(err as Error, "Please enter a valid user id !.", ".");
-      } else if ((err as Error).message?.includes("enum")) {
-        errMsg = customErr(
-          err as Error,
-          "Please enter a value between [ new | active ] for order status !.",
-          "."
-        );
       } else if ((err as Error).message?.includes("foreign")) {
         errMsg = customErr(err as Error, "Incorrect user id or user does not exist !.", ".");
       } else {
@@ -85,7 +79,7 @@ class OrdersModel {
         throw new Error(
           `Order number (${values.order_id}) already has a status of (${status}) - you may review your order or delete it if you want !`
         );
-      } else if (values.order_status === status) {
+      } else if (values.order_status?.toLocaleLowerCase() === status) {
         throw new Error(`Order number (${values.order_id}) already has a status of (${status}) !`);
       }
     } catch (err) {
@@ -98,12 +92,8 @@ class OrdersModel {
       throw new Error(`${errMsg}`);
     }
     try {
-      const sql = `UPDATE orders SET order_status = ($2) , updated_at = ($3) WHERE order_id = ($1) RETURNING *`;
-      const query = await conct.query(sql, [
-        values.order_id,
-        values.order_status,
-        values.updated_at,
-      ]);
+      const sql = `UPDATE orders SET order_status = ($2) , updated_at = NOW() WHERE order_id = ($1) RETURNING *`;
+      const query = await conct.query(sql, [values.order_id, values.order_status]);
       if (query.rows.length) {
         const order = query.rows[0];
         conct.release();

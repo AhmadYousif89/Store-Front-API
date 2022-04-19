@@ -9,6 +9,7 @@ let pId = "";
 let time = "";
 let userId = "";
 let userToken = "";
+let orderTime = "";
 
 export const schema = {
   name: "Ali",
@@ -259,7 +260,7 @@ describe("Testing application end points: \n", () => {
 /*    Testing routes after creating data    */
 // ======================================== //
 
-fdescribe("Testing application routes functionalty: \n", () => {
+describe("Testing application routes functionalty: \n", () => {
   // Create a user
   it("should get end point /api/register and create user and extract id", async () => {
     const response = await route
@@ -405,13 +406,9 @@ fdescribe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .set("Authorization", `Bearer ${userToken}`)
       .send({ userId: userId, status: schema.order_status });
+    orderTime = response.body.data.created_at;
     expect(response.status).toBe(201);
     expect(response.body.message).toEqual("Order created successfully");
-    expect(response.body.data).toEqual({
-      order_id: schema.order_id,
-      order_status: schema.order_status,
-      user_id: userId,
-    });
   });
 
   it(`should not create order and get end point /api/user/account/orders with status code 500 and error message`, async () => {
@@ -705,6 +702,8 @@ fdescribe("Testing application routes functionalty: \n", () => {
         order_id: schema.order_id,
         order_status: schema.order_status,
         user_id: userId,
+        created_at: orderTime,
+        updated_at: null,
       },
     ]);
   });
@@ -720,6 +719,8 @@ fdescribe("Testing application routes functionalty: \n", () => {
         order_id: schema.order_id,
         order_status: schema.order_status,
         user_id: userId,
+        created_at: orderTime,
+        updated_at: null,
       },
     });
   });
@@ -778,14 +779,11 @@ fdescribe("Testing application routes functionalty: \n", () => {
       .set("Content-type", "application/json")
       .send({ oid: schema.order_id, status: "complete" });
     expect(result.status).toBe(200);
-    expect(result.body).toEqual({
-      message: "Order updated successfully",
-      data: {
-        order_id: schema.order_id,
-        order_status: "complete",
-        user_id: userId,
-      },
-    });
+    expect(result.body.message).toEqual("Order updated successfully");
+    expect(result.body.data.order_id).toEqual(schema.order_id);
+    expect(result.body.data.order_status).toEqual("complete");
+    expect(result.body.data.user_id).toEqual(userId);
+    expect(result.body.data.created_at).toEqual(orderTime);
   });
 
   it("should not update order status to any other status if it's already (complete) with code 500", async () => {

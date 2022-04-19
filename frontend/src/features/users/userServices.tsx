@@ -21,10 +21,9 @@ const login = async (userData: object) => {
 };
 
 // Update user
-const updateUser = async (userId: string, token: string) => {
-  const response = await axios.put(API_URL + "users", {
+const updateUser = async (userData: object, token: string) => {
+  const response = await axios.put(API_URL + "users", userData, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { userId },
   });
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
@@ -33,10 +32,10 @@ const updateUser = async (userId: string, token: string) => {
 };
 
 // Delete user
-const delUser = async (userId: string, token: string) => {
-  const response = await axios.delete(API_URL + userId, {
+const delUser = async (uId: string, token: string) => {
+  const response = await axios.delete(API_URL + uId, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { userId },
+    data: { uId },
   });
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
@@ -49,12 +48,25 @@ const logout = () => {
   localStorage.removeItem("user");
 };
 
-const authService = {
+const addToCart = async (oId: number, orderData: object, token: string) => {
+  const response = await axios.post(
+    API_URL + `user/account/orders/${oId}/products`,
+    orderData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      data: { oId },
+    },
+  );
+  return response.data;
+};
+
+const userService = {
   registration,
   login,
   logout,
   updateUser,
   delUser,
+  addToCart,
 };
 
-export default authService;
+export default userService;

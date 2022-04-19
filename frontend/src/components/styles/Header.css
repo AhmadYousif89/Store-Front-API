@@ -1,0 +1,35 @@
+.header {
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 1rem;
+}
+
+.header ul li a:hover {
+  color: #777;
+}
+
+#logo {
+  margin-right: auto;
+}
+
+.logout {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.logout:hover {
+  color: #777;
+}
+
+.cart-count {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.nav-container {
+  gap: 1rem;
+  align-items: center;
+}

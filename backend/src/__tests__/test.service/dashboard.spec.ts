@@ -5,9 +5,12 @@ import { userModel } from "../../api/models/users";
 import { schema } from "../test.server.routes/server.spec";
 import { dashBoard } from "../../api/__services__/dashboard";
 
-let pId: string | undefined;
-let userId: string | undefined;
+let pId = "";
+let userId = "";
 let time = "";
+let orderTime = "";
+const updateTime = new Date().toISOString();
+
 describe("Testing dashboard Model functions: \n", () => {
   it("should be a method to get all products related to a user", () => {
     expect(dashBoard.getUserProducts).toBeDefined();
@@ -25,23 +28,20 @@ describe("Testing dashboard Model functions: \n", () => {
     it("should create user and a product and extract their ids", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].user_id;
+      userId = user[0].user_id as string;
 
-      await productModel.create({ ...schema });
+      await productModel.create(schema);
       const product = await productModel.index();
-      pId = product[0].p_id;
+      pId = product[0].p_id as string;
     });
 
     it(`should create new order`, async () => {
-      const order = await orderModel.create({
-        user_id: userId,
-        order_status: schema.order_status,
-      });
-      expect(order).toEqual({
-        order_id: schema.order_id,
+      await orderModel.create({
         order_status: schema.order_status,
         user_id: userId,
       });
+      const order = await orderModel.index();
+      orderTime = order[0].created_at as string;
     });
 
     it(`should add product to order`, async () => {
@@ -64,11 +64,14 @@ describe("Testing dashboard Model functions: \n", () => {
       const order = await orderModel.update({
         order_id: schema.order_id,
         order_status: "complete",
+        updated_at: updateTime,
       });
       expect(order).toEqual({
         order_id: schema.order_id,
         order_status: "complete",
         user_id: userId,
+        created_at: orderTime,
+        updated_at: updateTime,
       });
     });
 

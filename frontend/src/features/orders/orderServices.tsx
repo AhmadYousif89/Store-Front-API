@@ -14,10 +14,9 @@ const getUserOrders = async (userId: string, token: string) => {
 };
 
 // Create order
-const createOrder = async (orderData: object, token: string) => {
-  const response = await axios.post(API_URL, {
+const createOrder = async (userId: string, token: string) => {
+  const response = await axios.post(API_URL, userId, {
     headers: { Authorization: `Bearer ${token}` },
-    data: { orderData },
   });
   return response.data;
 };

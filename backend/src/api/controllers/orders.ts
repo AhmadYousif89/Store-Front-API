@@ -11,14 +11,12 @@ const createOrders = async (
   next: NextFunction
 ): Promise<void | Response> => {
   const userId = req.body.userId;
-  const status = req.body.status.toLowerCase();
 
-  if (!userId || !status) {
-    return res.status(400).json({ message: "Please provide correct details before submiting !" });
+  if (!userId) {
+    return res.status(400).json({ message: "user id not found !" });
   }
   try {
     const data = await orderModel.create({
-      order_status: status,
       user_id: userId,
     });
     res.status(201).json({
@@ -67,7 +65,7 @@ const getOrderById = async (
   const oid = parseInt(req.params.id);
 
   if (!oid || oid <= 0) {
-    return res.status(400).json({ message: "Please enter a valid order id !" });
+    return res.status(400).json({ message: "order id not valid !" });
   }
   try {
     const data = await orderModel.show({ order_id: oid });
@@ -96,14 +94,13 @@ const updateOrder = async (
   next: NextFunction
 ): Promise<void | Response> => {
   const oid = parseInt(req.body.oid);
-  const status = req.body.status.toLowerCase();
+  const status = req.body.status;
 
   if (!oid || oid <= 0 || !status) {
-    return res.status(400).json({ message: "Please provide a valid order status and id !" });
+    return res.status(400).json({ message: "order status and order id are required !" });
   }
   try {
-    const time = new Date().toISOString();
-    const data = await orderModel.update({ order_id: oid, order_status: status, updated_at: time });
+    const data = await orderModel.update({ order_id: oid, order_status: status });
     if (!data) {
       return res.status(404).json({
         message: "Update failed !",
@@ -165,7 +162,7 @@ const getUserOrders = async (
   try {
     const data = await orderModel.getUserOrders({ user_id: uid });
     if (!data.length) {
-      return res.status(404).json({ message: `No Orders Were Found` });
+      return res.status(404).json({ message: `No orders found` });
     }
     res.status(200).json({
       message: `orders generated successfully`,

@@ -5,9 +5,10 @@ import { orderModel } from "../../api/models/orders";
 import { userModel } from "../../api/models/users";
 import pgDB from "../../database";
 
-let pId: string | undefined;
-let userId: string | undefined;
+let pId = "";
+let userId = "";
 let time = "";
+
 describe("OrderedProducts Model functions: \n", () => {
   it("should be a method to get all data", () => {
     expect(OPT.index).toBeDefined();
@@ -33,25 +34,20 @@ describe("OrderedProducts Model functions: \n", () => {
     it("should create user and extract its id", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].user_id;
+      userId = user[0].user_id as string;
     });
 
     it("should create product and extract its id", async () => {
       await productModel.create(schema);
       const product = await productModel.index();
-      pId = product[0].p_id;
+      pId = product[0].p_id as string;
       console.log("product added to order");
     });
 
     it(`should create new order`, async () => {
-      const order = await orderModel.create({
+      await orderModel.create({
         user_id: userId,
         order_status: schema.order_status,
-      });
-      expect(order).toEqual({
-        order_id: schema.order_id,
-        order_status: schema.order_status,
-        user_id: userId,
       });
     });
 

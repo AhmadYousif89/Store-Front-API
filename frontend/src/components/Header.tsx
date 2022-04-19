@@ -1,10 +1,6 @@
+import "./styles/Header.css";
+import * as FaIcons from "react-icons/fa";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import {
-  FaSignInAlt,
-  FaSignOutAlt,
-  FaUser,
-  FaCartArrowDown,
-} from "react-icons/fa";
 import { logout, reset as userReset } from "../features/users/userSlice";
 import {
   reset as orderReset,
@@ -12,6 +8,7 @@ import {
 } from "../features/orders/orderSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Sidebar from "./Sidebar";
 
 function Header() {
   const navigate = useNavigate();
@@ -29,52 +26,57 @@ function Header() {
 
   return (
     <header className="flex header">
-      <div className="logo">
+      <div id="logo">
         <Link to="/">TechStore</Link>
       </div>
-      <ul className="flex">
+      <ul>
         {user ? (
           user.jwt !== undefined ? (
             <>
-              <li>
-                <Link to={user ? `dashboard/${user.data.name}` : "dashboard"}>
-                  <div>
-                    <span className="cart-count">0</span> <FaCartArrowDown />
+              <ul className="flex nav-container">
+                <li>
+                  <Link to={user ? `dashboard/${user.data.name}` : "dashboard"}>
+                    <div className="cart-count">
+                      <FaIcons.FaCartArrowDown /> <span>0</span>
+                    </div>
+                  </Link>
+                </li>
+                <li>
+                  <div className="logout" onClick={handleLogOut}>
+                    <FaIcons.FaSignOutAlt /> Logout
                   </div>
-                </Link>
-              </li>
-              <li>
-                <div className="logout" onClick={handleLogOut}>
-                  <FaSignOutAlt /> Logout
-                </div>
-              </li>
+                </li>
+                <Sidebar />
+              </ul>
             </>
           ) : (
             <>
               <li>
                 <Link to="/register">
-                  <FaUser /> Register
+                  <FaIcons.FaUser /> Register
                 </Link>
               </li>
               <li>
                 <Link to="/login">
-                  <FaSignInAlt /> Login
+                  <FaIcons.FaSignInAlt /> Login
                 </Link>
               </li>
             </>
           )
         ) : (
           <>
-            <li>
-              <Link to="/register">
-                <FaUser /> Register
-              </Link>
-            </li>
-            <li>
-              <Link to="/login">
-                <FaSignInAlt /> Login
-              </Link>
-            </li>
+            <ul className="flex nav-container">
+              <li>
+                <Link className="icon" to="/register">
+                  <FaIcons.FaUser /> Register
+                </Link>
+              </li>
+              <li>
+                <Link className="icon" to="/login">
+                  <FaIcons.FaSignInAlt /> Login
+                </Link>
+              </li>
+            </ul>
           </>
         )}
       </ul>

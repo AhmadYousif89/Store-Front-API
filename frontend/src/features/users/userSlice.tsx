@@ -42,10 +42,10 @@ const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
 // Update user
 const update = createAsyncThunk(
   `user/update`,
-  async (user: string, thunkAPI: RootStateOrAny) => {
+  async (userData: object, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
-      return await userService.updateUser(user, token);
+      return await userService.updateUser(userData, token);
     } catch (err) {
       const message =
         ((err as any).response &&

@@ -3,7 +3,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import OrderItem from "../components/dashboard/OrderItem";
+import OrderItem from "../components/dashboard/OrderItems";
 import Spinner from "../components/Spinner";
 import { getOrders } from "../features/orders/orderSlice";
 
@@ -19,6 +19,7 @@ function Orders() {
   useEffect(() => {
     if (!user) {
       navigate("/login");
+      toast.error("Access denied");
     }
     if (isError) {
       toast.error(message);

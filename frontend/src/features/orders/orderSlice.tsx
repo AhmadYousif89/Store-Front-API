@@ -9,10 +9,10 @@ let token;
 // Create a order
 const createOrder = createAsyncThunk(
   "orders/create",
-  async (order: object, thunkAPI: RootStateOrAny) => {
+  async (userId: string, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.createOrder(order, token);
+      return await orderService.createOrder(userId, token);
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -126,21 +126,21 @@ const orderSlice = createSlice({
       })
       .addCase(removeOrders.fulfilled, (state) => {
         state.orders = [];
+      })
+      .addCase(createOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        (state.orders as any[]).push(action.payload);
+        state.message = action.payload.message as string;
+      })
+      .addCase(createOrder.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload as string;
       });
-    // .addCase(createOrder.pending, (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase(createOrder.fulfilled, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isSuccess = true;
-    //   (state.orders as any[]).push(action.payload);
-    //   state.message = action.payload.message as string;
-    // })
-    // .addCase(createOrder.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   state.isError = true;
-    //   state.message = action.payload as string;
-    // })
     // .addCase(updateOrder.pending, (state) => {
     //   state.isLoading = true;
     // })

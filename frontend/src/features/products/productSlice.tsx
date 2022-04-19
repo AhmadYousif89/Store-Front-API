@@ -36,11 +36,13 @@ const productSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.isSuccess = true;
         state.products = action.payload.data;
         state.message = action.payload.message;
       })
       .addCase(getProducts.rejected, (state, action) => {
+        state.isLoading = false;
         state.isError = true;
         state.products = [];
         state.message = action.payload as string;

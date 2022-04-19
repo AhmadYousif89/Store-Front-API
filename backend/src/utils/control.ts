@@ -16,7 +16,7 @@ type Orders = {
   order_status?: string;
   user_id?: string;
   created_at?: string;
-  updated_at?: string;
+  updated_at?: string | null;
 };
 type Products = {
   p_id?: string;

@@ -16,7 +16,7 @@ const addProductToOrder = async (
 
   // validating values before submitting.
   if (!pId || !quantity || quantity <= 0 || isNaN(oId)) {
-    return res.status(400).json({ message: "Please provide correct details before submiting !" });
+    return res.status(400).json({ message: "Please provide correct details !" });
   }
   try {
     const data = await OPT.addProducts({

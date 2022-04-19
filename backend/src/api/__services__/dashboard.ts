@@ -11,7 +11,7 @@ class Dashboard {
     try {
       conct = await pgDB.connect();
       const sql = `
-      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, ordered_products.created_at FROM orders 
       JOIN ordered_products 
       ON orders.order_id = ordered_products.order_id 
       WHERE orders.user_id = ($1)`;
@@ -42,7 +42,7 @@ class Dashboard {
     try {
       conct = await pgDB.connect();
       const sql = `
-        SELECT op_id, order_status, product_id, quantity, created_at FROM orders
+        SELECT op_id, order_status, product_id, quantity, ordered_products.created_at FROM orders
         JOIN ordered_products
         ON orders.order_id = ordered_products.order_id 
         WHERE orders.user_id = ($1) AND orders.order_id = ($2)`;
@@ -75,7 +75,7 @@ class Dashboard {
     try {
       conct = await pgDB.connect();
       const sql = `
-      SELECT op_id, orders.order_id, order_status, product_id, quantity, created_at FROM orders 
+      SELECT op_id, orders.order_id, order_status, product_id, quantity, ordered_products.created_at FROM orders 
       JOIN ordered_products 
       ON orders.order_id = ordered_products.order_id 
       WHERE orders.user_id = ($1) AND orders.order_status = 'complete' 

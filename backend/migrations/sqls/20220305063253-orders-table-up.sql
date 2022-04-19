@@ -1,10 +1,10 @@
 /* Create orders */
-DROP TYPE IF EXISTS status;
-CREATE TYPE status AS ENUM ('new','active','complete');
+-- DROP TYPE IF EXISTS status;
+-- CREATE TYPE status AS ENUM ('new','active','complete');
 CREATE TABLE IF NOT EXISTS orders (
     order_id SERIAL PRIMARY KEY,
-    order_status status NOT NULL,
+    order_status VARCHAR(100) DEFAULT 'New',
     user_id uuid REFERENCES users(user_id),
     created_at TIMESTAMPTZ DEFAULT NOW (),
-    updated_at VARCHAR(100)
+    updated_at TIMESTAMPTZ 
 );

@@ -10,8 +10,8 @@ function OrderForm() {
           </Link>
         </li>
         <li>
-          <Link to={"/me/orders/add"}>
-            <div>Create an Order</div>
+          <Link to={"/me/orders/cart"}>
+            <div>Shopping Cart</div>
           </Link>
         </li>
         <li>
