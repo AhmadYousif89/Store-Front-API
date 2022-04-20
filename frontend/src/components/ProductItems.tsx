@@ -23,8 +23,12 @@ function ProductItems(props: any) {
   }, [orders, isError, message, user, dispatch]);
 
   function handleAddToCart() {
-    dispatch(createOrder({ userId: user.data.user_id }));
-    toast.success("order created");
+    try {
+      dispatch(createOrder({ userId: user.data.user_id }));
+      toast.success("order created");
+    } catch (error) {
+      toast.success(error as string);
+    }
   }
 
   if (isLoading) return <Spinner />;

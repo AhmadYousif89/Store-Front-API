@@ -116,6 +116,7 @@ img {
 }
 
 .go_back {
+  place-self: center;
   margin-top: 3rem;
   display: flex;
   align-items: center;

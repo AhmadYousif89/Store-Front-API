@@ -28,11 +28,10 @@ const createOrder = createAsyncThunk(
 // Get all orders
 const getOrders = createAsyncThunk(
   "orders/getAll",
-  async (_, thunkAPI: RootStateOrAny) => {
+  async (userId: string, thunkAPI: RootStateOrAny) => {
     try {
       token = thunkAPI.getState().auth.user.jwt.token;
-      const user_id = thunkAPI.getState().auth.user.data.user_id;
-      return await orderService.getUserOrders(user_id, token);
+      return await orderService.getUserOrders(userId, token);
     } catch (err) {
       const message =
         ((err as any).response &&
