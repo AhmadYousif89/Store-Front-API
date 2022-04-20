@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OrderItem from "../components/OrderItems";
 import Spinner from "../components/Spinner";
-import { getOrders } from "../features/orders/orderSlice";
+import { getOrders } from "../redux/features/orders/orderSlice";
 import "./styles/Orders.css";
 
 function Orders() {

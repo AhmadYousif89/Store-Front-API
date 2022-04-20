@@ -1,5 +1,5 @@
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { login, reset } from "../features/users/userSlice";
+import { login, reset } from "../redux/features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";

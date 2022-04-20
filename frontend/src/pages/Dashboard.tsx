@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import { getProducts } from "../features/products/productSlice";
+import { getProducts } from "../redux/features/products/productSlice";
 import ProductItems from "../components/ProductItems";
 import "./styles/Dashboard.css";
 

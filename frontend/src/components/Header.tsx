@@ -1,11 +1,11 @@
 import "./styles/Header.css";
 import * as FaIcons from "react-icons/fa";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { logout, reset as userReset } from "../features/users/userSlice";
+import { logout, reset as userReset } from "../redux/features/users/userSlice";
 import {
   reset as orderReset,
   removeOrders,
-} from "../features/orders/orderSlice";
+} from "../redux/features/orders/orderSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";

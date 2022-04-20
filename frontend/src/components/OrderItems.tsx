@@ -2,7 +2,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaShoppingBasket } from "react-icons/fa";
 import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import { toast } from "react-toastify";
-import { delOrder } from "../features/orders/orderSlice";
+import { delOrder } from "../redux/features/orders/orderSlice";
 import Spinner from "./Spinner";
 import "./styles/OrderItems.css";
 

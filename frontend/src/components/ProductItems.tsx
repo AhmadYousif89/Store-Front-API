@@ -3,7 +3,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createOrder, reset } from "../features/orders/orderSlice";
+import { createOrder, reset } from "../redux/features/orders/orderSlice";
 import Spinner from "./Spinner";
 import "./styles/ProductItem.css";
 
