@@ -16,7 +16,6 @@
 .card_details {
   display: flex;
   flex-direction: column;
-  align-items: start;
   margin-right: 1rem;
   text-align: left;
   max-width: 250px;
@@ -41,6 +40,8 @@
 
 .btn-card {
   display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   margin-top: 1rem;
   padding: 0.5rem;
   border: 1px solid #000;
@@ -48,7 +49,6 @@
   background: #000;
   color: #fff;
   cursor: pointer;
-  align-items: center;
   font-size: 0.7rem;
 }
 .btn-card:hover {

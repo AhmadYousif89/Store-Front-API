@@ -51,16 +51,18 @@ function Header() {
             </>
           ) : (
             <>
-              <li>
-                <Link to="/register">
-                  <FaIcons.FaUser /> Register
-                </Link>
-              </li>
-              <li>
-                <Link to="/login">
-                  <FaIcons.FaSignInAlt /> Login
-                </Link>
-              </li>
+              <ul className="nav-container">
+                <li>
+                  <Link to="/register">
+                    <FaIcons.FaUser /> Register
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/login">
+                    <FaIcons.FaSignInAlt /> Login
+                  </Link>
+                </li>
+              </ul>
             </>
           )
         ) : (

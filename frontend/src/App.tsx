@@ -4,12 +4,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./components/NotFound";
 import Header from "./components/Header";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Products";
 import Register from "./pages/Register";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import "./App.css";
+import Footer from "./components/Footer";
 
 function App() {
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
@@ -37,6 +38,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
+        <Footer />
       </BR>
     </>
   );

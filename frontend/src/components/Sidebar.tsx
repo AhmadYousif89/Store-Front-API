@@ -44,12 +44,12 @@ function Sidebar() {
           </li>
           <li>
             <Link className="sidebar-link" to={"me/orders/history"}>
-              <FaIcons.FaHistory /> Order History
+              <FaIcons.FaHistory /> History
             </Link>
           </li>
           <li>
             <Link className="sidebar-link" to={"me/orders/cart"}>
-              <FaIcons.FaShoppingCart /> Shopping Cart
+              <FaIcons.FaShoppingCart /> Cart
             </Link>
           </li>
           <li>

@@ -7,10 +7,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  height: 100vh;
-}
-
 a {
   text-decoration: none;
   color: #000;
@@ -38,9 +34,13 @@ img {
   max-width: 100%;
 }
 
+body {
+  position: relative;
+  height: 100vh;
+}
+
 .flex {
   display: flex;
-  justify-content: center;
 }
 
 .grid {
@@ -158,6 +158,10 @@ img {
 @media (max-width: 600px) {
   .form {
     width: 90%;
+  }
+
+  #img-card {
+    width: 100%;
   }
 
   .heading h1 {

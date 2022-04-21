@@ -5,14 +5,14 @@ import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { getProducts } from "../redux/features/products/productSlice";
 import ProductItems from "../components/ProductItems";
-import "./styles/Dashboard.css";
+import "./styles/Products.css";
 
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
-  const { products, isSuccess, isLoading, isError, message } = useSelector(
+  const { products, isLoading, isError, message } = useSelector(
     (state: RootStateOrAny) => state.products,
   );
 
@@ -22,9 +22,8 @@ function Dashboard() {
       toast.error("Access denied");
     }
     if (isError) toast.error(message);
-    if (isSuccess) toast.success(message);
     dispatch(getProducts());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, message, navigate, dispatch]);
 
   if (isLoading) return <Spinner />;
 
