@@ -164,10 +164,7 @@ const getUserOrders = async (
     if (!data.length) {
       return res.status(404).json({ message: `No orders found` });
     }
-    res.status(200).json({
-      message: `orders generated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

@@ -2,10 +2,7 @@ import "./styles/Header.css";
 import * as FaIcons from "react-icons/fa";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { logout, reset as userReset } from "../redux/features/users/userSlice";
-import {
-  reset as orderReset,
-  removeOrders,
-} from "../redux/features/orders/orderSlice";
+import { reset as orderReset } from "../redux/features/orders/orderSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
@@ -20,7 +17,6 @@ function Header() {
     dispatch(logout());
     dispatch(userReset());
     dispatch(orderReset());
-    dispatch(removeOrders());
     navigate("/");
   };
 

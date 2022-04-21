@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
 import orderService from "./orderServices";
 
-// Get user orders from localStorage
-const orders = JSON.parse(localStorage.getItem("orders") as string);
 let token;
 
 // Create a order
@@ -82,13 +80,8 @@ const delOrder = createAsyncThunk(
   },
 );
 
-// Remove user orders
-const removeOrders = createAsyncThunk("orders/remove", () => {
-  orderService.removeOrders();
-});
-
 const initialState = {
-  orders: orders ? orders : [],
+  orders: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -99,12 +92,7 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = false;
-      state.message = "";
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -114,7 +102,7 @@ const orderSlice = createSlice({
       .addCase(getOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.orders = action.payload.data;
+        state.orders = action.payload;
         state.message = action.payload.message;
       })
       .addCase(getOrders.rejected, (state, action) => {
@@ -123,9 +111,7 @@ const orderSlice = createSlice({
         state.orders = [];
         state.message = action.payload as string;
       })
-      .addCase(removeOrders.fulfilled, (state) => {
-        state.orders = [];
-      })
+
       .addCase(createOrder.pending, (state) => {
         state.isLoading = true;
       })
@@ -138,22 +124,9 @@ const orderSlice = createSlice({
       .addCase(createOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.orders = [];
         state.message = action.payload as string;
       })
-      // .addCase(updateOrder.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(updateOrder.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = true;
-      //   state.orders = action.payload;
-      //   state.message = action.payload.message as string;
-      // })
-      // .addCase(updateOrder.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isError = true;
-      //   state.message = action.payload as string;
-      // })
       .addCase(delOrder.pending, (state) => {
         state.isLoading = true;
       })
@@ -161,11 +134,12 @@ const orderSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.orders = action.payload;
-        state.message = action.payload.message as string;
+        state.message = action.payload.message;
       })
       .addCase(delOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.orders = [];
         state.message = action.payload as string;
       });
   },
@@ -173,5 +147,5 @@ const orderSlice = createSlice({
 
 const { reset } = orderSlice.actions;
 
-export { reset, getOrders, createOrder, updateOrder, delOrder, removeOrders };
+export { reset, getOrders, createOrder, updateOrder, delOrder };
 export default orderSlice.reducer;

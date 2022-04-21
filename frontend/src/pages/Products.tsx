@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 import { getProducts } from "../redux/features/products/productSlice";
-import ProductItems from "../components/ProductItems";
+import { FaShoppingCart } from "react-icons/fa";
 import "./styles/Products.css";
+import { createOrder } from "../redux/features/orders/orderSlice";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -15,6 +16,11 @@ function Dashboard() {
   const { products, isLoading, isError, message } = useSelector(
     (state: RootStateOrAny) => state.products,
   );
+  const {
+    isError: orderError,
+    isSuccess: orderSuccess,
+    message: orderMsg,
+  } = useSelector((state: RootStateOrAny) => state.orders);
 
   useEffect(() => {
     if (!user) {
@@ -22,8 +28,23 @@ function Dashboard() {
       toast.error("Access denied");
     }
     if (isError) toast.error(message);
+    if (orderError) toast.error(orderMsg);
+    if (orderSuccess) toast.success(orderMsg);
     dispatch(getProducts());
-  }, [user, isError, message, navigate, dispatch]);
+  }, [
+    user,
+    isError,
+    message,
+    navigate,
+    dispatch,
+    orderError,
+    orderMsg,
+    orderSuccess,
+  ]);
+
+  function handleAddToCart() {
+    dispatch(createOrder({ userId: user.data.user_id }));
+  }
 
   if (isLoading) return <Spinner />;
 
@@ -36,7 +57,24 @@ function Dashboard() {
         <h1>New Arrivals</h1>
       </section>
       <section className="products">
-        <ProductItems products={products} />
+        {products.map((product: any) => (
+          <ul className="product-card" key={product.p_id}>
+            <div id="img-card">
+              <img src={product.image_url} alt={product.p_name} />
+            </div>
+            <div className="card_details">
+              <p id="brand">{product.brand}</p>
+              <h5>{product.p_name}</h5>
+              <p>{product.description}</p>
+              <span className="price-tag">
+                $ <p id="price">{product.price}</p>
+              </span>
+              <button className="btn-card" onClick={handleAddToCart}>
+                <FaShoppingCart /> Add to cart
+              </button>
+            </div>
+          </ul>
+        ))}
       </section>
     </>
   );

@@ -15,9 +15,6 @@ const getUserOrders = async (userId: string, token: string) => {
   const response = await axios.get(`/api/user/${userId}/account/orders`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (response.data) {
-    localStorage.setItem("orders", JSON.stringify(response.data));
-  }
   return response.data;
 };
 
@@ -39,17 +36,11 @@ const delOrder = async (orderId: number, token: string) => {
   return response.data;
 };
 
-// Remove user orders
-const removeOrders = () => {
-  localStorage.removeItem("orders");
-};
-
 const orderService = {
   getUserOrders,
   createOrder,
   updateOrder,
   delOrder,
-  removeOrders,
 };
 
 export default orderService;
