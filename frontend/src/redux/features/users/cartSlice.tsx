@@ -1,20 +1,24 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { RootStateOrAny } from "react-redux";
-import userService from "./userServices";
 
 const user = JSON.parse(localStorage.getItem("user") as string);
 
 const addToCart = createAsyncThunk(
-  "cart/add",
+  "cart/add-to-cart",
   async (orderData: object, thunkAPI: RootStateOrAny) => {
     try {
       const token = user.jwt.token;
       let order_id;
-      return await userService.addToCart(
-        order_id as unknown as number,
+      const response = await axios.post(
+        `/api/user/account/orders/${order_id}/products`,
         orderData,
-        token,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          data: { order_id },
+        },
       );
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&

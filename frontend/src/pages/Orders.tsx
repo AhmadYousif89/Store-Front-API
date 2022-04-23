@@ -5,7 +5,11 @@ import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
-import { delOrder, getOrders } from "../redux/features/orders/orderSlice";
+import {
+  delOrder,
+  getUserOrders,
+  reset,
+} from "../redux/features/orders/orderSlice";
 import "./styles/Orders.css";
 
 function Orders() {
@@ -22,15 +26,17 @@ function Orders() {
       navigate(`/login`);
       toast.error("Access denied");
     }
-    dispatch(getOrders(user.data.user_id));
-    if (isSuccess) toast.success(message);
-    if (isError) toast.error(message);
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+    dispatch(getUserOrders(user.data.user_id));
+  }, [user, navigate, dispatch]);
+
+  // useEffect(() => {
+  //   if (isError) toast.info(message);
+  //   if (isSuccess) toast.success(message);
+  //   dispatch(reset());
+  // }, [dispatch, isError, isSuccess, message]);
 
   const handleOrderDelete = (order_id: number) => {
     dispatch(delOrder(order_id));
-    if (isSuccess) toast.success(message);
-    if (isError) toast.error(message);
   };
 
   if (isLoading) return <Spinner />;

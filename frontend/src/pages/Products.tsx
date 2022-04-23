@@ -6,21 +6,22 @@ import Spinner from "../components/Spinner";
 import { getProducts } from "../redux/features/products/productSlice";
 import { FaShoppingCart } from "react-icons/fa";
 import "./styles/Products.css";
-import { createOrder } from "../redux/features/orders/orderSlice";
+import { createOrder, reset } from "../redux/features/orders/orderSlice";
 
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
+  const {
+    orders,
+    message: orderMsg,
+    isError: orderError,
+    isSuccess: orderSuccess,
+  } = useSelector((state: RootStateOrAny) => state.orders);
   const { products, isLoading, isError, message } = useSelector(
     (state: RootStateOrAny) => state.products,
   );
-  const {
-    isError: orderError,
-    isSuccess: orderSuccess,
-    message: orderMsg,
-  } = useSelector((state: RootStateOrAny) => state.orders);
 
   useEffect(() => {
     if (!user) {
@@ -28,19 +29,15 @@ function Dashboard() {
       toast.error("Access denied");
     }
     if (isError) toast.error(message);
-    if (orderError) toast.error(orderMsg);
-    if (orderSuccess) toast.success(orderMsg);
     dispatch(getProducts());
-  }, [
-    user,
-    isError,
-    message,
-    navigate,
-    dispatch,
-    orderError,
-    orderMsg,
-    orderSuccess,
-  ]);
+  }, [user, isError, message, navigate, dispatch]);
+
+  // useEffect(() => {
+  //   if (orders.length === 0) return;
+  //   if (orderError) toast.error(orderMsg);
+  //   if (orderSuccess) toast.success(orderMsg);
+  //   dispatch(reset());
+  // }, [orderError, orderMsg, dispatch, orderSuccess, orders.length]);
 
   function handleAddToCart() {
     dispatch(createOrder({ userId: user.data.user_id }));

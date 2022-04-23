@@ -1,17 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
-import userService from "./userServices";
+import axios from "axios";
 
+// Base API URL
+const API_URL = "/api/";
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem("user") as string);
-let token = "";
 
 // Register a user
 const register = createAsyncThunk(
   "user/register",
   async (user: object, thunkAPI) => {
     try {
-      return await userService.registration(user);
+      const response = await axios.post(API_URL + "register", user);
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -27,7 +32,11 @@ const register = createAsyncThunk(
 // Login user
 const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
   try {
-    return await userService.login(user);
+    const response = await axios.post(API_URL + "login", user);
+    if (response.data) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+    return response.data;
   } catch (err) {
     const message =
       ((err as any).response &&
@@ -41,11 +50,17 @@ const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
 
 // Update user
 const update = createAsyncThunk(
-  `user/update`,
-  async (userData: object, thunkAPI: RootStateOrAny) => {
+  `user/account/update`,
+  async (user: object, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await userService.updateUser(userData, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.put(API_URL + "users", user, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -60,11 +75,18 @@ const update = createAsyncThunk(
 
 // Delete user
 const delUser = createAsyncThunk(
-  `user/delete`,
-  async (user: string, thunkAPI: RootStateOrAny) => {
+  `user/account/delete`,
+  async (userId: string, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await userService.delUser(user, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.delete(API_URL + userId, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { userId },
+      });
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -79,10 +101,9 @@ const delUser = createAsyncThunk(
 
 // Logout user
 const logout = createAsyncThunk("user/logout", () => {
-  userService.logout();
+  localStorage.removeItem("user");
 });
 
-// Setting user's initial state, The initial state that should be used when the reducer is called the first time
 const initialState = {
   user: user ? user : null,
   isError: false,

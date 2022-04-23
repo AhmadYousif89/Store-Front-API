@@ -1,16 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
-import orderService from "./orderServices";
+import axios from "axios";
 
-let token;
+const API_URL = "/api/user/account/orders/";
 
 // Create a order
 const createOrder = createAsyncThunk(
   "orders/create",
   async (userId: object, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.createOrder(userId, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.post(API_URL, userId, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -24,12 +27,15 @@ const createOrder = createAsyncThunk(
 );
 
 // Get all orders
-const getOrders = createAsyncThunk(
+const getUserOrders = createAsyncThunk(
   "orders/getAll",
   async (userId: string, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.getUserOrders(userId, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.get(`/api/user/${userId}/account/orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -47,8 +53,12 @@ const updateOrder = createAsyncThunk(
   "orders/update",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.updateOrder(orderId, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.put(API_URL, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { orderId },
+      });
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -66,8 +76,12 @@ const delOrder = createAsyncThunk(
   "orders/delete",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      token = thunkAPI.getState().auth.user.jwt.token;
-      return await orderService.delOrder(orderId, token);
+      const token = thunkAPI.getState().auth.user.jwt.token;
+      const response = await axios.delete(API_URL + orderId, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: orderId,
+      });
+      return response.data;
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -96,16 +110,16 @@ const orderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getOrders.pending, (state) => {
+      .addCase(getUserOrders.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getOrders.fulfilled, (state, action) => {
+      .addCase(getUserOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.orders = action.payload;
+        state.orders = action.payload.data;
         state.message = action.payload.message;
       })
-      .addCase(getOrders.rejected, (state, action) => {
+      .addCase(getUserOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.orders = [];
@@ -147,5 +161,5 @@ const orderSlice = createSlice({
 
 const { reset } = orderSlice.actions;
 
-export { reset, getOrders, createOrder, updateOrder, delOrder };
+export { reset, getUserOrders, createOrder, updateOrder, delOrder };
 export default orderSlice.reducer;
