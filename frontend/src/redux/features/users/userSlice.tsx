@@ -84,7 +84,7 @@ const delUser = createAsyncThunk(
         data: { userId },
       });
       if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.removeItem("user");
       }
       return response.data;
     } catch (err) {
@@ -100,9 +100,25 @@ const delUser = createAsyncThunk(
 );
 
 // Logout user
-const logout = createAsyncThunk("user/logout", () => {
-  localStorage.removeItem("user");
-});
+const logout = createAsyncThunk(
+  `user/logout`,
+  async (token: string, thunkAPI: RootStateOrAny) => {
+    try {
+      await axios.post(API_URL + "logout", token, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.removeItem("user");
+    } catch (err) {
+      const message =
+        ((err as any).response &&
+          (err as any).response.data &&
+          (err as any).response.data.message) ||
+        (err as any).message ||
+        (err as any).toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
 
 const initialState = {
   user: user ? user : null,
@@ -155,8 +171,12 @@ const userSlice = createSlice({
         state.user = null;
         state.message = action.payload as string;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, (state, action) => {
         state.user = null;
+        state.message = action.payload;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.message = action.payload as string;
       });
   },
 });

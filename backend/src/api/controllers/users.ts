@@ -6,7 +6,7 @@ import { userModel } from "../models/users";
 let error;
 // method => POST /register
 // desc   => Create new user data.
-const createUser = async (
+const register = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -35,11 +35,7 @@ const createUser = async (
 
 // method => POST /login
 // desc   => Authenticate user data.
-const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
+const login = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   const { email, password } = req.body;
   const { SECRET_TOKEN } = process.env;
   const checkEmail = validateEmail(email);
@@ -57,7 +53,7 @@ const loginUser = async (
     // creating token based on user credentials and my secret token.
     const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
     // storing user token in database with current time.
-    const userToken = await userModel.userToken({
+    const userToken = await userModel.addUserToken({
       user_id: user.user_id as string,
       token: token,
     });
@@ -66,6 +62,33 @@ const loginUser = async (
       data: { user_id: user.user_id, name: user.name },
       jwt: userToken,
     });
+  } catch (err) {
+    error = {
+      message: `${(err as Error).message}`,
+    };
+    next(error);
+  }
+};
+
+// method => DELETE /logout
+// desc => Delete user token from db
+const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  const userToken = req.body.token;
+
+  try {
+    const delTokenMsg = new JWT.TokenExpiredError("user logged out", new Date());
+    const token = await userModel.delUserToken({ token: userToken });
+    if (!token) {
+      return res.status(404).json({
+        message: "Logout failed !",
+        data: `user token doesn't match`,
+      });
+    }
+    res.status(200).json(delTokenMsg);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -185,4 +208,4 @@ const deleteUser = async (
   }
 };
 
-export { createUser, loginUser, getUsers, getUserById, updateUser, deleteUser };
+export { register, login, logout, getUsers, getUserById, updateUser, deleteUser };

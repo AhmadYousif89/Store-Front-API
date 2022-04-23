@@ -1,8 +1,7 @@
 import "./styles/Header.css";
 import * as FaIcons from "react-icons/fa";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { logout, reset as userReset } from "../redux/features/users/userSlice";
-import { reset as orderReset } from "../redux/features/orders/orderSlice";
+import { logout, reset } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
@@ -10,13 +9,12 @@ import Sidebar from "./Sidebar";
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
+  const { user, message } = useSelector((state: RootStateOrAny) => state.auth);
 
   const handleLogOut = () => {
-    toast.info("logging out");
-    dispatch(logout());
-    dispatch(userReset());
-    dispatch(orderReset());
+    dispatch(logout(user.jwt.token));
+    toast.info(message);
+    dispatch(reset());
     navigate("/");
   };
 
