@@ -7,11 +7,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-body.dark {
-  background-color: #333;
-  color: #fff;
-}
-
 a {
   text-decoration: none;
   color: #000;
@@ -44,12 +39,9 @@ body {
   height: 100vh;
 }
 
-.flex {
-  display: flex;
-}
-
-.grid {
-  display: grid;
+body #dark {
+  background-color: rgb(37, 35, 35);
+  color: #e1e1e1;
 }
 
 .heading {
@@ -74,7 +66,7 @@ body {
   border-bottom: 1px solid #ccc;
   padding: 1rem;
   border-radius: 5px;
-  box-shadow: 20px 0px 20px rgba(255, 255, 255, 0.5),
+  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5),
     2px 2px 10px rgba(83, 79, 79, 0.5);
 }
 

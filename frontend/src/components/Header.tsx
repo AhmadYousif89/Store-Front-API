@@ -5,13 +5,15 @@ import * as FaIcons from "react-icons/fa";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import "./styles/Header.css";
-import { useState } from "react";
+import { useContext } from "react";
+import { ThemeContext } from "../App";
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
-  const [mood, setMood] = useState(false);
+
+  const appTheme = useContext(ThemeContext);
 
   const handleLogOut = () => {
     dispatch(logout(user.jwt));
@@ -24,12 +26,12 @@ function Header() {
       <div id="logo">
         <Link to="/">TechStore</Link>
       </div>
-      <div className="mood-toggle">
+      <div className="toggle-mode">
         <input
           type="checkbox"
           name="checkbox"
           id="checkbox"
-          onChange={() => setMood(!mood)}
+          onChange={() => appTheme?.toggleTheme()}
         />
         <label htmlFor="checkbox" className="label">
           <FaIcons.FaMoon className="moon" />
