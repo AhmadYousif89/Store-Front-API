@@ -1,20 +1,21 @@
-import "./styles/Header.css";
-import * as FaIcons from "react-icons/fa";
-import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
-import { logout, reset } from "../redux/features/users/userSlice";
+import { logout } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import * as FaIcons from "react-icons/fa";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
+import "./styles/Header.css";
+import { useState } from "react";
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, message } = useSelector((state: RootStateOrAny) => state.auth);
+  const { user } = useSelector((state: RootStateOrAny) => state.auth);
+  const [mood, setMood] = useState(false);
 
   const handleLogOut = () => {
-    dispatch(logout(user.jwt.token));
-    toast.info(message);
-    dispatch(reset());
+    dispatch(logout(user.jwt));
+    toast.info("user logged out");
     navigate("/");
   };
 
@@ -23,13 +24,26 @@ function Header() {
       <div id="logo">
         <Link to="/">TechStore</Link>
       </div>
+      <div className="mood-toggle">
+        <input
+          type="checkbox"
+          name="checkbox"
+          id="checkbox"
+          onChange={() => setMood(!mood)}
+        />
+        <label htmlFor="checkbox" className="label">
+          <FaIcons.FaMoon className="moon" />
+          <FaIcons.FaSun className="sun" />
+          <div className="ball" />
+        </label>
+      </div>
       <ul>
         {user ? (
           user.jwt !== undefined ? (
             <>
               <ul className="nav-container">
                 <li>
-                  <Link to={user ? `dashboard/${user.data.name}` : "dashboard"}>
+                  <Link to="dashboard">
                     <div className="cart-count">
                       <FaIcons.FaCartArrowDown /> <span>0</span>
                     </div>
@@ -43,22 +57,7 @@ function Header() {
                 <Sidebar />
               </ul>
             </>
-          ) : (
-            <>
-              <ul className="nav-container">
-                <li>
-                  <Link to="/register">
-                    <FaIcons.FaUser /> Register
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/login">
-                    <FaIcons.FaSignInAlt /> Login
-                  </Link>
-                </li>
-              </ul>
-            </>
-          )
+          ) : null
         ) : (
           <>
             <ul className="nav-container">

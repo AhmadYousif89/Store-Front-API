@@ -14,8 +14,8 @@ const routes = Router();
 
 routes.route("/users").get(authentication, getUsers).put(authentication, updateUser);
 routes.route("/users/:id").get(getUserById).delete(authentication, deleteUser);
-routes.post("/login", login);
 routes.post("/register", register);
-routes.post("/logout", authentication, logout);
+routes.post("/login", login);
+routes.delete("/logout/:token", logout);
 
 export default routes;

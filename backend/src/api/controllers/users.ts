@@ -4,6 +4,7 @@ import { Error, validateEmail } from "../../utils/control";
 import { userModel } from "../models/users";
 
 let error;
+const { SECRET_TOKEN } = process.env;
 // method => POST /register
 // desc   => Create new user data.
 const register = async (
@@ -21,9 +22,15 @@ const register = async (
   }
   try {
     const data = await userModel.create({ name: name, email: email, password: password });
+    const token = JWT.sign({ data }, SECRET_TOKEN as string, { expiresIn: "24h" });
+    await userModel.addUserToken({
+      user_id: data?.user_id as string,
+      token: token,
+    });
     res.status(201).json({
       message: `user created successfully`,
       data,
+      jwt: token,
     });
   } catch (err) {
     error = {
@@ -37,30 +44,27 @@ const register = async (
 // desc   => Authenticate user data.
 const login = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   const { email, password } = req.body;
-  const { SECRET_TOKEN } = process.env;
   const checkEmail = validateEmail(email);
 
   if (!email || !password) {
     return res.status(400).json({ message: "email and password are required" });
-  } else if (checkEmail === false) {
+  } else if (!checkEmail) {
     return res.status(400).json({ message: "please enter a valid email" });
   }
   try {
     const user = await userModel.authenticateUser({ email: email, password: password });
     if (!user) {
-      return res.status(401).json({ message: "Invalid password or email" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-    // creating token based on user credentials and my secret token.
-    const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "12h" });
-    // storing user token in database with current time.
-    const userToken = await userModel.addUserToken({
+    const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "24h" });
+    await userModel.addUserToken({
       user_id: user.user_id as string,
       token: token,
     });
     res.status(200).json({
       message: "user logged in",
       data: { user_id: user.user_id, name: user.name },
-      jwt: userToken,
+      jwt: token,
     });
   } catch (err) {
     error = {
@@ -77,10 +81,9 @@ const logout = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const userToken = req.body.token;
+  const userToken = req.params.token;
 
   try {
-    const delTokenMsg = new JWT.TokenExpiredError("user logged out", new Date());
     const token = await userModel.delUserToken({ token: userToken });
     if (!token) {
       return res.status(404).json({
@@ -88,7 +91,7 @@ const logout = async (
         data: `user token doesn't match`,
       });
     }
-    res.status(200).json(delTokenMsg);
+    res.status(200).send("user logged out");
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

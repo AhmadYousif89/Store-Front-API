@@ -101,13 +101,13 @@ const delUser = createAsyncThunk(
 
 // Logout user
 const logout = createAsyncThunk(
-  `user/logout`,
+  "user/logout",
   async (token: string, thunkAPI: RootStateOrAny) => {
     try {
-      await axios.post(API_URL + "logout", token, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
       localStorage.removeItem("user");
+      await axios.delete(API_URL + `logout/${token}`, {
+        data: { token },
+      });
     } catch (err) {
       const message =
         ((err as any).response &&
@@ -173,10 +173,7 @@ const userSlice = createSlice({
       })
       .addCase(logout.fulfilled, (state, action) => {
         state.user = null;
-        state.message = action.payload;
-      })
-      .addCase(logout.rejected, (state, action) => {
-        state.message = action.payload as string;
+        state.isSuccess = true;
       });
   },
 });

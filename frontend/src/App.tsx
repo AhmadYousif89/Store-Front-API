@@ -1,19 +1,17 @@
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
-import { RootStateOrAny, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotFound from "./components/NotFound";
 import Header from "./components/Header";
-import Dashboard from "./pages/Products";
+import Footer from "./components/Footer";
+import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import "./App.css";
-import Footer from "./components/Footer";
 
 function App() {
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
   return (
     <>
       <BR>
@@ -29,12 +27,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route
-              path={user ? `dashboard/${user.data.name}` : "dashboard"}
-              element={<Dashboard />}
-            />
             <Route path="me/orders" element={<Orders />} />
+            <Route path="register" element={<Register />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

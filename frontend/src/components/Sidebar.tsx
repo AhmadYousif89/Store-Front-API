@@ -5,12 +5,9 @@ import * as HiIcons from "react-icons/hi";
 import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
 import "./styles/Sidebar.css";
-import { RootStateOrAny, useSelector } from "react-redux";
 
 function Sidebar() {
   const [sidebar, setSidebar] = useState(false);
-
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
 
   const handleSidebar = () => {
     setSidebar((pv) => !pv);
@@ -33,7 +30,7 @@ function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={`dashboard/${user.data.name}`}>
+            <Link className="sidebar-link" to={`dashboard`}>
               <AiIcons.AiFillSetting /> Dashboard
             </Link>
           </li>

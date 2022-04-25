@@ -3,7 +3,6 @@ import { login, reset } from "../redux/features/users/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
-import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Login() {
@@ -23,12 +22,12 @@ function Login() {
   useEffect(() => {
     if (isError) {
       toast.error(message);
-      dispatch(reset());
     }
-    if (isSuccess) {
-      toast.success(message);
-      navigate(`/dashboard/${user.data.name}`);
+    if (user) {
+      if (isSuccess) toast.success(message);
+      navigate(`/dashboard`);
     }
+    dispatch(reset());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
@@ -87,9 +86,9 @@ function Login() {
         </form>
       </section>
       {user ? null : (
-        <Link to="/register" className="register">
+        <div className="register" onClick={() => navigate(`/register`)}>
           create new account ?
-        </Link>
+        </div>
       )}
     </>
   );
