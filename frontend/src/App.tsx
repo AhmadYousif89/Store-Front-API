@@ -1,12 +1,11 @@
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NotFound from "./components/NotFound";
+import NotFound from "./pages/NotFound";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
-import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { useState, createContext } from "react";
@@ -39,7 +38,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="login" element={<Login />} />
-              <Route path="me/orders" element={<Orders />} />
               <Route path="register" element={<Register />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />

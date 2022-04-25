@@ -2,7 +2,7 @@ import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import Spinner from "../components/Spinner";
+import Spinner from "./Spinner";
 import { getProducts } from "../redux/features/products/productSlice";
 import { FaShoppingCart } from "react-icons/fa";
 import "./styles/Products.css";

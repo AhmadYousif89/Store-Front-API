@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "../components/Spinner";
+import Spinner from "./Spinner";
 import {
   delOrder,
   getUserOrders,

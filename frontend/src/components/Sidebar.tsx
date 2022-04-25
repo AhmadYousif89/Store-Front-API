@@ -30,32 +30,27 @@ function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={`dashboard`}>
+            <Link className="sidebar-link" to={"dashboard"}>
               <AiIcons.AiFillSetting /> Dashboard
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"me/orders"}>
+            <Link className="sidebar-link" to={"/orders"}>
               <HiIcons.HiClipboardList /> My Orders
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"me/orders/history"}>
-              <FaIcons.FaHistory /> History
-            </Link>
-          </li>
-          <li>
-            <Link className="sidebar-link" to={"me/orders/cart"}>
+            <Link className="sidebar-link" to={"/orders/cart"}>
               <FaIcons.FaShoppingCart /> Cart
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"me/contact"}>
+            <Link className="sidebar-link" to={"/contact"}>
               <GrIcons.GrContactInfo /> Contact
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"me/about"}>
+            <Link className="sidebar-link" to={"/about"}>
               <FaIcons.FaInfoCircle /> About
             </Link>
           </li>

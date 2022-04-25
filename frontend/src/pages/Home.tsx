@@ -1,5 +1,5 @@
 import { useSelector, RootStateOrAny } from "react-redux";
-import Products from "./Products";
+import Products from "../components/Products";
 
 function Home() {
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
