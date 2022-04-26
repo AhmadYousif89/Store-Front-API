@@ -35,12 +35,12 @@ function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"/orders"}>
+            <Link className="sidebar-link" to={"dashboard/orders"}>
               <HiIcons.HiClipboardList /> My Orders
             </Link>
           </li>
           <li>
-            <Link className="sidebar-link" to={"/orders/cart"}>
+            <Link className="sidebar-link" to={"dashboard/cart"}>
               <FaIcons.FaShoppingCart /> Cart
             </Link>
           </li>

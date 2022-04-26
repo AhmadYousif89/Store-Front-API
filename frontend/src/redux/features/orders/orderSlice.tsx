@@ -9,7 +9,7 @@ const createOrder = createAsyncThunk(
   "orders/create",
   async (userId: object, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
+      const token = thunkAPI.getState().auth.user.jwt;
       const response = await axios.post(API_URL, userId, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -31,7 +31,7 @@ const getUserOrders = createAsyncThunk(
   "orders/getAll",
   async (userId: string, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
+      const token = thunkAPI.getState().auth.user.jwt;
       const response = await axios.get(`/api/user/${userId}/account/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -53,7 +53,7 @@ const updateOrder = createAsyncThunk(
   "orders/update",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
+      const token = thunkAPI.getState().auth.user.jwt;
       const response = await axios.put(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
         data: { orderId },
@@ -76,7 +76,7 @@ const delOrder = createAsyncThunk(
   "orders/delete",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
+      const token = thunkAPI.getState().auth.user.jwt;
       const response = await axios.delete(API_URL + orderId, {
         headers: { Authorization: `Bearer ${token}` },
         data: orderId,

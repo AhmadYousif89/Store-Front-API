@@ -11,7 +11,11 @@ function Dashboard() {
     if (!user) navigate("/");
   }, [user, navigate]);
 
-  return <div>Dashboard</div>;
+  return (
+    <section>
+      <h1 className="titel">Dashboard</h1>
+    </section>
+  );
 }
 
 export default Dashboard;

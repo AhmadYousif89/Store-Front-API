@@ -7,6 +7,7 @@ import { getProducts } from "../redux/features/products/productSlice";
 import { FaShoppingCart } from "react-icons/fa";
 import "./styles/Products.css";
 import { createOrder } from "../redux/features/orders/orderSlice";
+import { addToCart } from "../redux/features/users/cartSlice";
 
 function Products() {
   const navigate = useNavigate();
@@ -18,16 +19,20 @@ function Products() {
     (state: RootStateOrAny) => state.products,
   );
 
+  const { cart } = useSelector((state: RootStateOrAny) => state.user_cart);
+
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (product: object) => {
     if (user) {
       dispatch(createOrder({ userId: user.data.user_id }));
+      dispatch(addToCart(product));
+    } else {
+      toast.info("please login first");
+      navigate("/login");
     }
-    toast.info("please login first");
-    navigate("/login");
   };
 
   if (isLoading) return <Spinner />;
@@ -53,7 +58,9 @@ function Products() {
                 <span className="price-tag">
                   $ <p id="price">{product.price}</p>
                 </span>
-                <button className="btn-card" onClick={handleAddToCart}>
+                <button
+                  className="btn-card"
+                  onClick={() => handleAddToCart(product)}>
                   <FaShoppingCart /> Add to cart
                 </button>
               </div>

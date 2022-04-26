@@ -14,7 +14,7 @@
 .order_list {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 2rem;
 }
@@ -45,4 +45,18 @@
 
 .order-btn:hover {
   color: #777;
+}
+
+.go_back {
+  place-self: center;
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.go_back:hover {
+  color: #777;
+  cursor: pointer;
 }

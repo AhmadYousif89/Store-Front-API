@@ -45,7 +45,7 @@ function Header() {
             <>
               <ul className="nav-container">
                 <li>
-                  <Link to="dashboard">
+                  <Link to="dashboard/cart">
                     <div className="cart-count">
                       <FaIcons.FaCartArrowDown /> <span>0</span>
                     </div>
