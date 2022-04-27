@@ -23,6 +23,7 @@ type Products = {
   category?: string;
   p_name?: string;
   brand?: string;
+  color?: string;
   price?: number;
   image_url?: string;
   description?: string;

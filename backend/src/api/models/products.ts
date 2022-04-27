@@ -8,11 +8,12 @@ class ProductModel {
   async create(values: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `INSERT INTO products (category, p_name, brand, price, image_url, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+      const sql = `INSERT INTO products (category, p_name, brand, color, price, image_url, description) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
       const result = await conct.query(sql, [
         values.category,
         values.p_name,
         values.brand,
+        values.color,
         values.price,
         values.image_url,
         values.description,

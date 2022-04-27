@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS products (
     category category NOT NULL,
     p_name VARCHAR(100) NOT NULL, 
     brand VARCHAR(100) NOT NULL,
+    color VARCHAR(100) NOT NULL,
     price INTEGER NOT NULL,
     image_url TEXT NOT NULL,
     description TEXT

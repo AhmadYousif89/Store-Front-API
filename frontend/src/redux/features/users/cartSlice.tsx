@@ -74,6 +74,11 @@ const cartSlice = createSlice({
       }
     },
     reset: () => initialState,
+    emptyCart: (state) => {
+      localStorage.removeItem("cart");
+      state.cart = [];
+      toast.info("shopping cart is empty");
+    },
   },
   // extraReducers: (builder) => {
   //   builder
@@ -95,7 +100,6 @@ const cartSlice = createSlice({
   // },
 });
 
-const { addToCart, reset } = cartSlice.actions;
+export const { addToCart, reset, emptyCart } = cartSlice.actions;
 
-export { addToCart, reset };
 export default cartSlice.reducer;

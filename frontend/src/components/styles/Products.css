@@ -36,11 +36,21 @@
 .price-tag {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.25rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+.price-tag span {
+  font-weight: normal;
+  align-self: start;
 }
 #price {
-  font-weight: bold;
   font-size: 1.75rem;
+  margin-right: auto;
+}
+#color {
+  font-size: 0.7rem;
 }
 #brand {
   margin-bottom: 1rem;

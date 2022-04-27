@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import { getProducts } from "../redux/features/products/productSlice";
 import { FaShoppingCart } from "react-icons/fa";
+import { IoIosColorPalette } from "react-icons/io";
 import "./styles/Products.css";
 import { createOrder } from "../redux/features/orders/orderSlice";
 import { addToCart } from "../redux/features/users/cartSlice";
@@ -42,7 +43,7 @@ function Products() {
       <section className="heading">
         <h1>New Arrivals</h1>
       </section>
-      {!products ? (
+      {!products.length ? (
         <p>Store Is Empty Right Now , Sorry.</p>
       ) : (
         <section className="products">
@@ -56,7 +57,9 @@ function Products() {
                 <h5>{product.p_name}</h5>
                 <p>{product.description}</p>
                 <span className="price-tag">
-                  $ <p id="price">{product.price}</p>
+                  <span>$</span> <p id="price">{product.price}</p>
+                  <IoIosColorPalette />
+                  <p id="color">{product.color}</p>
                 </span>
                 <button
                   className="btn-card"

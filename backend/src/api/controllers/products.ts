@@ -10,7 +10,7 @@ const createProducts = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const { name, brand, imageUrl, description } = req.body;
+  const { name, brand, imageUrl, description, color } = req.body;
   const price = parseInt(req.body.price);
   const category = req.body.category.toLowerCase();
 
@@ -25,6 +25,7 @@ const createProducts = async (
       price: price,
       image_url: imageUrl,
       description: description || "No description!",
+      color: color || "N/A",
     });
     res.status(201).json({
       message: `Product created successfully`,

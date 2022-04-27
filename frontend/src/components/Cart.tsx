@@ -1,16 +1,23 @@
 import * as Hi from "react-icons/hi";
 import { MdRemoveShoppingCart } from "react-icons/md";
-import { RootStateOrAny, useSelector } from "react-redux";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { emptyCart } from "../redux/features/users/cartSlice";
 import "./styles/Cart.css";
 
 function ShoppingCart() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { cart } = useSelector((state: RootStateOrAny) => state.user_cart);
   const userCart = JSON.parse(localStorage.getItem("cart") as string);
 
   const handleItemRemove = (id: string) => {
     return cart.filter((item: { p_id: string }) => item.p_id === id);
+  };
+
+  const handleEmptyCart = () => {
+    dispatch(emptyCart());
+    navigate("/");
   };
 
   return (
@@ -39,6 +46,9 @@ function ShoppingCart() {
                   <div className="item-details">
                     <p id="item-brand">{item.brand}</p>
                     <p id="item-name">{item.p_name}</p>
+                    <p id="item-color">
+                      color: <br /> {item.color}
+                    </p>
                     <button
                       id="item-btn"
                       onClick={() => handleItemRemove(item.p_id)}>
@@ -47,21 +57,21 @@ function ShoppingCart() {
                   </div>
                 </div>
                 <div id="item-price">
-                  $ <span>{item.price}</span>
+                  <span>$</span> <>{item.price}</>
                 </div>
                 <div id="item-quantity">
-                  <Hi.HiOutlinePlusCircle /> |
+                  <Hi.HiOutlinePlusCircle />
                   <p id="item-count">{item.productQuantity}</p>
-                  | <Hi.HiOutlineMinusCircle />
+                  <Hi.HiOutlineMinusCircle />
                 </div>
                 <div id="item-total">
-                  $ <span> {item.productQuantity * item.price}</span>
+                  <span>$</span> {item.productQuantity * item.price}
                 </div>
               </div>
             ))}
           </div>
           <div className="cart-details">
-            <div className="clear-cart" onClick={() => {}}>
+            <div className="clear-cart" onClick={handleEmptyCart}>
               <MdRemoveShoppingCart />
             </div>
             <div className="cart-checkout">

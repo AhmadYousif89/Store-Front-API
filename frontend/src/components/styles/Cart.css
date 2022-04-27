@@ -56,6 +56,11 @@
 #item-name {
   font-size: 0.9rem;
 }
+#item-color {
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: #777;
+}
 #item-btn {
   margin-top: auto;
   display: flex;
@@ -71,28 +76,42 @@
   color: red;
 }
 
-#item-price span {
+#item-price {
+  display: flex;
+  justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
+  gap: 0.3rem;
+}
+#item-price span {
+  font-weight: normal;
+  font-size: 0.8rem;
 }
 
 #item-quantity {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 #item-quantity svg {
-  transform: scale(1.5);
+  transform: scale(2);
   cursor: pointer;
 }
 #item-quantity svg:hover {
   color: #777;
 }
 
-#item-total span {
+#item-total {
+  display: flex;
+  justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
+  gap: 0.3rem;
+}
+#item-total span {
+  font-weight: normal;
+  font-size: 0.8rem;
 }
 
 .cart-details {
