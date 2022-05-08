@@ -22,22 +22,21 @@ const handleAuthentication = (req: Request, _res: Response, next: NextFunction) 
         // verify and decode based on my secret token
         const decode = JWT.verify(token, SECRET_TOKEN as string);
         if (decode) {
-          // on success move to next route
           next();
         } else {
           // authentication failed
           handleAuthErr(next);
         }
       } else {
-        // if token not type of bearer
+        // token not of type Bearer
         handleAuthErr(next);
       }
     } else {
-      // no token given
+      // no token sent in header
       handleAuthErr(next);
     }
   } catch (err) {
-    // handle error
+    // handle jwt errors
     handleAuthErr(next);
     console.log(err);
   }
