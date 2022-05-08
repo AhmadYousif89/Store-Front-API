@@ -8,7 +8,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/users";
-import authentication from "../../middlewares/auth.middleware";
+import authentication from "../../middlewares/auth";
 
 const routes = Router();
 

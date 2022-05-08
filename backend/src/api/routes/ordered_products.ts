@@ -6,7 +6,7 @@ import {
   updateOrderedProduct,
   delOrderedProduct,
 } from "../controllers/ordered_products";
-import authentication from "../../middlewares/auth.middleware";
+import authentication from "../../middlewares/auth";
 
 const routes = Router();
 

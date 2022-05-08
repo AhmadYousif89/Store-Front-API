@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Authentication from "../../middlewares/auth.middleware";
+import Authentication from "../../middlewares/auth";
 import {
   getUserProducts,
   getUserProductsByOid,

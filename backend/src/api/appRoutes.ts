@@ -5,10 +5,10 @@ import products_routes from "./routes/products";
 import op_routes from "./routes/ordered_products";
 import db_routes from "./__services__/dashboard.routes";
 
-export const serverRoutes = Router();
+export const appRoutes = Router();
 
-serverRoutes.use(db_routes);
-serverRoutes.use(op_routes);
-serverRoutes.use(users_routes);
-serverRoutes.use(orders_routes);
-serverRoutes.use(products_routes);
+appRoutes.use(db_routes);
+appRoutes.use(op_routes);
+appRoutes.use(users_routes);
+appRoutes.use(orders_routes);
+appRoutes.use(products_routes);

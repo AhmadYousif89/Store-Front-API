@@ -7,7 +7,7 @@ import {
   deleteOrder,
   getUserOrders,
 } from "../controllers/orders";
-import authentication from "../../middlewares/auth.middleware";
+import authentication from "../../middlewares/auth";
 
 const routes = Router();
 

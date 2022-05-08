@@ -1,5 +1,5 @@
-import handleAuthentication from "../../middlewares/auth.middleware";
-import errorHandler from "../../middlewares/error.middleware";
+import handleAuthentication from "../../middlewares/auth";
+import errorHandler from "../../middlewares/error";
 
 describe("Middleware functions: \n", () => {
   it("should be a method to handle authentication oprations", () => {
