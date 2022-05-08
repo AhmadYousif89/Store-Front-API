@@ -8,6 +8,7 @@ import notFound from "./middlewares/notFound";
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (_req: Request, res: Response) => {
   res.status(200).send(`<h2>Home Page</h2>`);
@@ -16,7 +17,6 @@ app.get("/", (_req: Request, res: Response) => {
 app.use("/api", appRoutes);
 app.use(serverErrors);
 app.use(notFound);
-app.use(cors());
 
 const port = process.env.SERVER_PORT || 1000;
 const testPort = process.env.TEST_PORT;
