@@ -6,25 +6,17 @@ import serverErrors from "./middlewares/error";
 import notFound from "./middlewares/notFound";
 
 const app = express();
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-export const corsOptions = {
-  origin: process.env.HOST,
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
-
-app.use("/api", appRoutes);
-
 app.get("/", (_req: Request, res: Response) => {
-  res.status(200).json(`<h2>Home Page ...</h2>`);
+  res.status(200).send(`<h2>Home Page</h2>`);
 });
 
+app.use("/api", appRoutes);
 app.use(serverErrors);
 app.use(notFound);
+app.use(cors());
 
 const port = process.env.SERVER_PORT || 1000;
 const testPort = process.env.TEST_PORT;
