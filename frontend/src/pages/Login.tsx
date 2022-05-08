@@ -1,9 +1,10 @@
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { login, reset } from "../redux/features/users/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
+import { IoCreateOutline } from "react-icons/io5";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ function Login() {
     }
     if (user) {
       if (isSuccess) toast.success(message);
-      navigate(`/dashboard`);
+      navigate(`/`);
     }
     dispatch(reset());
   }, [user, isSuccess, isError, message, navigate, dispatch]);
@@ -56,40 +57,43 @@ function Login() {
       </section>
       <section className="form">
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={email}
-              placeholder="Enter your email"
-              onChange={handleForm}
-            />
+          <div className="form-content">
+            <div className="form-group">
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                value={email}
+                placeholder="Enter your email"
+                onChange={handleForm}
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                name="password"
+                value={password}
+                placeholder="Enter password"
+                onChange={handleForm}
+              />
+            </div>
+            <div className="form-group">
+              <button type="submit" className="btn btn-block">
+                L O G I N
+              </button>
+            </div>
           </div>
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              name="password"
-              value={password}
-              placeholder="Enter password"
-              onChange={handleForm}
-            />
-          </div>
-          <div className="form-group">
-            <button type="submit" className="btn btn-block">
-              L O G I N
-            </button>
-          </div>
+          <p className="form-link">
+            Don't have an account ?{" "}
+            <Link to="/register" id="form-link">
+              REGISTER <IoCreateOutline />
+            </Link>
+          </p>
         </form>
       </section>
-      {user ? null : (
-        <div className="register" onClick={() => navigate(`/register`)}>
-          create new account ?
-        </div>
-      )}
     </>
   );
 }

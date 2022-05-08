@@ -1,16 +1,15 @@
 import { useEffect } from "react";
-import {
-  FaAngleLeft,
-  FaAngleRight,
-  FaArrowLeft,
-  FaShoppingBasket,
-} from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
-import { delOrder, getUserOrders } from "../redux/features/orders/orderSlice";
+import {
+  getUserOrders,
+  deleteOrder,
+  reset,
+} from "../redux/features/orders/orderSlice";
 import "./styles/Orders.css";
 
 function Orders() {
@@ -18,21 +17,18 @@ function Orders() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
-  const { orders, isSuccess, isLoading, isError, message } = useSelector(
+  const { orders, isLoading } = useSelector(
     (state: RootStateOrAny) => state.orders,
   );
 
-  useEffect(() => {
+  useEffect((): any => {
     if (!user) {
       navigate(`/login`);
       toast.error("Access denied");
     }
     dispatch(getUserOrders(user.data.user_id));
+    return () => dispatch(reset());
   }, [user, navigate, dispatch]);
-
-  const handleOrderDelete = (order_id: number) => {
-    dispatch(delOrder(order_id));
-  };
 
   if (isLoading) return <Spinner />;
 
@@ -43,31 +39,30 @@ function Orders() {
           <h1>My Orders</h1>
         </div>
         <section className="content">
-          {!orders.length ? (
-            <>
-              <h3>You don't have any orders...</h3>
-              <div className="go_back" onClick={() => navigate(`/`)}>
-                <FaArrowLeft /> Start Shopping
-              </div>
-            </>
-          ) : (
+          {orders.length > 0 ? (
             <>
               <div className="order_list">
                 {orders.map((order: any) => (
                   <ul key={order.order_id} className="order-card">
-                    <li>
-                      <p>#N: {order.order_id}</p>
-                      <p>Status: {order.order_status}</p>
-                      <p>{order.created_at}</p>
-                      <div className="order-btn-group">
-                        <button
-                          className="order-btn order-del"
-                          onClick={() => handleOrderDelete(order.order_id)}>
-                          Delete <MdDeleteForever />
-                        </button>
-                        <button className="order-btn order-cart">
-                          Show cart <FaShoppingBasket />
-                        </button>
+                    <li className="order-details">
+                      <div>
+                        <p className="order-detail">
+                          <span> #N: </span> <br />
+                          {order.order_id}
+                        </p>
+                        <p className="order-detail">
+                          <span> Status: </span> <br />
+                          {order.order_status}
+                        </p>
+                        <p className="order-detail">
+                          <span> Created:</span> <br />
+                          {order.created_at}
+                        </p>
+                      </div>
+                      <div className="order-btn-del">
+                        <MdDeleteForever
+                          onClick={() => dispatch(deleteOrder(order.order_id))}
+                        />
                       </div>
                     </li>
                   </ul>
@@ -75,6 +70,13 @@ function Orders() {
               </div>
               <div className="go_back" onClick={() => navigate(`/`)}>
                 <FaArrowLeft /> Back
+              </div>
+            </>
+          ) : (
+            <>
+              <h3>You don't have any orders...</h3>
+              <div className="go_back" onClick={() => navigate("/")}>
+                <FaArrowLeft /> Start Shopping
               </div>
             </>
           )}

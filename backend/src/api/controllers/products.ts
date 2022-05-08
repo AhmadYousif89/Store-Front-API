@@ -27,10 +27,7 @@ const createProducts = async (
       description: description || "No description!",
       color: color || "N/A",
     });
-    res.status(201).json({
-      message: `Product created successfully`,
-      data,
-    });
+    res.status(201).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -51,7 +48,7 @@ const getProducts = async (
     if (!data.length) {
       return res.status(404).json({ message: `No Products Were Found !` });
     }
-    res.status(200).json({ message: "Data generated successfully", data });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -76,10 +73,7 @@ const getProductById = async (
         .status(404)
         .json({ message: "Request failed !", data: `Product with id (${pid}) Doesn't Exist !` });
     }
-    res.status(200).json({
-      message: `Product generated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -109,10 +103,7 @@ const updateProduct = async (
         data: `Product with id (${pid}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Product updated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -141,10 +132,7 @@ const deleteProduct = async (
         data: `Product with id (${pid}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Product deleted successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

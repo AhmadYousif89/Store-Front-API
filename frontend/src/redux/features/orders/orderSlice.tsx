@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_URL = "/api/user/account/orders/";
 
@@ -35,6 +36,7 @@ const getUserOrders = createAsyncThunk(
       const response = await axios.get(`/api/user/${userId}/account/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      localStorage.setItem("orders", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
@@ -72,14 +74,13 @@ const updateOrder = createAsyncThunk(
 );
 
 // Delete order
-const delOrder = createAsyncThunk(
+const deleteOrder = createAsyncThunk(
   "orders/delete",
   async (orderId: number, thunkAPI: RootStateOrAny) => {
     try {
       const token = thunkAPI.getState().auth.user.jwt;
       const response = await axios.delete(API_URL + orderId, {
         headers: { Authorization: `Bearer ${token}` },
-        data: orderId,
       });
       return response.data;
     } catch (err) {
@@ -106,7 +107,21 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    reset: () => initialState,
+    deleteOrder: (state, action) => {
+      const orderList = state.orders.filter(
+        (order: { order_id: number }) =>
+          order.order_id !== action.payload.order_id,
+      );
+      state.orders = orderList;
+      localStorage.setItem("orders", JSON.stringify(orderList));
+      toast.error(`order number ${action.payload.order_id} was deleted`);
+    },
+    reset: (state) => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -116,8 +131,7 @@ const orderSlice = createSlice({
       .addCase(getUserOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.orders = action.payload.data;
-        state.message = action.payload.message;
+        state.orders = action.payload;
       })
       .addCase(getUserOrders.rejected, (state, action) => {
         state.isLoading = false;
@@ -133,7 +147,6 @@ const orderSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.orders = action.payload;
-        state.message = action.payload.message as string;
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.isLoading = false;
@@ -141,16 +154,19 @@ const orderSlice = createSlice({
         state.orders = [];
         state.message = action.payload as string;
       })
-      .addCase(delOrder.pending, (state) => {
+      .addCase(deleteOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(delOrder.fulfilled, (state, action) => {
+      .addCase(deleteOrder.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.orders = action.payload;
-        state.message = action.payload.message;
+        state.orders = state.orders.filter(
+          (order: { order_id: number }) =>
+            order.order_id !== action.payload.order_id,
+        );
+        toast.error(`order number ${action.payload.order_id} was deleted`);
       })
-      .addCase(delOrder.rejected, (state, action) => {
+      .addCase(deleteOrder.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.orders = [];
@@ -161,5 +177,5 @@ const orderSlice = createSlice({
 
 const { reset } = orderSlice.actions;
 
-export { reset, getUserOrders, createOrder, updateOrder, delOrder };
+export { reset, deleteOrder, getUserOrders, createOrder, updateOrder };
 export default orderSlice.reducer;

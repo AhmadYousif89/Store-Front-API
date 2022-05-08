@@ -6,6 +6,11 @@
   margin-bottom: 10rem;
 }
 
+.main-header {
+  margin-bottom: 4rem;
+  font-size: 2rem;
+}
+
 .product-card {
   display: flex;
   border-radius: 10px;

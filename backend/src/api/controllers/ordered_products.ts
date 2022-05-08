@@ -24,10 +24,7 @@ const addProductToOrder = async (
       product_id: pId,
       quantity: quantity,
     });
-    res.status(201).json({
-      message: `Product has been added successfully to order number (${oId})`,
-      data,
-    });
+    res.status(201).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -48,7 +45,7 @@ const getOrderedProducts = async (
     if (data.length === 0) {
       return res.status(404).json({ message: `No Data Were Found !` });
     }
-    res.status(200).json({ message: "Data generated successfully", data });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -77,10 +74,7 @@ const getOPsById = async (
         data: `No products related to this id (${opId}) !`,
       });
     }
-    res.status(200).json({
-      message: "Data generated successfully",
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -110,10 +104,7 @@ const updateOrderedProduct = async (
         data: `Product with id (${pId}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Product quantity updated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -142,10 +133,7 @@ const delOrderedProduct = async (
         data: `Order with id (${opId}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Row number ${opId} was deleted successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

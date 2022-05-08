@@ -1,5 +1,5 @@
 import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cart from "./components/Cart";
@@ -12,6 +12,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import "./App.css";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { displayCartInfo } from "./redux/features/users/cartSlice";
 
 export const ThemeContext = createContext<{
   theme: string;
@@ -20,9 +22,17 @@ export const ThemeContext = createContext<{
 
 function App() {
   const [theme, setTheme] = useState("light");
+  const dispatch = useDispatch();
+
   const toggleTheme = () => {
     setTheme((theme) => (theme === "light" ? "dark" : "light"));
   };
+
+  const { cart } = useSelector((state: RootStateOrAny) => state.cart);
+
+  useEffect(() => {
+    dispatch(displayCartInfo());
+  }, [cart, dispatch]);
 
   return (
     <>
@@ -30,8 +40,8 @@ function App() {
         <ThemeContext.Provider value={{ theme, toggleTheme }}>
           <ToastContainer
             theme="colored"
-            autoClose={2000}
-            position={"top-center"}
+            autoClose={3000}
+            position={"bottom-left"}
             hideProgressBar={true}
             pauseOnFocusLoss={false}
           />

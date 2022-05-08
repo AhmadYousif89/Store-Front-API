@@ -19,10 +19,7 @@ const createOrders = async (
     const data = await orderModel.create({
       user_id: userId,
     });
-    res.status(201).json({
-      message: `Order created successfully`,
-      data,
-    });
+    res.status(201).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -43,10 +40,7 @@ const getOrders = async (
     if (!data.length) {
       return res.status(404).json({ message: `No Orders Were Found !` });
     }
-    res.status(200).json({
-      message: `orders generated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -74,10 +68,7 @@ const getOrderById = async (
         .status(404)
         .json({ message: "Request failed !", data: `Order with id (${oid}) doesn't Exist !` });
     }
-    res.status(200).json({
-      message: `Order generated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -107,10 +98,7 @@ const updateOrder = async (
         data: `Order with id (${oid}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Order updated successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -139,10 +127,7 @@ const deleteOrder = async (
         data: `Order with id (${oid}) doesn't exist`,
       });
     }
-    res.status(200).json({
-      message: `Order deleted successfully`,
-      data,
-    });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,
@@ -164,7 +149,7 @@ const getUserOrders = async (
     if (!data.length) {
       return res.status(404).json({ message: `No orders found` });
     }
-    res.status(200).json({ message: "orders generated", data });
+    res.status(200).json(data);
   } catch (err) {
     error = {
       message: `${(err as Error).message}`,

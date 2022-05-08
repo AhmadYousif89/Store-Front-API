@@ -1,14 +1,13 @@
-import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
-import Spinner from "./Spinner";
-import { getProducts } from "../redux/features/products/productSlice";
-import { FaShoppingCart } from "react-icons/fa";
-import { IoIosColorPalette } from "react-icons/io";
 import "./styles/Products.css";
-import { createOrder } from "../redux/features/orders/orderSlice";
+import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { addToCart } from "../redux/features/users/cartSlice";
+import { IoIosColorPalette } from "react-icons/io";
+import { FaShoppingCart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
+import Spinner from "./Spinner";
+import { getProducts, reset } from "../redux/features/products/productSlice";
 
 function Products() {
   const navigate = useNavigate();
@@ -20,16 +19,15 @@ function Products() {
     (state: RootStateOrAny) => state.products,
   );
 
-  const { cart } = useSelector((state: RootStateOrAny) => state.user_cart);
-
-  useEffect(() => {
+  useEffect((): any => {
     dispatch(getProducts());
+    return () => dispatch(reset());
   }, [dispatch]);
 
-  const handleAddToCart = (product: object) => {
+  const handleAddToCart = (product: any) => {
     if (user) {
-      dispatch(createOrder({ userId: user.data.user_id }));
       dispatch(addToCart(product));
+      // dispatch(createOrder({ userId: user.data.user_id }));
     } else {
       toast.info("please login first");
       navigate("/login");
@@ -40,11 +38,11 @@ function Products() {
 
   return (
     <>
-      <section className="heading">
+      <section className="main-header">
         <h1>New Arrivals</h1>
       </section>
       {!products.length ? (
-        <p>Store Is Empty Right Now , Sorry.</p>
+        <p>Store Is Under Construction , Sorry.</p>
       ) : (
         <section className="products">
           {products.map((product: any) => (

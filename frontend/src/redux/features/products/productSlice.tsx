@@ -6,6 +6,7 @@ const API_URL = "/api/products";
 const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
   try {
     const response = await axios.get(API_URL);
+    localStorage.setItem("products", JSON.stringify(response.data));
     return response.data;
   } catch (err) {
     const message =
@@ -23,14 +24,17 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
 };
 
 const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,14 +44,12 @@ const productSlice = createSlice({
       .addCase(getProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products = action.payload.data;
-        state.message = action.payload.message;
+        state.products = action.payload;
       })
       .addCase(getProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.products = [];
-        state.message = action.payload as string;
       });
   },
 });

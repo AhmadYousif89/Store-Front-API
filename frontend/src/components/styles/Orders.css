@@ -19,36 +19,32 @@
   gap: 2rem;
 }
 
-.order-btn-group {
+.order-details {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  align-items: flex-start;
 }
-
-.order-btn {
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #000;
-  border-radius: 5px;
-  background: #000;
-  color: #fff;
+.order-detail span {
+  opacity: 0.5;
+}
+.order-btn-del {
+  width: fit-content;
+  color: #000;
   cursor: pointer;
-  gap: 0.5rem;
-  font-size: 0.8rem;
 }
 
-.order-btn svg {
-  font-size: 1.2rem;
+.order-btn-del svg {
+  transform: scale(2);
 }
 
-.order-btn:hover {
-  color: #777;
+.order-btn-del:hover {
+  color: darkred;
 }
 
 .go_back {
   place-self: center;
+  margin-inline: auto;
+  max-width: fit-content;
   margin-top: 3rem;
   display: flex;
   align-items: center;

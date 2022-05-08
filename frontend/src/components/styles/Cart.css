@@ -9,7 +9,7 @@
 }
 
 .cart-titel {
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .cart-empty {
@@ -143,6 +143,11 @@
 .subtotal > p {
   font-size: 1.5rem;
   font-weight: bold;
+}
+.subtotal p span {
+  font-weight: normal;
+  font-size: 1rem;
+  margin-right: 0.25rem;
 }
 
 #checkout-text {

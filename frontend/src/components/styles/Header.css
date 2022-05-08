@@ -1,6 +1,7 @@
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem 0;
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 1rem;
@@ -10,8 +11,10 @@
   color: #777;
 }
 
-#logo {
-  margin-right: auto;
+.logo-theme {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .logout {
@@ -41,10 +44,6 @@
   display: flex;
   gap: 1.5rem;
   align-items: center;
-}
-
-.toggle-mode {
-  margin-right: 2rem;
 }
 
 #checkbox {

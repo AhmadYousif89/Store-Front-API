@@ -46,7 +46,7 @@ body #dark {
 
 .heading {
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-block: 2rem;
 }
 .heading h1 {
   margin: 0;
@@ -54,9 +54,12 @@ body #dark {
 .heading span {
   color: #828282;
 }
-
 .heading p {
   color: #828282;
+}
+
+.user-welcome {
+  text-align: left;
 }
 
 .form {
@@ -89,6 +92,32 @@ body #dark {
   text-align: left;
   display: block;
   margin: 0 0 5px 3px;
+}
+
+.form-content {
+  padding-block: 1rem;
+}
+
+.form-link {
+  padding-block: 1rem;
+  border-top: 1px #ccc solid;
+  font-size: 0.8rem;
+  text-align: left;
+}
+#form-link {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 0.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+#form-link svg {
+  transform: scale(1.5);
+}
+#form-link:hover {
+  opacity: 0.5;
+  transition: 200ms;
 }
 
 .btn {

@@ -1,19 +1,28 @@
+import { useEffect } from "react";
 import * as Hi from "react-icons/hi";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { emptyCart } from "../redux/features/users/cartSlice";
+import {
+  decrement,
+  displayCartInfo,
+  emptyCart,
+  increment,
+  removeProduct,
+} from "../redux/features/users/cartSlice";
 import "./styles/Cart.css";
 
 function ShoppingCart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cart } = useSelector((state: RootStateOrAny) => state.user_cart);
-  const userCart = JSON.parse(localStorage.getItem("cart") as string);
 
-  const handleItemRemove = (id: string) => {
-    return cart.filter((item: { p_id: string }) => item.p_id === id);
-  };
+  const { cart, totalAmount } = useSelector(
+    (state: RootStateOrAny) => state.cart,
+  );
+
+  useEffect(() => {
+    dispatch(displayCartInfo());
+  }, [cart, dispatch]);
 
   const handleEmptyCart = () => {
     dispatch(emptyCart());
@@ -51,7 +60,7 @@ function ShoppingCart() {
                     </p>
                     <button
                       id="item-btn"
-                      onClick={() => handleItemRemove(item.p_id)}>
+                      onClick={() => dispatch(removeProduct(item))}>
                       <Hi.HiShoppingCart /> Remove
                     </button>
                   </div>
@@ -60,12 +69,16 @@ function ShoppingCart() {
                   <span>$</span> <>{item.price}</>
                 </div>
                 <div id="item-quantity">
-                  <Hi.HiOutlinePlusCircle />
-                  <p id="item-count">{item.productQuantity}</p>
-                  <Hi.HiOutlineMinusCircle />
+                  <Hi.HiOutlineMinusCircle
+                    onClick={() => dispatch(decrement(item))}
+                  />
+                  <p id="item-count">{item.quantity}</p>
+                  <Hi.HiOutlinePlusCircle
+                    onClick={() => dispatch(increment(item))}
+                  />
                 </div>
                 <div id="item-total">
-                  <span>$</span> {item.productQuantity * item.price}
+                  <span>$</span> {item.quantity * item.price}
                 </div>
               </div>
             ))}
@@ -77,9 +90,10 @@ function ShoppingCart() {
             <div className="cart-checkout">
               <div className="subtotal">
                 <p>SUBTOTAL</p>
-                <div>
-                  <p>$ {cart.totalAmount}</p>
-                </div>
+                <p>
+                  <span>$</span>
+                  {totalAmount}
+                </p>
               </div>
               <p id="checkout-text">
                 Taxes and shipping calculated at checkout

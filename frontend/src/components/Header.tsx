@@ -1,19 +1,20 @@
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import * as FaIcons from "react-icons/fa";
 import { toast } from "react-toastify";
+import { ThemeContext } from "../App";
+import { useContext } from "react";
 import Sidebar from "./Sidebar";
 import "./styles/Header.css";
-import { useContext } from "react";
-import { ThemeContext } from "../App";
 
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
-
   const appTheme = useContext(ThemeContext);
+
+  const { user } = useSelector((state: RootStateOrAny) => state.auth);
+  const { totalQuantity } = useSelector((state: RootStateOrAny) => state.cart);
 
   const handleLogOut = () => {
     dispatch(logout(user.jwt));
@@ -23,21 +24,23 @@ function Header() {
 
   return (
     <header className="header">
-      <div id="logo">
-        <Link to="/">TechStore</Link>
-      </div>
-      <div className="toggle-mode">
-        <input
-          type="checkbox"
-          name="checkbox"
-          id="checkbox"
-          onChange={() => appTheme?.toggleTheme()}
-        />
-        <label htmlFor="checkbox" className="label">
-          <FaIcons.FaMoon className="moon" />
-          <FaIcons.FaSun className="sun" />
-          <div className="ball" />
-        </label>
+      <div className="logo-theme">
+        <div id="logo">
+          <Link to="/">TechStore</Link>
+        </div>
+        <span className="store-theme">
+          <input
+            type="checkbox"
+            name="checkbox"
+            id="checkbox"
+            onChange={() => appTheme?.toggleTheme()}
+          />
+          <label htmlFor="checkbox" className="label">
+            <FaIcons.FaMoon className="moon" />
+            <FaIcons.FaSun className="sun" />
+            <div className="ball" />
+          </label>
+        </span>
       </div>
       <ul>
         {user ? (
@@ -47,7 +50,7 @@ function Header() {
                 <li>
                   <Link to="dashboard/cart">
                     <div className="cart-count">
-                      <FaIcons.FaCartArrowDown /> <span>0</span>
+                      <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
                     </div>
                   </Link>
                 </li>

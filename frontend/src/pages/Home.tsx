@@ -7,7 +7,7 @@ function Home() {
   return (
     <>
       <div className="heading">
-        <h3>
+        <h3 className="user-welcome">
           Welcome
           {user ? <span> {user.data.name.toUpperCase()} </span> : null}
         </h3>

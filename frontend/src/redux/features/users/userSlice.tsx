@@ -13,9 +13,7 @@ const register = createAsyncThunk(
   async (user: object, thunkAPI) => {
     try {
       const response = await axios.post(API_URL + "register", user);
-      if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
@@ -57,9 +55,7 @@ const update = createAsyncThunk(
       const response = await axios.put(API_URL + "users", user, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
@@ -148,7 +144,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = action.payload.message;
+        state.message = "you have been successfully registered";
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
