@@ -20,7 +20,7 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("unique_user_email")) {
-        errMsg = customErr(err as Error, "email already exist !.", ".");
+        errMsg = customErr(err as Error, "email already registered !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -141,7 +141,7 @@ class UserModel {
     } catch (err) {
       conct.release();
       if ((err as Error).message?.includes("undefined")) {
-        errMsg = customErr(err as Error, "user does not exist !.", ".");
+        errMsg = customErr(err as Error, "user not found !.", ".");
       } else {
         errMsg = err as string;
       }
@@ -167,7 +167,7 @@ class UserModel {
   async delUserToken({ token }: UserToken): Promise<UserToken | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `DELETE FROM user_tokens WHERE token = ($1) RETURNING token`;
+      const sql = `DELETE FROM user_tokens WHERE token = ($1)`;
       const query = await pgDB.query(sql, [token]);
       if (query.rows.length) {
         conct.release();
