@@ -106,13 +106,14 @@ const getUserById = asyncWrapper(async (req: Request, res: Response): Promise<vo
   });
 });
 
-// method => PUT /users
+// method => PUT /users/:id
 // desc   => Update a specific user .
 const updateUser = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const { uid, password } = req.body;
+  const uid = req.params.id;
+  const { password } = req.body;
 
-  if (!uid || !password) {
-    return res.status(400).json({ message: "please provide user id and password !" });
+  if (!password) {
+    return res.status(400).json({ message: "please provide user password !" });
   }
 
   const data = await userModel.update({ user_id: uid, password: password });
@@ -123,10 +124,7 @@ const updateUser = asyncWrapper(async (req: Request, res: Response): Promise<voi
     });
   }
 
-  res.status(200).json({
-    message: `user updated successfully`,
-    data,
-  });
+  res.status(200).json({ message: `password updated successfully` });
 });
 
 // method => DELETE /users/:id

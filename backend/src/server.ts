@@ -11,7 +11,11 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (_req: Request, res: Response) => {
-  res.status(200).send(`<h2>Home Page</h2>`);
+  res.status(200).send(`
+      <h2>TechStore API</h2>
+      <p>Users : <a href="/api/users">Users Page</a></p>
+      <p>Products : <a href="/api/products">Products Page</a></p>
+  `);
 });
 
 app.use("/api", appRoutes);

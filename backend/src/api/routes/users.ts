@@ -12,8 +12,12 @@ import authentication from "../../middlewares/auth";
 
 const routes = Router();
 
-routes.route("/users").get(authentication, getUsers).put(authentication, updateUser);
-routes.route("/users/:id").get(getUserById).delete(authentication, deleteUser);
+routes.route("/users").get(getUsers);
+routes
+  .route("/users/:id")
+  .get(getUserById)
+  .put(authentication, updateUser)
+  .delete(authentication, deleteUser);
 routes.post("/register", register);
 routes.post("/login", login);
 routes.delete("/logout/:token", logout);
