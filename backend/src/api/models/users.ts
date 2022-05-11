@@ -167,7 +167,7 @@ class UserModel {
   async delUserToken({ token }: UserToken): Promise<UserToken | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `DELETE FROM user_tokens WHERE token = ($1)`;
+      const sql = `DELETE FROM user_tokens WHERE token = ($1) RETURNING token`;
       const query = await pgDB.query(sql, [token]);
       if (query.rows.length) {
         conct.release();

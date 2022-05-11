@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 const API_URL = "/api/products";
 
+const localProducts = JSON.parse(localStorage.getItem("products") as string);
+
 // Show products
 const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
   try {
@@ -44,12 +46,12 @@ const productSlice = createSlice({
       .addCase(getProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products = action.payload;
+        state.products = action.payload.data;
       })
-      .addCase(getProducts.rejected, (state, action) => {
+      .addCase(getProducts.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
-        state.products = [];
+        state.products = localProducts.data;
       });
   },
 });

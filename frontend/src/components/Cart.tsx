@@ -3,6 +3,7 @@ import * as Hi from "react-icons/hi";
 import { MdRemoveShoppingCart } from "react-icons/md";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   decrement,
   displayCartInfo,
@@ -13,12 +14,16 @@ import {
 import "./styles/Cart.css";
 
 function ShoppingCart() {
+  const emptyCartImg =
+    window.location.origin + "/assets/empty-shopping-cart.png";
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { cart, totalAmount } = useSelector(
     (state: RootStateOrAny) => state.cart,
   );
+  const { user } = useSelector((state: RootStateOrAny) => state.auth);
 
   useEffect(() => {
     dispatch(displayCartInfo());
@@ -29,12 +34,22 @@ function ShoppingCart() {
     navigate("/");
   };
 
+  const handleCheckout = () => {
+    if (!user) {
+      toast.info("please login first");
+      navigate("/login");
+    } else {
+      toast.info("to be implemented");
+    }
+  };
+
   return (
     <section>
       <h1 className="cart-titel">Shopping Cart</h1>
       {!cart?.length ? (
         <div className="cart-empty">
           <p>Your cart is currently empty . . . </p>
+          <img src={emptyCartImg} alt="empty-cart" width={"400px"} />
           <p className="go-back" onClick={() => navigate("/")}>
             <Hi.HiArrowNarrowLeft /> Start Shopping
           </p>
@@ -98,7 +113,9 @@ function ShoppingCart() {
               <p id="checkout-text">
                 Taxes and shipping calculated at checkout
               </p>
-              <button id="checkout-btn">CHECK OUT</button>
+              <button id="checkout-btn" onClick={handleCheckout}>
+                CHECK OUT
+              </button>
               <p className="go-back checkout" onClick={() => navigate("/")}>
                 <Hi.HiArrowNarrowLeft /> Continue Shopping
               </p>

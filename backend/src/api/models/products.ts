@@ -8,7 +8,11 @@ class ProductModel {
   async create(values: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `INSERT INTO products (category, p_name, brand, color, price, image_url, description) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+      const sql = `
+      INSERT INTO products (category, p_name, brand, color, price, image_url, description)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *
+      `;
       const result = await conct.query(sql, [
         values.category,
         values.p_name,
@@ -106,7 +110,7 @@ class ProductModel {
   async delete({ p_id }: Products): Promise<Products | null> {
     try {
       conct = await pgDB.connect();
-      const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING *`;
+      const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING p_id`;
       const result = await conct.query(sql, [p_id]);
       if (result.rows.length) {
         const product = result.rows[0];

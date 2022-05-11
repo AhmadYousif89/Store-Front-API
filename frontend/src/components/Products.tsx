@@ -25,13 +25,7 @@ function Products() {
   }, [dispatch]);
 
   const handleAddToCart = (product: any) => {
-    if (user) {
-      dispatch(addToCart(product));
-      // dispatch(createOrder({ userId: user.data.user_id }));
-    } else {
-      toast.info("please login first");
-      navigate("/login");
-    }
+    dispatch(addToCart(product));
   };
 
   if (isLoading) return <Spinner />;

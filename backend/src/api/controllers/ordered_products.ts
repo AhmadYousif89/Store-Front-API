@@ -35,7 +35,7 @@ const getOrderedProducts = asyncWrapper(
       return res.status(404).json({ message: `No Data Were Found !` });
     }
 
-    res.status(200).json(data);
+    res.status(200).json({ data, opCount: data.length });
   }
 );
 

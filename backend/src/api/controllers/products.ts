@@ -37,7 +37,7 @@ const getProducts = asyncWrapper(async (_req: Request, res: Response): Promise<v
     return res.status(404).json({ message: `No Products Were Found !` });
   }
 
-  res.status(200).json(data);
+  res.status(200).json({ data, pCount: data.length });
 });
 
 // method => GET /products/:id
@@ -98,7 +98,7 @@ const deleteProduct = asyncWrapper(
       });
     }
 
-    res.status(200).json(data);
+    res.status(200).json({ message: "product deleted successfully" });
   }
 );
 

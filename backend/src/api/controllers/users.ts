@@ -84,7 +84,7 @@ const getUsers = asyncWrapper(async (_req: Request, res: Response): Promise<void
   if (!data.length) {
     return res.status(404).json({ message: `No Users Were Found !` });
   }
-  res.status(200).json({ message: "Data generated successfully", data });
+  res.status(200).json({ message: "Data generated successfully", data, uCount: data.length });
 });
 
 // method => GET /users/:id

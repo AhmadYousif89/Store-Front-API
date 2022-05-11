@@ -3,50 +3,36 @@ import { logout } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import { toast } from "react-toastify";
-import { ThemeContext } from "../App";
-import { useContext } from "react";
+import ToggleTheme from "./ToggleTheme";
 import Sidebar from "./Sidebar";
-import "./styles/Header.css";
+import "./styles/NavBar.css";
 
-function Header() {
+function NavBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const appTheme = useContext(ThemeContext);
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
   const { totalQuantity } = useSelector((state: RootStateOrAny) => state.cart);
 
   const handleLogOut = () => {
     dispatch(logout(user.jwt));
-    toast.info("user logged out");
+    toast.info("user logged out", { position: "top-center" });
     navigate("/");
   };
 
   return (
-    <header className="header">
+    <header className="nav">
       <div className="logo-theme">
         <div id="logo">
           <Link to="/">TechStore</Link>
         </div>
-        <span className="store-theme">
-          <input
-            type="checkbox"
-            name="checkbox"
-            id="checkbox"
-            onChange={() => appTheme?.toggleTheme()}
-          />
-          <label htmlFor="checkbox" className="label">
-            <FaIcons.FaMoon className="moon" />
-            <FaIcons.FaSun className="sun" />
-            <div className="ball" />
-          </label>
-        </span>
+        <ToggleTheme />
       </div>
       <ul>
         {user ? (
           user.jwt !== undefined ? (
             <>
-              <ul className="nav-container">
+              <ul className="nav-menu">
                 <li>
                   <Link to="dashboard/cart">
                     <div className="cart-count">
@@ -65,7 +51,14 @@ function Header() {
           ) : null
         ) : (
           <>
-            <ul className="nav-container">
+            <ul className="nav-menu">
+              <li>
+                <Link to="dashboard/cart">
+                  <div className="cart-count">
+                    <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
+                  </div>
+                </Link>
+              </li>
               <li>
                 <Link className="icon" to="/register">
                   <FaIcons.FaUser /> Register
@@ -84,4 +77,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default NavBar;

@@ -1,10 +1,10 @@
-import { BrowserRouter as BR, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, createContext, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cart from "./components/Cart";
 import Orders from "./components/Orders";
-import Header from "./components/Header";
+import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
@@ -35,32 +35,30 @@ function App() {
   }, [cart, dispatch]);
 
   return (
-    <>
-      <BR>
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-          <ToastContainer
-            theme="colored"
-            autoClose={3000}
-            position={"bottom-left"}
-            hideProgressBar={true}
-            pauseOnFocusLoss={false}
-          />
-          <div className="app-container" id={theme}>
-            <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="dashboard/orders" element={<Orders />} />
-              <Route path="dashboard/cart" element={<Cart />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-          <Footer />
-        </ThemeContext.Provider>
-      </BR>
-    </>
+    <BrowserRouter>
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ToastContainer
+          theme="colored"
+          autoClose={3000}
+          position={"bottom-left"}
+          hideProgressBar={true}
+          pauseOnFocusLoss={false}
+        />
+        <div className="app-container" id={theme}>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="dashboard/orders" element={<Orders />} />
+            <Route path="dashboard/cart" element={<Cart />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        <Footer />
+      </ThemeContext.Provider>
+    </BrowserRouter>
   );
 }
 
