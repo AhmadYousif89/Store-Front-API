@@ -1,19 +1,14 @@
 import "./styles/Products.css";
+import { getProducts, reset } from "../redux/features/products/productSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { addToCart } from "../redux/features/users/cartSlice";
 import { IoIosColorPalette } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
 import Spinner from "./Spinner";
-import { getProducts, reset } from "../redux/features/products/productSlice";
 
 function Products() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
 
   const { products, isLoading } = useSelector(
     (state: RootStateOrAny) => state.products,
