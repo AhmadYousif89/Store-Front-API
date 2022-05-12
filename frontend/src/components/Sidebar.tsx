@@ -1,8 +1,8 @@
+import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import * as Fa from "react-icons/fa";
 import * as Hi from "react-icons/hi";
 import * as Ai from "react-icons/ai";
-import { Link, NavLink } from "react-router-dom";
 import "./styles/Sidebar.css";
 
 function Sidebar() {

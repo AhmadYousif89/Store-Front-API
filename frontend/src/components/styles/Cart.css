@@ -170,16 +170,6 @@
   opacity: 0.7;
 }
 
-.go-back {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: bold;
-}
 .checkout {
   font-size: 0.9rem;
-}
-.go-back:hover {
-  color: #777;
-  cursor: pointer;
 }

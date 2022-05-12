@@ -44,7 +44,7 @@ function ShoppingCart() {
         <div className="cart-empty">
           <p>Your cart is currently empty . . . </p>
           <img src={emptyCartImg} alt="empty-cart" width={"400px"} />
-          <p className="go-back" onClick={() => navigate("/products")}>
+          <p className="go_back" onClick={() => navigate("/products")}>
             <Hi.HiArrowNarrowLeft /> Start Shopping
           </p>
         </div>

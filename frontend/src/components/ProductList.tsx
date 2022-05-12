@@ -1,6 +1,7 @@
 import { AiOutlineTag } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 function ProductList(props: {
   products: any[];
@@ -8,10 +9,12 @@ function ProductList(props: {
 }) {
   return (
     <section className="products">
-      {props.products.map((product: any) => (
+      {props.products.map((product) => (
         <ul className="product-card" key={product.p_id}>
           <div id="img-card">
-            <img src={product.image_url} alt={product.p_name} />
+            <Link to={`/products/${product.p_id}`}>
+              <img src={product.image_url} alt={product.p_name} />
+            </Link>
           </div>
           <div className="card_details">
             <p id="brand">{product.brand}</p>

@@ -17,6 +17,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./AppLayout";
+import SingleProduct from "./components/SingleProduct";
 
 export const ThemeContext = createContext<{
   theme: string;
@@ -49,19 +50,18 @@ function App() {
         />
         <div className="app-container" id={theme}>
           <Routes>
-            <Route path="" element={<AppLayout />}>
+            <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="products" element={<Products />} />
-              <Route path="about" element={<About />} />
+              <Route path="products/:productID" element={<SingleProduct />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="dashboard/cart" element={<Cart />} />
+              <Route path="dashboard/orders" element={<Orders />} />
               <Route path="contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
-            </Route>
-            <Route path="dashboard" element={<AppLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="cart" element={<Cart />} />
-              <Route path="orders" element={<Orders />} />
             </Route>
           </Routes>
         </div>

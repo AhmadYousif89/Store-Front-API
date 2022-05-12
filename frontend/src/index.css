@@ -38,8 +38,3 @@ body {
   position: relative;
   height: 100vh;
 }
-
-body #dark {
-  background-color: rgb(37, 35, 35);
-  color: #e1e1e1;
-}

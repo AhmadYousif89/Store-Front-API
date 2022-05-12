@@ -21,6 +21,26 @@ const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
   }
 });
 
+// Get one product
+const getProduct = createAsyncThunk(
+  "products/single-product",
+  async (productId: string, thunkAPI) => {
+    try {
+      const response = await axios.get(API_URL + `/${productId}`);
+      localStorage.setItem("single-product", JSON.stringify(response.data));
+      return response.data;
+    } catch (err) {
+      const message =
+        ((err as any).response &&
+          (err as any).response.data &&
+          (err as any).response.data.message) ||
+        (err as any).message ||
+        (err as any).toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
 const initialState = {
   products: [],
   isError: false,
@@ -32,11 +52,7 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    reset: (state) => {
-      state.isError = false;
-      state.isSuccess = false;
-      state.isLoading = false;
-    },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -52,11 +68,24 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.products = localProducts.data;
+      })
+      .addCase(getProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        (state.products as any[]).push(action.payload);
+      })
+      .addCase(getProduct.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.products = [];
       });
   },
 });
 
 const { reset } = productSlice.actions;
 
-export { reset, getProducts };
+export { reset, getProducts, getProduct };
 export default productSlice.reducer;

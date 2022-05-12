@@ -24,7 +24,7 @@ function NavBar() {
     <header className="nav">
       <div className="logo-theme">
         <div id="logo">
-          <Link to="/products">TechStore</Link>
+          <Link to="/">TechStore</Link>
         </div>
         <ToggleTheme />
       </div>

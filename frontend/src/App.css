@@ -8,7 +8,6 @@
 }
 
 .heading {
-  font-weight: bold;
   margin-block: 2rem;
 }
 .heading h1 {
@@ -120,13 +119,20 @@
   color: #828282;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+.go_back {
+  place-self: center;
+  margin-inline: auto;
+  max-width: fit-content;
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.go_back:hover {
+  color: #777;
+  cursor: pointer;
 }
 
 @media (max-width: 600px) {

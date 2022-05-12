@@ -72,7 +72,7 @@ function CartList(props: any) {
           <button id="checkout-btn" onClick={props.cartCheckout}>
             CHECK OUT
           </button>
-          <p className="go-back checkout" onClick={() => navigate("/products")}>
+          <p className="go_back checkout" onClick={() => navigate("/products")}>
             <Hi.HiArrowNarrowLeft /> Continue Shopping
           </p>
         </div>
