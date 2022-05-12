@@ -49,7 +49,7 @@ function App() {
         />
         <div className="app-container" id={theme}>
           <Routes>
-            <Route path="/" element={<AppLayout />}>
+            <Route path="" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />

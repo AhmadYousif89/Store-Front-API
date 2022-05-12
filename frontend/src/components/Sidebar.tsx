@@ -3,7 +3,7 @@ import * as FaIcons from "react-icons/fa";
 import * as GrIcons from "react-icons/gr";
 import * as HiIcons from "react-icons/hi";
 import * as AiIcons from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./styles/Sidebar.css";
 
 function Sidebar() {
@@ -25,34 +25,64 @@ function Sidebar() {
         className={!sidebar ? "sidebar-menu show" : "sidebar-menu"}>
         <ul className="sidebar-items">
           <li>
-            <Link className="sidebar-link" to={"/"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"/"}>
               <HiIcons.HiHome /> Home
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link className="sidebar-link" to={"dashboard"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"dashboard"}>
               <AiIcons.AiFillSetting /> Dashboard
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link className="sidebar-link" to={"dashboard/orders"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"/dashboard/orders"}>
               <HiIcons.HiClipboardList /> My Orders
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link className="sidebar-link" to={"dashboard/cart"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"/dashboard/cart"}>
               <FaIcons.FaShoppingCart /> Cart
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link className="sidebar-link" to={"/contact"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"/contact"}>
               <GrIcons.GrContactInfo /> Contact
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link className="sidebar-link" to={"/about"}>
+            <NavLink
+              style={({ isActive }) => ({
+                color: isActive ? "ActiveBorder" : "GrayText",
+              })}
+              className="sidebar-link"
+              to={"/about"}>
               <FaIcons.FaInfoCircle /> About
-            </Link>
+            </NavLink>
           </li>
         </ul>
       </nav>
