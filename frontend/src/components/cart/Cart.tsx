@@ -1,4 +1,7 @@
-import { displayCartInfo, emptyCart } from "../redux/features/users/cartSlice";
+import {
+  displayCartInfo,
+  emptyCart,
+} from "../../redux/features/users/cartSlice";
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";

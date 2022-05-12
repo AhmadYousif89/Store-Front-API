@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { getUserOrders, reset } from "../redux/features/orders/orderSlice";
+import { getUserOrders, reset } from "../../redux/features/orders/orderSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "./Spinner";
+import Spinner from "../utils/Spinner";
 import "./styles/Orders.css";
 import OrdersList from "./OrdersList";
 

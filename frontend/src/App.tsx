@@ -6,9 +6,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
-import Cart from "./components/Cart";
-import Orders from "./components/Orders";
-import Products from "./components/Products";
+import Cart from "./components/cart/Cart";
+import Orders from "./components/orders/Orders";
+import Products from "./components/products/Products";
+import SingleProduct from "./components/products/SingleProduct";
+
+import AppLayout from "./AppLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,8 +19,6 @@ import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
-import AppLayout from "./AppLayout";
-import SingleProduct from "./components/SingleProduct";
 
 export const ThemeContext = createContext<{
   theme: string;

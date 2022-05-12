@@ -1,11 +1,11 @@
+import { getProduct, reset } from "../../redux/features/products/productSlice";
+import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { AiOutlineTag } from "react-icons/ai";
 import { HiArrowNarrowLeft } from "react-icons/hi";
 import { IoIosColorPalette } from "react-icons/io";
-import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { getProduct, reset } from "../redux/features/products/productSlice";
-import Spinner from "./Spinner";
+import Spinner from "../utils/Spinner";
 
 function SingleProduct() {
   const dispatch = useDispatch();

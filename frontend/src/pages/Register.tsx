@@ -3,7 +3,7 @@ import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/utils/Spinner";
 import { IoPersonCircleOutline } from "react-icons/io5";
 
 function Register() {
