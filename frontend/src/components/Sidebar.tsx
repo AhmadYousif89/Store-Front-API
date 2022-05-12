@@ -1,8 +1,7 @@
 import { useState } from "react";
-import * as FaIcons from "react-icons/fa";
-import * as GrIcons from "react-icons/gr";
-import * as HiIcons from "react-icons/hi";
-import * as AiIcons from "react-icons/ai";
+import * as Fa from "react-icons/fa";
+import * as Hi from "react-icons/hi";
+import * as Ai from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import "./styles/Sidebar.css";
 
@@ -17,73 +16,60 @@ function Sidebar() {
     <>
       <div id="nav">
         <Link to="#" className="sidebar-icon">
-          <FaIcons.FaBars onClick={handleSidebar} />
+          <Fa.FaBars onClick={handleSidebar} />
         </Link>
       </div>
-      <nav
-        onMouseUp={handleSidebar}
-        className={!sidebar ? "sidebar-menu show" : "sidebar-menu"}>
+      <nav className={!sidebar ? "sidebar-menu show" : "sidebar-menu"}>
         <ul className="sidebar-items">
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"/"}>
-              <HiIcons.HiHome /> Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"dashboard"}>
-              <AiIcons.AiFillSetting /> Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"/dashboard/orders"}>
-              <HiIcons.HiClipboardList /> My Orders
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"/dashboard/cart"}>
-              <FaIcons.FaShoppingCart /> Cart
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"/contact"}>
-              <GrIcons.GrContactInfo /> Contact
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              style={({ isActive }) => ({
-                color: isActive ? "ActiveBorder" : "GrayText",
-              })}
-              className="sidebar-link"
-              to={"/about"}>
-              <FaIcons.FaInfoCircle /> About
-            </NavLink>
-          </li>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/"}>
+            <Hi.HiHome /> Home
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/products"}>
+            <Ai.AiOutlineCodeSandbox /> Products
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/dashboard"}>
+            <Ai.AiFillSetting /> Dashboard
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/dashboard/orders"}>
+            <Hi.HiClipboardList /> Orders
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/dashboard/cart"}>
+            <Fa.FaShoppingCart /> Cart
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/contact"}>
+            <Ai.AiOutlineContacts /> Contact
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "sidebar-link active" : "sidebar-link"
+            }
+            to={"/about"}>
+            <Fa.FaInfoCircle /> About
+          </NavLink>
         </ul>
       </nav>
     </>

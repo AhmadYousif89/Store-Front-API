@@ -1,3 +1,4 @@
+import { AiOutlineTag } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
 
@@ -17,7 +18,10 @@ function ProductList(props: {
             <h5>{product.p_name}</h5>
             <p>{product.description}</p>
             <span className="price-tag">
-              <span>$</span> <p id="price">{product.price}</p>
+              <span>
+                <AiOutlineTag />
+              </span>
+              <p id="price">{product.price}</p>
               <IoIosColorPalette />
               <p id="color">{product.color}</p>
             </span>
