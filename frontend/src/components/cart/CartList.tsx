@@ -13,45 +13,54 @@ function CartList(props: any) {
   const navigate = useNavigate();
 
   return (
-    <section className="cart-container">
-      <div className="cart-headers">
-        <h3 id="product-titel">Product</h3>
-        <h3 id="product-price">Price</h3>
-        <h3 id="product-quantity">Quantity</h3>
-        <h3 id="product-total">Total</h3>
-      </div>
-      <div className="cart-products-details">
+    <>
+      <div className="cart-container">
         {props.cart.map((item: any) => (
           <div className="cart-item" key={item.p_id}>
-            <div className="item-card">
-              <img src={item.image_url} alt={item.p_name} />
-              <div className="item-details">
-                <p id="item-brand">{item.brand}</p>
-                <p id="item-name">{item.p_name}</p>
-                <p id="item-color">
-                  color: <br /> {item.color}
-                </p>
-                <button
-                  id="item-btn"
-                  onClick={() => dispatch(removeProduct(item))}>
-                  <Hi.HiShoppingCart /> Remove
-                </button>
+            <div className="cart-header">
+              <h3 id="product-titel">Product</h3>
+              <div className="item-card">
+                <img src={item.image_url} alt={item.p_name} />
+                <div className="item-details">
+                  <p id="item-brand">{item.brand}</p>
+                  <p id="item-name">{item.p_name}</p>
+                  <p id="item-color">
+                    color: <br /> {item.color}
+                  </p>
+                  <button
+                    id="item-btn"
+                    onClick={() => dispatch(removeProduct(item))}>
+                    <Hi.HiShoppingCart /> Remove
+                  </button>
+                </div>
               </div>
             </div>
-            <div id="item-price">
-              <span>$</span> <>{item.price}</>
+
+            <div className="cart-header">
+              <h3 id="product-titel">Price</h3>
+              <div id="item-price">
+                <span>$</span> <>{item.price}</>
+              </div>
             </div>
-            <div id="item-quantity">
-              <Hi.HiOutlineMinusCircle
-                onClick={() => dispatch(decrement(item))}
-              />
-              <p id="item-count">{item.quantity}</p>
-              <Hi.HiOutlinePlusCircle
-                onClick={() => dispatch(increment(item))}
-              />
+
+            <div className="cart-header">
+              <h3 id="product-titel">Quantity</h3>
+              <div id="item-quantity">
+                <Hi.HiOutlineMinusCircle
+                  onClick={() => dispatch(decrement(item))}
+                />
+                <p id="item-count">{item.quantity}</p>
+                <Hi.HiOutlinePlusCircle
+                  onClick={() => dispatch(increment(item))}
+                />
+              </div>
             </div>
-            <div id="item-total">
-              <span>$</span> {item.quantity * item.price}
+
+            <div className="cart-header">
+              <h3 id="product-titel">Total</h3>
+              <div id="item-total">
+                <span>$</span> {item.quantity * item.price}
+              </div>
             </div>
           </div>
         ))}
@@ -77,7 +86,7 @@ function CartList(props: any) {
           </p>
         </div>
       </div>
-    </section>
+    </>
   );
 }
 

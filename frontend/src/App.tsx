@@ -26,14 +26,16 @@ export const ThemeContext = createContext<{
 } | null>(null);
 
 function App() {
-  const [theme, setTheme] = useState("light");
   const dispatch = useDispatch();
 
+  const [theme, setTheme] = useState("light");
   const toggleTheme = () => {
     setTheme((theme) => (theme === "light" ? "dark" : "light"));
   };
 
-  const { cart } = useSelector((state: RootStateOrAny) => state.cart);
+  const { cart, totalAmount } = useSelector(
+    (state: RootStateOrAny) => state.cart,
+  );
 
   useEffect(() => {
     dispatch(displayCartInfo());
@@ -59,7 +61,10 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="products/:productID" element={<SingleProduct />} />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="dashboard/cart" element={<Cart />} />
+              <Route
+                path="dashboard/cart"
+                element={<Cart cart={cart} totalAmount={totalAmount} />}
+              />
               <Route path="dashboard/orders" element={<Orders />} />
               <Route path="contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />

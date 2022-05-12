@@ -10,7 +10,7 @@ import * as Hi from "react-icons/hi";
 import CartList from "./CartList";
 import "./styles/Cart.css";
 
-function ShoppingCart() {
+function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
   const emptyCartImg =
     window.location.origin + "/assets/empty-shopping-cart.png";
 
@@ -18,13 +18,10 @@ function ShoppingCart() {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
-  const { cart, totalAmount } = useSelector(
-    (state: RootStateOrAny) => state.cart,
-  );
 
   useEffect(() => {
     dispatch(displayCartInfo());
-  }, [cart, dispatch]);
+  }, [props.cart, dispatch]);
 
   const handleEmptyCart = () => {
     dispatch(emptyCart());
@@ -43,7 +40,7 @@ function ShoppingCart() {
   return (
     <section>
       <h1 className="cart-titel">Shopping Cart</h1>
-      {!cart.length ? (
+      {!props.cart.length ? (
         <div className="cart-empty">
           <p>Your cart is currently empty . . . </p>
           <img src={emptyCartImg} alt="empty-cart" width={"400px"} />
@@ -53,8 +50,8 @@ function ShoppingCart() {
         </div>
       ) : (
         <CartList
-          cart={cart}
-          cartTotalAmount={totalAmount}
+          cart={props.cart}
+          cartTotalAmount={props.totalAmount}
           emptyCartItem={handleEmptyCart}
           cartCheckout={handleCartCheckout}
         />
