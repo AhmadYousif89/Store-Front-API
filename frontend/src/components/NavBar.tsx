@@ -17,14 +17,14 @@ function NavBar() {
   const handleLogOut = () => {
     dispatch(logout(user.jwt));
     toast.info("user logged out", { position: "top-center" });
-    navigate("/");
+    navigate("/products");
   };
 
   return (
     <header className="nav">
       <div className="logo-theme">
         <div id="logo">
-          <Link to="/">TechStore</Link>
+          <Link to="/products">TechStore</Link>
         </div>
         <ToggleTheme />
       </div>
@@ -34,7 +34,7 @@ function NavBar() {
             <>
               <ul className="nav-menu">
                 <li>
-                  <Link to="dashboard/cart">
+                  <Link to="/dashboard/cart">
                     <div className="cart-count">
                       <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
                     </div>
@@ -53,7 +53,7 @@ function NavBar() {
           <>
             <ul className="nav-menu">
               <li>
-                <Link to="dashboard/cart">
+                <Link to="/dashboard/cart">
                   <div className="cart-count">
                     <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
                   </div>

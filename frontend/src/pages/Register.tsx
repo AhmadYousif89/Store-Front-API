@@ -28,7 +28,7 @@ function Register() {
     }
     if (user) {
       if (isSuccess) toast.success(message);
-      navigate(`/`);
+      navigate(`/products`);
     }
     dispatch(reset());
   }, [user, isSuccess, isError, message, navigate, dispatch]);

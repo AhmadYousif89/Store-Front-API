@@ -1,20 +1,5 @@
-import { useSelector, RootStateOrAny } from "react-redux";
-import Products from "../components/Products";
-
 function Home() {
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
-
-  return (
-    <>
-      <div className="heading">
-        <h3 className="user-welcome">
-          Welcome
-          {user ? <span> {user.data.name.toUpperCase()} </span> : null}
-        </h3>
-      </div>
-      <Products />
-    </>
-  );
+  return <h1>Home Page</h1>;
 }
 
 export default Home;
