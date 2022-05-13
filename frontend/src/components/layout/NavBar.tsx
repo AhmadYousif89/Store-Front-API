@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import ToggleTheme from "./ToggleTheme";
 import Sidebar from "./Sidebar";
 import "./styles/NavBar.css";
+import CartIcon from "../utils/CartIcon";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -34,11 +35,7 @@ function NavBar() {
             <ul className="nav-menu">
               <Sidebar />
               <li>
-                <Link to="/dashboard/cart">
-                  <div className="cart-count">
-                    <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
-                  </div>
-                </Link>
+                <CartIcon totalQuantity={totalQuantity} />
               </li>
               <li>
                 <div className="logout" onClick={handleLogOut}>
@@ -50,11 +47,7 @@ function NavBar() {
         ) : (
           <ul className="nav-menu">
             <li>
-              <Link to="/dashboard/cart">
-                <div className="cart-count">
-                  <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
-                </div>
-              </Link>
+              <CartIcon totalQuantity={totalQuantity} />
             </li>
             <li>
               <Link className="icon" to="/register">

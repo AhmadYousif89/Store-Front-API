@@ -10,7 +10,7 @@ import * as Hi from "react-icons/hi";
 import CartList from "./CartList";
 import "./styles/Cart.css";
 
-function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
+function ShoppingCart(props: { cart: []; totalAmount: number }) {
   const { cart, totalAmount } = props;
   const emptyCartImg =
     window.location.origin + "/assets/empty-shopping-cart.png";
@@ -52,7 +52,7 @@ function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
       ) : (
         <CartList
           cart={cart}
-          cartTotalAmount={totalAmount}
+          totalAmount={totalAmount}
           emptyCartItem={handleEmptyCart}
           cartCheckout={handleCartCheckout}
         />

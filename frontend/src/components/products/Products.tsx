@@ -26,14 +26,14 @@ function Products() {
 
   return (
     <>
-      <section className="main-header">
+      <section className="product-container">
         <h1>New Arrivals</h1>
+        {!products?.length ? (
+          <p>Store Is Under Construction , Sorry.</p>
+        ) : (
+          <ProductList addToCart={handleAddToCart} products={products} />
+        )}
       </section>
-      {!products.length ? (
-        <p>Store Is Under Construction , Sorry.</p>
-      ) : (
-        <ProductList moveToCart={handleAddToCart} products={products} />
-      )}
     </>
   );
 }

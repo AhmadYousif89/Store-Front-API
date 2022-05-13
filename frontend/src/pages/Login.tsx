@@ -51,10 +51,10 @@ function Login() {
 
   return (
     <>
-      <section className="heading">
+      <div className="heading">
         <h1>TechStore</h1>
         <p>Login to your account</p>
-      </section>
+      </div>
       <section className="form">
         <form onSubmit={handleSubmit}>
           <div className="form-content">

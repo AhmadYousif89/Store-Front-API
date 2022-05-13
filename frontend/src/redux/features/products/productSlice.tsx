@@ -3,6 +3,9 @@ import axios from "axios";
 const API_URL = "/api/products";
 
 const localProducts = JSON.parse(localStorage.getItem("products") as string);
+const localProduct = JSON.parse(
+  localStorage.getItem("single-product") as string,
+);
 
 // Show products
 const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
@@ -52,7 +55,7 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -80,7 +83,7 @@ const productSlice = createSlice({
       .addCase(getProduct.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
-        state.products = [];
+        (state.products as any[]).push(localProduct);
       });
   },
 });

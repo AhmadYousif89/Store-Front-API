@@ -37,4 +37,5 @@ img {
 body {
   position: relative;
   height: 100vh;
+  background-color: rgba(214, 221, 221, 0.5);
 }

@@ -1,14 +1,15 @@
+.product-container {
+  margin-bottom: 4rem;
+  font-size: 2rem;
+}
+
 .products {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
+  margin-top: 2rem;
   margin-bottom: 10rem;
-}
-
-.main-header {
-  margin-bottom: 4rem;
-  font-size: 2rem;
 }
 
 .product-card {
@@ -20,45 +21,58 @@
   justify-content: center;
 }
 
+.card-details {
+  display: flex;
+  text-align: left;
+}
+
 #img-card {
   align-self: center;
-  margin: 0 2rem;
+  padding: 0 1rem;
+  width: fit-content;
 }
 
-.card_details {
+.price-color {
   display: flex;
   flex-direction: column;
-  margin-right: 1rem;
-  text-align: left;
-  max-width: 250px;
-}
-.card_details > p {
+  align-items: start;
   margin-top: 0.5rem;
-  font-size: 0.75rem;
 }
-
+.price-color svg {
+  transform: scale(0.5);
+  align-self: start;
+}
 .price-tag {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem;
-  font-weight: bold;
-  margin-top: 0.5rem;
-}
-.price-tag span {
-  font-weight: normal;
-  align-self: start;
 }
 #price {
-  font-size: 1.75rem;
-  margin-right: auto;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.color-tag {
+  display: flex;
+  align-items: center;
 }
 #color {
   font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 #brand {
-  color: #6f93b4;
-  margin-bottom: 1rem;
+  color: #5d8ab698;
+  letter-spacing: 1px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+#p-desc {
+  max-width: 30ch;
+  font-size: 0.7rem;
+  margin-block: 0.5rem;
+}
+#p-name {
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .btn-card {

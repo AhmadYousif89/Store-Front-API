@@ -15,8 +15,8 @@ function SingleProduct() {
     (state: RootStateOrAny) => state.products,
   );
 
-  const showProduct = products.map((product: any) => (
-    <ul className="product-card" key={product.p_id}>
+  const showProduct = products?.map((product: any) => (
+    <ul className="card-details" key={product.p_id}>
       <div id="img-card">
         <img src={product.image_url} alt={product.p_name} />
       </div>
@@ -46,7 +46,7 @@ function SingleProduct() {
   if (isLoading) return <Spinner />;
 
   return (
-    <>
+    <div>
       <div className="heading">
         <h2>Product Details</h2>
       </div>
@@ -54,7 +54,7 @@ function SingleProduct() {
       <Link className="go_back" to="/products">
         <HiArrowNarrowLeft /> Back to products
       </Link>
-    </>
+    </div>
   );
 }
 

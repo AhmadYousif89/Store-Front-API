@@ -14,7 +14,7 @@ function Sidebar() {
 
   return (
     <>
-      <div id="nav">
+      <div>
         <Link to="#" className="sidebar-icon">
           <Fa.FaBars onClick={handleSidebar} />
         </Link>

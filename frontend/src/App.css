@@ -1,10 +1,17 @@
 .app-container {
   display: grid;
   width: 100%;
-  max-width: 1200px;
+  height: auto;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
   text-align: center;
+  background-color: #fff;
+  grid-template-areas:
+    "nav"
+    "content"
+    "footer";
+  grid-template-rows: 100px 1fr;
 }
 
 .heading {

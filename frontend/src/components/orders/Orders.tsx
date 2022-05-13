@@ -1,5 +1,9 @@
 import { useEffect } from "react";
-import { getUserOrders, reset } from "../../redux/features/orders/orderSlice";
+import {
+  deleteOrder,
+  getUserOrders,
+  reset,
+} from "../../redux/features/orders/orderSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -25,6 +29,10 @@ function Orders() {
     return () => dispatch(reset());
   }, [user, navigate, dispatch]);
 
+  const handleOrderDelete = (oId: number) => {
+    dispatch(deleteOrder(oId));
+  };
+
   if (isLoading) return <Spinner />;
 
   return (
@@ -33,7 +41,10 @@ function Orders() {
         <div className="heading">
           <h1>My Orders</h1>
         </div>
-        <OrdersList orders={orders} />
+        <OrdersList
+          orders={orders}
+          delOrder={(oId) => handleOrderDelete(oId)}
+        />
       </section>
     </>
   );
