@@ -95,7 +95,6 @@ const cartSlice = createSlice({
       );
       (state.cart[productIndex] as { quantity: number }).quantity += 1;
       localStorage.setItem("cart", JSON.stringify(state.cart));
-      toast.info(`${action.payload.p_name} quantity increased`);
     },
     decrement: (state, action) => {
       const productIndex = state.cart.findIndex(
@@ -103,7 +102,6 @@ const cartSlice = createSlice({
       );
       if (state.cart[productIndex].quantity > 1) {
         (state.cart[productIndex] as { quantity: number }).quantity -= 1;
-        toast.info(`${action.payload.p_name} quantity decreased`);
       } else if (state.cart[productIndex].quantity === 1) {
         const cartList = state.cart.filter(
           (product: { p_id: any }) => product.p_id !== action.payload.p_id,
