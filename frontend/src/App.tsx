@@ -51,7 +51,7 @@ function App() {
           hideProgressBar={true}
           pauseOnFocusLoss={false}
         />
-        <div className="app-container" id={theme}>
+        <main className="app-container" id={theme}>
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
@@ -70,7 +70,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
-        </div>
+        </main>
       </ThemeContext.Provider>
     </BrowserRouter>
   );

@@ -11,6 +11,7 @@ import CartList from "./CartList";
 import "./styles/Cart.css";
 
 function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
+  const { cart, totalAmount } = props;
   const emptyCartImg =
     window.location.origin + "/assets/empty-shopping-cart.png";
 
@@ -40,7 +41,7 @@ function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
   return (
     <section>
       <h1 className="cart-titel">Shopping Cart</h1>
-      {!props.cart.length ? (
+      {!cart.length ? (
         <div className="cart-empty">
           <p>Your cart is currently empty . . . </p>
           <img src={emptyCartImg} alt="empty-cart" width={"400px"} />
@@ -50,8 +51,8 @@ function ShoppingCart(props: { cart: string | any[]; totalAmount: number }) {
         </div>
       ) : (
         <CartList
-          cart={props.cart}
-          cartTotalAmount={props.totalAmount}
+          cart={cart}
+          cartTotalAmount={totalAmount}
           emptyCartItem={handleEmptyCart}
           cartCheckout={handleCartCheckout}
         />

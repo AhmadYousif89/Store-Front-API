@@ -15,6 +15,27 @@ function SingleProduct() {
     (state: RootStateOrAny) => state.products,
   );
 
+  const showProduct = products.map((product: any) => (
+    <ul className="product-card" key={product.p_id}>
+      <div id="img-card">
+        <img src={product.image_url} alt={product.p_name} />
+      </div>
+      <div className="card_details">
+        <p id="brand">{product.brand}</p>
+        <h5>{product.p_name}</h5>
+        <p>{product.description}</p>
+        <span className="price-tag">
+          <span>
+            <AiOutlineTag />
+          </span>
+          <p id="price">{product.price}</p>
+          <IoIosColorPalette />
+          <p id="color">{product.color}</p>
+        </span>
+      </div>
+    </ul>
+  ));
+
   useEffect(() => {
     dispatch(getProduct(productID as string));
     return () => {
@@ -29,28 +50,7 @@ function SingleProduct() {
       <div className="heading">
         <h2>Product Details</h2>
       </div>
-      <section className="products">
-        {products.map((product: any) => (
-          <ul className="product-card" key={product.p_id}>
-            <div id="img-card">
-              <img src={product.image_url} alt={product.p_name} />
-            </div>
-            <div className="card_details">
-              <p id="brand">{product.brand}</p>
-              <h5>{product.p_name}</h5>
-              <p>{product.description}</p>
-              <span className="price-tag">
-                <span>
-                  <AiOutlineTag />
-                </span>
-                <p id="price">{product.price}</p>
-                <IoIosColorPalette />
-                <p id="color">{product.color}</p>
-              </span>
-            </div>
-          </ul>
-        ))}
-      </section>
+      <section className="products">{showProduct}</section>
       <Link className="go_back" to="/products">
         <HiArrowNarrowLeft /> Back to products
       </Link>

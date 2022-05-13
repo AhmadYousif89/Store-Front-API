@@ -31,27 +31,8 @@ function NavBar() {
       <ul>
         {user ? (
           user.jwt !== undefined ? (
-            <>
-              <ul className="nav-menu">
-                <li>
-                  <Link to="/dashboard/cart">
-                    <div className="cart-count">
-                      <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
-                    </div>
-                  </Link>
-                </li>
-                <li>
-                  <div className="logout" onClick={handleLogOut}>
-                    Logout <FaIcons.FaSignOutAlt />
-                  </div>
-                </li>
-                <Sidebar />
-              </ul>
-            </>
-          ) : null
-        ) : (
-          <>
             <ul className="nav-menu">
+              <Sidebar />
               <li>
                 <Link to="/dashboard/cart">
                   <div className="cart-count">
@@ -60,17 +41,32 @@ function NavBar() {
                 </Link>
               </li>
               <li>
-                <Link className="icon" to="/register">
-                  <FaIcons.FaUser /> Register
-                </Link>
-              </li>
-              <li>
-                <Link className="icon" to="/login">
-                  <FaIcons.FaSignInAlt /> Login
-                </Link>
+                <div className="logout" onClick={handleLogOut}>
+                  Logout <FaIcons.FaSignOutAlt />
+                </div>
               </li>
             </ul>
-          </>
+          ) : null
+        ) : (
+          <ul className="nav-menu">
+            <li>
+              <Link to="/dashboard/cart">
+                <div className="cart-count">
+                  <FaIcons.FaCartArrowDown /> <span>{totalQuantity}</span>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link className="icon" to="/register">
+                <FaIcons.FaUser /> Register
+              </Link>
+            </li>
+            <li>
+              <Link className="icon" to="/login">
+                <FaIcons.FaSignInAlt /> Login
+              </Link>
+            </li>
+          </ul>
         )}
       </ul>
     </header>

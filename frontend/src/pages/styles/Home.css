@@ -17,6 +17,5 @@
 }
 
 .home-content button:hover {
-  transform: scale(1.05);
-  transition: 200ms;
+  transform: scale(0.9);
 }

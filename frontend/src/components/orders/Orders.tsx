@@ -21,7 +21,7 @@ function Orders() {
       navigate(`/login`);
       toast.error("Access denied");
     }
-    dispatch(getUserOrders(user.data.user_id));
+    dispatch(getUserOrders(user?.data.user_id));
     return () => dispatch(reset());
   }, [user, navigate, dispatch]);
 
