@@ -20,10 +20,14 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
-export const ThemeContext = createContext<{
+export type Theme = {
   theme: string;
-  toggleTheme: Function;
-} | null>(null);
+  toggleTheme: () => void;
+};
+export const ThemeContext = createContext<Theme>({
+  theme: "",
+  toggleTheme: () => {},
+});
 
 function App() {
   const dispatch = useDispatch();
@@ -51,26 +55,24 @@ function App() {
           hideProgressBar={true}
           pauseOnFocusLoss={false}
         />
-        <main className="app-container" id={theme}>
-          <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="products" element={<Products />} />
-              <Route path="products/:productID" element={<SingleProduct />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route
-                path="dashboard/cart"
-                element={<Cart cart={cart} totalAmount={totalAmount} />}
-              />
-              <Route path="dashboard/orders" element={<Orders />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="products" element={<Products />} />
+            <Route path="products/:productID" element={<SingleProduct />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route
+              path="dashboard/cart"
+              element={<Cart cart={cart} totalAmount={totalAmount} />}
+            />
+            <Route path="dashboard/orders" element={<Orders />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
       </ThemeContext.Provider>
     </BrowserRouter>
   );

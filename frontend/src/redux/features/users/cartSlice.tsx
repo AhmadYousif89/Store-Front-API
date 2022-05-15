@@ -49,7 +49,7 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
       // get product position in the cart by it's id
       const productIndex = state.cart.findIndex(
-        (product: any) => product.p_id === action.payload.p_id,
+        (product: { p_id: string }) => product.p_id === action.payload.p_id,
       );
       // check if we have products in cart
       if (productIndex < 0) {
@@ -91,20 +91,20 @@ const cartSlice = createSlice({
     },
     increment: (state, action) => {
       const productIndex = state.cart.findIndex(
-        (product: any) => product.p_id === action.payload.p_id,
+        (product: { p_id: string }) => product.p_id === action.payload.p_id,
       );
       (state.cart[productIndex] as { quantity: number }).quantity += 1;
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     decrement: (state, action) => {
       const productIndex = state.cart.findIndex(
-        (product: any) => product.p_id === action.payload.p_id,
+        (product: { p_id: string }) => product.p_id === action.payload.p_id,
       );
       if (state.cart[productIndex].quantity > 1) {
         (state.cart[productIndex] as { quantity: number }).quantity -= 1;
       } else if (state.cart[productIndex].quantity === 1) {
         const cartList = state.cart.filter(
-          (product: { p_id: any }) => product.p_id !== action.payload.p_id,
+          (product: { p_id: string }) => product.p_id !== action.payload.p_id,
         );
         state.cart = cartList;
         toast.error(`${action.payload.p_name} removed from cart`);
@@ -113,7 +113,7 @@ const cartSlice = createSlice({
     },
     removeProduct: (state, action) => {
       const cartList = state.cart.filter(
-        (product: { p_id: any }) => product.p_id !== action.payload.p_id,
+        (product: { p_id: string }) => product.p_id !== action.payload.p_id,
       );
       state.cart = cartList;
       toast.error(`${action.payload.p_name} removed from cart`);

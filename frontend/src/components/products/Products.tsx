@@ -5,11 +5,12 @@ import { addToCart } from "../../redux/features/users/cartSlice";
 import { useEffect } from "react";
 import Spinner from "../utils/Spinner";
 import ProductList from "./ProductList";
+import ProductSideMenu from "./ProductSideMenu";
 
 function Products() {
   const dispatch = useDispatch();
 
-  const { products, isLoading } = useSelector(
+  const { products, isLoading, isError } = useSelector(
     (state: RootStateOrAny) => state.products,
   );
 
@@ -26,12 +27,15 @@ function Products() {
 
   return (
     <>
+      <h1>New Arrivals</h1>
       <section className="product-container">
-        <h1>New Arrivals</h1>
-        {!products?.length ? (
-          <p>Store Is Under Construction , Sorry.</p>
+        {isError ? (
+          <p className="no-products">Store Is Under Construction , Sorry.</p>
         ) : (
-          <ProductList addToCart={handleAddToCart} products={products} />
+          <>
+            <ProductSideMenu />
+            <ProductList addToCart={handleAddToCart} products={products} />
+          </>
         )}
       </section>
     </>

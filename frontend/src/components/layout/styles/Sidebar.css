@@ -1,11 +1,10 @@
 .sidebar-icon {
-  margin-right: 1rem;
-}
-.sidebar-icon {
   display: flex;
+  margin: 0 0.5rem;
 }
 .sidebar-icon:hover {
-  color: #777;
+  opacity: 0.5;
+  cursor: pointer;
 }
 
 .sidebar-menu {

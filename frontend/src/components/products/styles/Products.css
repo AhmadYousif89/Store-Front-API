@@ -1,35 +1,46 @@
 .product-container {
-  margin-bottom: 4rem;
-  font-size: 2rem;
+  display: grid;
+  grid-template-columns: 0.25fr 1fr;
 }
 
 .products {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: start;
   gap: 2rem;
   margin-top: 2rem;
   margin-bottom: 10rem;
+}
+
+.product-side-menu {
+  border-right: 1px #000 solid;
+  border-left: 1px #000 solid;
+  margin-right: 2rem;
 }
 
 .product-card {
   display: flex;
   border-radius: 10px;
   padding-block: 1rem;
-  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5),
-    2px 2px 10px rgba(83, 79, 79, 0.5);
+  box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.5),
+    0px 0px 5px 1px rgba(115, 105, 105, 0.5);
   justify-content: center;
 }
 
 .card-details {
   display: flex;
   text-align: left;
+  gap: 1rem;
 }
 
 #img-card {
   align-self: center;
   padding: 0 1rem;
   width: fit-content;
+  transition: 300ms;
+}
+#img-card:hover {
+  transform: scale(1.02);
 }
 
 .price-color {
@@ -45,6 +56,7 @@
 .price-tag {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 #price {
   font-size: 1.5rem;
@@ -53,6 +65,7 @@
 .color-tag {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 #color {
   font-size: 0.7rem;
@@ -69,6 +82,17 @@
   max-width: 30ch;
   font-size: 0.7rem;
   margin-block: 0.5rem;
+  padding-right: 1rem;
+}
+#p-desc div {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #777;
+}
+#p-desc span {
+  font-size: 1rem;
 }
 #p-name {
   font-weight: bold;
@@ -94,4 +118,8 @@
 .btn-card svg {
   margin-right: 10px;
   font-size: 1rem;
+}
+
+.no-products {
+  margin-top: 2rem;
 }

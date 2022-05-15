@@ -4,7 +4,7 @@ import { useContext } from "react";
 import "./styles/ToggleTheme.css";
 
 function ToggleTheme() {
-  const appTheme = useContext(ThemeContext);
+  const { toggleTheme } = useContext(ThemeContext);
 
   return (
     <span className="store-theme">
@@ -12,7 +12,7 @@ function ToggleTheme() {
         type="checkbox"
         name="appTheme"
         id="checkbox"
-        onChange={() => appTheme?.toggleTheme()}
+        onChange={() => toggleTheme()}
       />
       <label htmlFor="checkbox" className="label">
         <FaIcons.FaMoon className="moon" />

@@ -10,10 +10,11 @@ import { toast } from "react-toastify";
 import Spinner from "../utils/Spinner";
 import "./styles/Orders.css";
 import OrdersList from "./OrdersList";
+import { FaArrowLeft } from "react-icons/fa";
 
 function Orders() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
   const { orders, isLoading } = useSelector(
@@ -41,10 +42,16 @@ function Orders() {
         <div className="heading">
           <h1>My Orders</h1>
         </div>
-        <OrdersList
-          orders={orders}
-          delOrder={(oId) => handleOrderDelete(oId)}
-        />
+        <section className="content">
+          {!orders.length ? (
+            <h3>You don't have any orders...</h3>
+          ) : (
+            <OrdersList orders={orders} delOrder={handleOrderDelete} />
+          )}
+          <div className="go_back" onClick={() => navigate("/products")}>
+            <FaArrowLeft /> {!orders.length ? "Start Shopping" : "Back"}
+          </div>
+        </section>
       </section>
     </>
   );

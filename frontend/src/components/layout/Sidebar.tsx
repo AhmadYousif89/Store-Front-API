@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import * as Fa from "react-icons/fa";
 import * as Hi from "react-icons/hi";
@@ -14,10 +14,8 @@ function Sidebar() {
 
   return (
     <>
-      <div>
-        <Link to="#" className="sidebar-icon">
-          <Fa.FaBars onClick={handleSidebar} />
-        </Link>
+      <div className="sidebar-icon">
+        <Fa.FaBars onClick={handleSidebar} />
       </div>
       <nav className={!sidebar ? "sidebar-menu show" : "sidebar-menu"}>
         <ul className="sidebar-items">

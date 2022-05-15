@@ -2,39 +2,16 @@ import { getProduct, reset } from "../../redux/features/products/productSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { AiOutlineTag } from "react-icons/ai";
 import { HiArrowNarrowLeft } from "react-icons/hi";
-import { IoIosColorPalette } from "react-icons/io";
 import Spinner from "../utils/Spinner";
 
 function SingleProduct() {
   const dispatch = useDispatch();
   const { productID } = useParams();
 
-  const { products, isLoading } = useSelector(
+  const { products, isLoading, isError } = useSelector(
     (state: RootStateOrAny) => state.products,
   );
-
-  const showProduct = products?.map((product: any) => (
-    <ul className="card-details" key={product.p_id}>
-      <div id="img-card">
-        <img src={product.image_url} alt={product.p_name} />
-      </div>
-      <div className="card_details">
-        <p id="brand">{product.brand}</p>
-        <h5>{product.p_name}</h5>
-        <p>{product.description}</p>
-        <span className="price-tag">
-          <span>
-            <AiOutlineTag />
-          </span>
-          <p id="price">{product.price}</p>
-          <IoIosColorPalette />
-          <p id="color">{product.color}</p>
-        </span>
-      </div>
-    </ul>
-  ));
 
   useEffect(() => {
     dispatch(getProduct(productID as string));
@@ -43,18 +20,62 @@ function SingleProduct() {
     };
   }, [dispatch, productID]);
 
+  type Product = {
+    p_id: string;
+    p_name: string;
+    brand: string;
+    price: number;
+    color: string;
+    image_url: string;
+    description: string;
+  };
+
+  const showProduct = products?.map((product: Product) => {
+    const { p_id, p_name, brand, price, color, image_url, description } =
+      product;
+    return (
+      <ul className="card-details" key={p_id}>
+        <div id="img-card">
+          <img src={image_url} alt={p_name} />
+        </div>
+        <div>
+          <p id="brand">{brand.toUpperCase()}</p>
+          <p id="p-name">{p_name}</p>
+          <div className="price-color">
+            <div className="price-tag">
+              <span>Price</span> <span id="price">{price}</span>
+            </div>
+            <div className="color-tag">
+              <span>Color</span> <p id="color">{color}</p>
+            </div>
+            <p id="p-desc">
+              <div>General description</div>
+              <span>{description}</span>
+            </p>
+          </div>
+        </div>
+      </ul>
+    );
+  });
+
   if (isLoading) return <Spinner />;
 
   return (
-    <div>
+    <section>
       <div className="heading">
         <h2>Product Details</h2>
       </div>
-      <section className="products">{showProduct}</section>
+
+      {isError ? (
+        <p>No Product Found...</p>
+      ) : (
+        <section className="products">{showProduct}</section>
+      )}
+
       <Link className="go_back" to="/products">
         <HiArrowNarrowLeft /> Back to products
       </Link>
-    </div>
+    </section>
   );
 }
 

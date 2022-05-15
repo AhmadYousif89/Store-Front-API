@@ -8,9 +8,9 @@ function Home() {
       <h1>Online Shop</h1>
       <div className="home-content">
         <p>Shop for the latest mobile and electronics devices.</p>
-        <button>
-          <Link to="/products">START SHOPPING</Link>
-        </button>
+        <Link to="/products">
+          <button>START SHOPPING</button>
+        </Link>
       </div>
     </div>
   );

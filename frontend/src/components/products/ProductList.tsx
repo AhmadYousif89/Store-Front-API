@@ -18,41 +18,43 @@ type Product = {
 };
 
 function ProductList({ addToCart, products }: Props) {
-  const showProducts = products.map((product) => {
-    const { p_id, p_name, brand, price, color, image_url, description } =
-      product;
-    return (
-      <ul className="product-card" key={p_id}>
-        <div className="card-details">
-          <div id="img-card">
-            <Link to={`/products/${p_id}`}>
-              <img src={image_url} alt={p_name} />
-            </Link>
-          </div>
-          <div>
-            <p id="brand">{brand.toUpperCase()}</p>
-            <p id="p-name">{p_name}</p>
-            <p id="p-desc">{description}</p>
-            <div className="price-color">
-              <div className="price-tag">
-                <AiOutlineTag />
-                <span id="price">{price}</span>
+  return (
+    <section className="products">
+      {products.map((product) => {
+        const { p_id, p_name, brand, price, color, image_url, description } =
+          product;
+        return (
+          <ul className="product-card" key={p_id}>
+            <div className="card-details">
+              <div id="img-card">
+                <Link to={`/products/${p_id}`}>
+                  <img src={image_url} alt={p_name} />
+                </Link>
               </div>
-              <div className="color-tag">
-                <IoIosColorPalette />
-                <p id="color">{color}</p>
+              <div>
+                <p id="brand">{brand.toUpperCase()}</p>
+                <p id="p-name">{p_name}</p>
+                <p id="p-desc">{description}</p>
+                <div className="price-color">
+                  <div className="price-tag">
+                    <AiOutlineTag />
+                    <span id="price">{price}</span>
+                  </div>
+                  <div className="color-tag">
+                    <IoIosColorPalette />
+                    <p id="color">{color}</p>
+                  </div>
+                </div>
+                <button className="btn-card" onClick={() => addToCart(product)}>
+                  <FaShoppingCart /> Add to cart
+                </button>
               </div>
             </div>
-            <button className="btn-card" onClick={() => addToCart(product)}>
-              <FaShoppingCart /> Add to cart
-            </button>
-          </div>
-        </div>
-      </ul>
-    );
-  });
-
-  return <section className="products">{showProducts}</section>;
+          </ul>
+        );
+      })}
+    </section>
+  );
 }
 
 export default ProductList;

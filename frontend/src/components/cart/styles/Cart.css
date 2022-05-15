@@ -1,8 +1,7 @@
 .cart-container {
   display: grid;
   padding: 0 2rem;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+  margin-block: 2rem;
   border-radius: 5px;
   box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5),
     2px 2px 10px rgba(83, 79, 79, 0.5);
@@ -59,13 +58,14 @@
   align-items: center;
   justify-content: space-evenly;
   background-color: transparent;
-  border-radius: 5px;
-  border: 1px solid;
-  padding: 0.25rem;
   cursor: pointer;
+  border: 0;
 }
-#item-btn:hover {
-  color: red;
+#item-btn span {
+  color: #558aa1;
+}
+#item-btn span:hover {
+  color: rgba(255, 0, 0, 0.5);
 }
 
 #item-price {
@@ -110,6 +110,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 10rem;
 }
 
 .clear-cart {

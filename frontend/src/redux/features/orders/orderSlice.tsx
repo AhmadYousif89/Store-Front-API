@@ -107,20 +107,10 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    deleteOrder: (state, action) => {
-      const orderList = state.orders.filter(
-        (order: { order_id: number }) =>
-          order.order_id !== action.payload.order_id,
-      );
-      state.orders = orderList;
-      localStorage.setItem("orders", JSON.stringify(orderList));
-      toast.error(`order number ${action.payload.order_id} was deleted`);
-    },
     reset: (state) => {
       state.isError = false;
       state.isSuccess = false;
       state.isLoading = false;
-      state.message = "";
     },
   },
   extraReducers: (builder) => {
@@ -133,11 +123,10 @@ const orderSlice = createSlice({
         state.isSuccess = true;
         state.orders = action.payload;
       })
-      .addCase(getUserOrders.rejected, (state, action) => {
+      .addCase(getUserOrders.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
         state.orders = [];
-        state.message = action.payload as string;
       })
 
       .addCase(createOrder.pending, (state) => {
@@ -148,11 +137,10 @@ const orderSlice = createSlice({
         state.isSuccess = true;
         state.orders = action.payload;
       })
-      .addCase(createOrder.rejected, (state, action) => {
+      .addCase(createOrder.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
         state.orders = [];
-        state.message = action.payload as string;
       })
       .addCase(deleteOrder.pending, (state) => {
         state.isLoading = true;
@@ -164,13 +152,13 @@ const orderSlice = createSlice({
           (order: { order_id: number }) =>
             order.order_id !== action.payload.order_id,
         );
+        localStorage.setItem("orders", JSON.stringify(state.orders));
         toast.error(`order number ${action.payload.order_id} was deleted`);
       })
-      .addCase(deleteOrder.rejected, (state, action) => {
+      .addCase(deleteOrder.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
         state.orders = [];
-        state.message = action.payload as string;
       });
   },
 });
