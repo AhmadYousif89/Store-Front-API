@@ -1,5 +1,5 @@
 import app from "../../server";
-import pgDB from "../../database";
+import pgDB from "../../db/database";
 import supertest from "supertest";
 
 const { SERVER_PORT } = process.env;

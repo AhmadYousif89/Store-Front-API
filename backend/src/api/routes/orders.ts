@@ -1,25 +1,25 @@
 import { Router } from "express";
 import {
-  createOrders,
   getOrders,
-  getOrderById,
-  updateOrder,
-  deleteOrder,
+  getOneOrder,
+  createOrder,
   getUserOrders,
+  updateUserOrders,
+  deleteUserOrders,
 } from "../controllers/orders";
 import authentication from "../../middlewares/auth";
 
 const routes = Router();
 
+routes.get("/users/orders", getOrders);
+routes.route("/users/orders/:id").get(getOneOrder);
 routes
   .route("/user/account/orders")
-  .get(authentication, getOrders)
-  .post(authentication, createOrders)
-  .put(authentication, updateOrder);
+  .post(authentication, createOrder)
+  .get(authentication, getUserOrders);
 routes
   .route("/user/account/orders/:id")
-  .get(authentication, getOrderById)
-  .delete(authentication, deleteOrder);
-routes.get("/user/:id/account/orders", authentication, getUserOrders);
+  .put(authentication, updateUserOrders)
+  .delete(authentication, deleteUserOrders);
 
 export default routes;

@@ -4,7 +4,7 @@ const { PG_PORT, PG_USER, PG_HOST, PG_DB, PG_DB_TEST, PG_PASSWORD, ENV } = proce
 
 console.log("environment: ", process.env.ENV);
 
-const pgDB = new Pool({
+const pgClient = new Pool({
   port: PG_PORT as unknown as number,
   host: PG_HOST,
   user: PG_USER,
@@ -12,8 +12,4 @@ const pgDB = new Pool({
   password: PG_PASSWORD,
 });
 
-pgDB.on("error", (err: Error) => {
-  throw new Error(`pg-DB error: \n ${err.message}`);
-});
-
-export default pgDB;
+export default pgClient;

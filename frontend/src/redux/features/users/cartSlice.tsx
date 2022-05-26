@@ -47,20 +47,15 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      // get product position in the cart by it's id
       const productIndex = state.cart.findIndex(
         (product: { p_id: string }) => product.p_id === action.payload.p_id,
       );
-      // check if we have products in cart
       if (productIndex < 0) {
-        // in this case we don't have any products added to cart
-        // so we add them with new proprety (quantity) and store our cart state in local storage
         const cartProduct = { ...action.payload, quantity: 1 };
         (state.cart as any[]).push(cartProduct);
         localStorage.setItem("cart", JSON.stringify(state.cart));
         toast.success(`${action.payload.p_name} added to your cart`);
       } else {
-        // in this case we have a product so we just increase it's quantity value by 1
         (state.cart[productIndex] as { quantity: number }).quantity += 1;
         localStorage.setItem("cart", JSON.stringify(state.cart));
         toast.info(
@@ -71,22 +66,20 @@ const cartSlice = createSlice({
       }
     },
     displayCartInfo: (state) => {
-      let { subtotal, quantity } = state.cart.reduce(
+      let { total, quantity } = state.cart.reduce(
         (
-          cartTotal: { subtotal: number; quantity: number },
-          cartItem: { price: number; quantity: number },
+          item: { price: number; quantity: number },
+          cartItem: { total: number; quantity: number },
         ) => {
-          const { price, quantity } = cartItem;
-          const item = price * quantity;
-          cartTotal.subtotal += item;
-          cartTotal.quantity += quantity;
+          const itemTotalValue = item.price * item.quantity; // 500 * 2 = 1000
+          cartItem.total += itemTotalValue; // 0 + 1000 , 1 + 1000 ...
+          cartItem.quantity += quantity; // 0 + 1 , 1 + 2  ...
 
-          return cartTotal;
+          return cartItem;
         },
-        { subtotal: 0, quantity: 0 },
+        { total: 0, quantity: 0 },
       );
-
-      state.totalAmount = subtotal;
+      state.totalAmount = total;
       state.totalQuantity = quantity;
     },
     increment: (state, action) => {

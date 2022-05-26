@@ -1,7 +1,7 @@
 import { userModel } from "../../api/models/users";
 import { orderModel } from "../../api/models/orders";
 import { schema } from "../test.server.routes/server.spec";
-import pgDB from "../../database";
+import pgDB from "../../db/database";
 
 let userId = "";
 let time = "";

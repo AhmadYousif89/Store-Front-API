@@ -1,44 +1,41 @@
 import { Response, Request, NextFunction } from "express";
-import { Error } from "../utils/control";
-import JWT from "jsonwebtoken";
+import { userModel } from "./../api/models/users";
+import { Error, Users } from "../types/types";
+import jwt from "jsonwebtoken";
 
-const { SECRET_TOKEN } = process.env;
-const handleAuthErr = (next: NextFunction) => {
-  const err: Error = { message: "Access denied, Faild to authenticate !", status: 401 };
+const handleAuthErr = (next: NextFunction, msg: string) => {
+  const err: Error = { message: msg, status: 401 };
   next(err);
 };
 
-const handleAuthentication = (req: Request, _res: Response, next: NextFunction) => {
+const handleAuthentication = async (req: Request, _res: Response, next: NextFunction) => {
   try {
-    // get authHeader
     const authheader = req.headers.authorization;
     if (authheader) {
-      // get authHeader token
       const token = authheader.split(" ")[1];
-      // get authHeader bearer
       const bearer = authheader.split(" ")[0];
-      // check and vaildate bearer and token
       if (token && bearer === "Bearer") {
-        // verify and decode based on my secret token
-        const decode = JWT.verify(token, SECRET_TOKEN as string);
+        const decode = jwt.verify(token, process.env.SECRET_TOKEN as string);
+        // get a user based on the user_id from decoded token
+        const user = await userModel.show({ _id: (decode as Users)._id });
+        // create a user proprety inside the request header with the user auth info
+        req.user = user as Users;
         if (decode) {
           next();
         } else {
-          // authentication failed
-          handleAuthErr(next);
+          handleAuthErr(next, "Authentication failed");
         }
       } else {
         // token not of type Bearer
-        handleAuthErr(next);
+        handleAuthErr(next, "Authentication failed, Invalid token type");
       }
     } else {
-      // no token sent in header
-      handleAuthErr(next);
+      // token not sent in header
+      handleAuthErr(next, "Authentication failed, No token provided");
     }
   } catch (err) {
     // handle jwt errors
-    handleAuthErr(next);
-    console.log(err);
+    handleAuthErr(next, `Authentication failed, ${(err as Error).message}`);
   }
 };
 

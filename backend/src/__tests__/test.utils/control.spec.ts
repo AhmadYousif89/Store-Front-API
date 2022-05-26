@@ -1,4 +1,4 @@
-import { customErr, encrypt, isPwValide } from "../../utils/control";
+import { customErr, encrypt, isPasswordValide } from "../../helpers/control";
 
 describe("Encryption functions", () => {
   it("should be a method for encrypting user passwords", () => {
@@ -6,7 +6,7 @@ describe("Encryption functions", () => {
   });
 
   it("should be a method for comparing between user password and hashed password", () => {
-    expect(isPwValide).toBeDefined();
+    expect(isPasswordValide).toBeDefined();
   });
 
   it("should be a method for making custom error syntax", () => {
@@ -19,12 +19,12 @@ describe("Encryption functions", () => {
   });
 
   it("should match and return true", () => {
-    const match = isPwValide("123", test);
+    const match = isPasswordValide("123", test);
     expect(match).toBeTruthy();
   });
 
   it("should not match and return false", () => {
-    const match = isPwValide("321", test);
+    const match = isPasswordValide("321", test);
     expect(match).toBeFalsy();
   });
 });

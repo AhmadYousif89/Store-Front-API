@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, createContext, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 
 import Cart from "./components/cart/Cart";
 import Orders from "./components/orders/Orders";
@@ -54,6 +53,7 @@ function App() {
           position={"bottom-left"}
           hideProgressBar={true}
           pauseOnFocusLoss={false}
+          toastStyle={{ width: "400px" }}
         />
         <Routes>
           <Route path="/" element={<AppLayout />}>

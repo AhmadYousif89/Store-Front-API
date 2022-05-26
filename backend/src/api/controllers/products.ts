@@ -11,10 +11,10 @@ const createProducts = asyncWrapper(
     const category = req.body.category.toLowerCase();
 
     if (!category || !name || !brand || !imageUrl || !price || price <= 0) {
-      return res.status(400).json({ message: "Please enter a valid details before submiting !" });
+      return res.status(400).json({ message: "Please enter a valid details before submiting" });
     }
 
-    const data = await productModel.create({
+    const product = await productModel.create({
       category: category,
       p_name: name,
       brand: brand,
@@ -24,20 +24,20 @@ const createProducts = asyncWrapper(
       color: color || "N/A",
     });
 
-    res.status(201).json(data);
+    res.status(201).json(product);
   }
 );
 
 // method => GET /products
 // desc   =>  all products data.
 const getProducts = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const data = await productModel.index();
+  const products = await productModel.index();
 
-  if (!data.length) {
-    return res.status(404).json({ message: `No Products Were Found !` });
+  if (!products.length) {
+    return res.status(404).json({ message: `no products were found` });
   }
 
-  res.status(200).json({ data, pCount: data.length });
+  res.status(200).json(products);
 });
 
 // method => GET /products/:id
@@ -46,14 +46,12 @@ const getProductById = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const pid = req.params.id;
 
-    const data = await productModel.show({ p_id: pid });
-    if (!data) {
-      return res
-        .status(404)
-        .json({ message: "Request failed !", data: `Product with id (${pid}) Doesn't Exist !` });
+    const product = await productModel.show({ _id: pid });
+    if (!product) {
+      return res.status(404).json({ message: `product not found` });
     }
 
-    res.status(200).json(data);
+    res.status(200).json(product);
   }
 );
 
@@ -61,22 +59,19 @@ const getProductById = asyncWrapper(
 // desc   => Update a specific product .
 const updateProduct = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
-    const pid = req.body.id;
+    const pid = req.params.id;
     const price = parseInt(req.body.price);
 
-    if (!pid || !price || price <= 0) {
-      return res.status(400).json({ message: "Please provide a valid details before updating !" });
+    if (isNaN(price) || price < 0) {
+      return res.status(400).json({ message: "invalid product price" });
     }
 
-    const data = await productModel.update({ p_id: pid, price: price });
-    if (!data) {
-      return res.status(404).json({
-        message: "Update failed !",
-        data: `Product with id (${pid}) doesn't exist`,
-      });
+    const product = await productModel.update({ _id: pid, price: price });
+    if (!product) {
+      return res.status(404).json({ message: `product not found` });
     }
 
-    res.status(200).json(data);
+    res.status(200).json({ message: "update success", ...product });
   }
 );
 
@@ -87,18 +82,15 @@ const deleteProduct = asyncWrapper(
     const pid = req.params.id;
 
     if (!pid) {
-      return res.status(400).json({ message: "Please provide product id !" });
+      return res.status(400).json({ message: "invalid product id" });
     }
 
-    const data = await productModel.delete({ p_id: pid });
-    if (!data) {
-      return res.status(404).json({
-        message: "Delete failed !",
-        data: `Product with id (${pid}) doesn't exist`,
-      });
+    const product = await productModel.delete({ _id: pid });
+    if (!product) {
+      return res.status(404).json({ message: `product not found` });
     }
 
-    res.status(200).json({ message: "product deleted successfully" });
+    res.status(200).json({ message: "delete success", ...product });
   }
 );
 

@@ -1,23 +1,25 @@
 import { Router } from "express";
 import {
-  addProductToOrder,
-  getOrderedProducts,
-  getOPsById,
-  updateOrderedProduct,
-  delOrderedProduct,
+  getAll,
+  getOneById,
+  addProducts,
+  getUserOrderedProducts,
+  getUserOrderedProductsByid,
+  updateUserOrderedProduct,
+  delUserOrderedProduct,
 } from "../controllers/ordered_products";
 import authentication from "../../middlewares/auth";
 
 const routes = Router();
 
-routes.post("/user/account/orders/:id/products", authentication, addProductToOrder);
+routes.get("/users/ordered-products", getAll);
+routes.get("/users/ordered-products/:id", getOneById);
+routes.get("/user/account/ordered-products", authentication, getUserOrderedProducts);
+routes.get("/user/account/orders/:id/ordered-products", authentication, getUserOrderedProductsByid);
+routes.delete("/user/account/ordered-products/:id", authentication, delUserOrderedProduct);
 routes
-  .route("/user/account/ordered-products")
-  .get(authentication, getOrderedProducts)
-  .put(authentication, updateOrderedProduct);
-routes
-  .route("/user/account/ordered-products/:id")
-  .get(authentication, getOPsById)
-  .delete(authentication, delOrderedProduct);
+  .route("/user/account/orders/:oid/products/:pid")
+  .post(authentication, addProducts)
+  .put(authentication, updateUserOrderedProduct);
 
 export default routes;

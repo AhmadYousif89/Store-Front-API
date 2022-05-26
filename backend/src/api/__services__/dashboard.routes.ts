@@ -1,19 +1,9 @@
 import { Router } from "express";
 import Authentication from "../../middlewares/auth";
-import {
-  getUserProducts,
-  getUserProductsByOid,
-  getUserMostPurchases,
-} from "./dashboard.controller";
+import { getUserPurchases } from "./dashboard.controller";
 
 const routes = Router();
 
-routes.get("/users/:id/account/review/ordered-products", Authentication, getUserProducts);
-routes.get(
-  "/users/:uid/orders/:oid/account/review/ordered-products",
-  Authentication,
-  getUserProductsByOid
-);
-routes.get("/users/:id/account/most-recent/purchases", Authentication, getUserMostPurchases);
+routes.get("/user/account/purchases", Authentication, getUserPurchases);
 
 export default routes;

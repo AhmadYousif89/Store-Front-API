@@ -1,8 +1,8 @@
 import "dotenv/config";
 import cors from "cors";
-import { appRoutes } from "./api/appRoutes";
+import { API_ROUTES } from "./api/routes";
 import express, { Request, Response } from "express";
-import serverErrors from "./middlewares/error";
+import serverErrors from "./middlewares/errors";
 import notFound from "./middlewares/notFound";
 
 const app = express();
@@ -18,7 +18,7 @@ app.get("/", (_req: Request, res: Response) => {
   `);
 });
 
-app.use("/api", appRoutes);
+app.use("/api", API_ROUTES);
 app.use(serverErrors);
 app.use(notFound);
 

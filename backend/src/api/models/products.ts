@@ -1,19 +1,20 @@
 import { PoolClient } from "pg";
-import pgDB from "../../database";
-import { Error, customErr, Products } from "../../utils/control";
+import pgClient from "../../db/database";
+import { Products } from "../../types/types";
+import { customErr } from "../../helpers/control";
 
-let conct: PoolClient;
-let errMsg: string | undefined;
 class ProductModel {
-  async create(values: Products): Promise<Products | null> {
+  conct!: PoolClient;
+  errMsg = "";
+  async create(values: Products): Promise<Products> {
     try {
-      conct = await pgDB.connect();
+      this.conct = await pgClient.connect();
       const sql = `
       INSERT INTO products (category, p_name, brand, color, price, image_url, description)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *
       `;
-      const result = await conct.query(sql, [
+      const result = await this.conct.query(sql, [
         values.category,
         values.p_name,
         values.brand,
@@ -22,117 +23,85 @@ class ProductModel {
         values.image_url,
         values.description,
       ]);
-      if (result.rows.length) {
-        const product = result.rows[0];
-        conct.release();
-        return product;
-      }
-      conct.release();
-      return null;
+      const product = result.rows[0];
+      this.conct.release();
+      return product;
     } catch (err) {
-      conct.release();
+      this.conct.release();
       if ((err as Error).message?.includes("enum category")) {
-        errMsg = customErr(
+        this.errMsg = customErr(
           err as Error,
           "Please enter category between (electronics) and (mobiles) !.",
           "."
         );
       } else {
-        errMsg = err as string;
+        this.errMsg = err as string;
       }
-      throw new Error(`Unable to create new Product - ${errMsg}`);
+      throw new Error(`${this.errMsg}`);
     }
   }
 
-  // Get Products
   async index(): Promise<Products[]> {
     try {
-      conct = await pgDB.connect();
+      this.conct = await pgClient.connect();
       const sql = "SELECT * FROM products";
-      const result = await conct.query(sql);
-      conct.release();
+      const result = await this.conct.query(sql);
+      this.conct.release();
       return result.rows;
     } catch (err) {
-      conct.release();
+      this.conct.release();
       throw new Error(`${err}`);
     }
   }
 
-  // Get one Product
-  async show({ p_id }: Products): Promise<Products | null> {
+  async show({ _id }: Products): Promise<Products> {
     try {
-      conct = await pgDB.connect();
-      const sql = `SELECT * FROM products WHERE p_id = ($1)`;
-      const result = await conct.query(sql, [p_id]);
-      if (result.rows.length) {
-        const product = result.rows[0];
-        conct.release();
-        return product;
-      }
-      conct.release();
-      return null;
+      this.conct = await pgClient.connect();
+      const sql = `SELECT * FROM products WHERE _id = ($1)`;
+      const result = await this.conct.query(sql, [_id]);
+      const product = result.rows[0];
+      this.conct.release();
+      return product;
     } catch (err) {
-      conct.release();
-      if ((err as Error).message?.includes("uuid")) {
-        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to get Product with id (${p_id}) - ${errMsg}`);
+      this.conct.release();
+      throw new Error(`${err}`);
     }
   }
 
-  // Update Product
-  async update({ p_id, price }: Products): Promise<Products | null> {
+  async update({ _id, price }: Products): Promise<Products> {
     try {
-      conct = await pgDB.connect();
-      const sql = `UPDATE Products SET price = ($2) WHERE p_id = ($1) RETURNING *`;
-      const result = await conct.query(sql, [p_id, price]);
-      if (result.rows.length) {
-        const product = result.rows[0];
-        conct.release();
-        return product;
-      }
-      conct.release();
-      return null;
+      this.conct = await pgClient.connect();
+      const sql = `UPDATE Products SET price = ($2) WHERE _id = ($1) RETURNING price`;
+      const result = await this.conct.query(sql, [_id, price]);
+      const product = result.rows[0];
+      this.conct.release();
+      return product;
     } catch (err) {
-      conct.release();
-      if ((err as Error).message?.includes("uuid")) {
-        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else {
-        errMsg = err as string;
-      }
-      throw new Error(`Unable to update Product with id (${p_id}) - ${errMsg}`);
+      this.conct.release();
+      throw new Error(`${err}`);
     }
   }
 
-  // Delete Product
-  async delete({ p_id }: Products): Promise<Products | null> {
+  async delete({ _id }: Products): Promise<Products> {
     try {
-      conct = await pgDB.connect();
-      const sql = `DELETE FROM products WHERE p_id = ($1) RETURNING p_id`;
-      const result = await conct.query(sql, [p_id]);
-      if (result.rows.length) {
-        const product = result.rows[0];
-        conct.release();
-        return product;
-      }
-      conct.release();
-      return null;
+      this.conct = await pgClient.connect();
+      const sql = `DELETE FROM products WHERE _id = ($1) RETURNING _id`;
+      const result = await this.conct.query(sql, [_id]);
+      const product = result.rows[0];
+      this.conct.release();
+      return product;
     } catch (err) {
-      conct.release();
-      if ((err as Error).message?.includes("uuid")) {
-        errMsg = customErr(err as Error, "Please enter a valid product id !.", ".");
-      } else if ((err as Error).message?.includes("foreign")) {
-        errMsg = customErr(
+      this.conct.release();
+      if ((err as Error).message?.includes("foreign")) {
+        this.errMsg = customErr(
           err as Error,
           "Product can not be deleted - remove this product from any related orders !.",
           "."
         );
       } else {
-        errMsg = err as string;
+        this.errMsg = err as string;
       }
-      throw new Error(`Unable to delete Product with id (${p_id}) - ${errMsg}`);
+      throw new Error(`${this.errMsg}`);
     }
   }
 }

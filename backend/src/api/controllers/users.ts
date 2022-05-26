@@ -1,149 +1,121 @@
 import { Request, Response } from "express";
-import { validateEmail } from "../../utils/control";
+import { jwtGenerator, validateEmail } from "../../helpers/control";
 import asyncWrapper from "../../middlewares/asyncWrapper";
+import { Users } from "../../types/types";
 import { userModel } from "../models/users";
-import JWT from "jsonwebtoken";
 
-const { SECRET_TOKEN } = process.env;
 // method => POST /register
 // desc   => Create new user data.
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { name, email, password } = req.body;
-  const checkEmail = validateEmail(email);
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "please fill up the registration form" });
+  const checkEmail = validateEmail(email);
+  if (!name) {
+    return res.status(400).json({ message: "name is required" });
+  } else if (!email) {
+    return res.status(400).json({ message: "email is required" });
+  } else if (!password) {
+    return res.status(400).json({ message: "password is required" });
   } else if (checkEmail === false) {
     return res.status(400).json({ message: "please provide a valid email" });
   }
 
-  const data = await userModel.create({ name: name, email: email, password: password });
-  const token = JWT.sign({ data }, SECRET_TOKEN as string, { expiresIn: "24h" });
+  const user = await userModel.create({ name, email, password });
+
+  const token = jwtGenerator(user);
   await userModel.addUserToken({
-    user_id: data?.user_id as string,
-    token: token,
+    _id: user._id as string,
+    token,
   });
 
   res.status(201).json({
-    message: `user created successfully`,
-    data,
     jwt: token,
   });
 });
 
 // method => POST /login
-// desc   => Authenticate user data.
+// desc   => Authenticate and login user
 const login = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { email, password } = req.body;
-  const checkEmail = validateEmail(email);
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "email and password are required" });
-  } else if (!checkEmail) {
+  const isEmailValid = validateEmail(email);
+  if (!isEmailValid) {
     return res.status(400).json({ message: "please enter a valid email" });
   }
 
   const user = await userModel.authenticateUser({ email: email, password: password });
   if (!user) {
-    return res.status(401).json({ message: "Invalid email or password" });
+    return res.status(401).json({ message: "invalid email or password" });
   }
 
-  const token = JWT.sign({ user }, SECRET_TOKEN as string, { expiresIn: "24h" });
+  const token = jwtGenerator(user);
   await userModel.addUserToken({
-    user_id: user.user_id as string,
-    token: token,
+    _id: user._id as string,
+    token,
   });
 
   res.status(200).json({
-    message: "user logged in",
-    data: { user_id: user.user_id, name: user.name },
     jwt: token,
   });
 });
 
-// method => DELETE /logout
-// desc => Delete user token from db
+// method => POST /logout
+// desc => Delete user token and logout
 const logout = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const userToken = req.params.token;
+  const { _id } = req.user as Users;
 
-  const token = await userModel.delUserToken({ token: userToken });
-  if (!token) {
-    return res.status(404).json({
-      message: "Logout failed !",
-      data: `user token doesn't match`,
-    });
+  const user = await userModel.delUserToken({ _id });
+  if (!user) {
+    return res.status(400).send();
   }
 
-  res.status(200).send("user logged out");
+  res.status(200).json("user logged out");
 });
 
 // methtod => GET /users
 // desc   => Return all users data.
 const getUsers = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const data = await userModel.index();
-  if (!data.length) {
-    return res.status(404).json({ message: `No Users Were Found !` });
+  const users = await userModel.index();
+
+  if (!users.length) {
+    return res.status(404).json({ message: `no users were found` });
   }
-  res.status(200).json({ message: "Data generated successfully", data, uCount: data.length });
+
+  res.status(200).json(users);
 });
 
-// method => GET /users/:id
+// method => GET /users/me
 // desc   => Return a specific user.
-const getUserById = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const uid = req.params.id;
-
-  const data = await userModel.show({ user_id: uid });
-  if (!data) {
-    return res.status(404).json({
-      message: "Request failed !",
-      data: `user with id (${uid}) doesn't exist`,
-    });
+const getMe = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
+  if (!req.user) {
+    return res.status(404).json({ message: "user not found" });
   }
-
-  res.status(200).json({
-    message: `User generated successfully`,
-    data,
-  });
+  res.status(200).json(req.user);
 });
 
-// method => PUT /users/:id
+// method => PUT /users/me
 // desc   => Update a specific user .
-const updateUser = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const uid = req.params.id;
+const updateMe = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
+  const { _id } = req.user as Users;
+
   const { password } = req.body;
-
   if (!password) {
-    return res.status(400).json({ message: "please provide user password !" });
+    return res.status(400).json({ message: "please enter your new password" });
   }
 
-  const data = await userModel.update({ user_id: uid, password: password });
-  if (!data) {
-    return res.status(404).json({
-      message: "Update failed !",
-      data: `user with id (${uid}) doesn't exist`,
-    });
-  }
+  await userModel.update({ _id, password: password });
 
-  res.status(200).json({ message: `password updated successfully` });
+  res.status(200).json({ message: `update success` });
 });
 
-// method => DELETE /users/:id
+// method => DELETE /users/me
 // desc   => Delete a specific user.
-const deleteUser = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const uid = req.params.id;
+const deleteMe = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
+  const { _id } = req.user as Users;
 
-  const data = await userModel.delete({ user_id: uid });
-  if (!data) {
-    return res.status(404).json({
-      message: "Delete failed !",
-      data: `user with id (${uid}) doesn't exist`,
-    });
-  }
+  const user = await userModel.delete({ _id });
 
-  res.status(200).json({
-    message: `user deleted successfully`,
-    data,
-  });
+  res.status(200).json({ message: `user deleted`, ...user });
 });
 
-export { register, login, logout, getUsers, getUserById, updateUser, deleteUser };
+export { register, login, logout, getUsers, getMe, updateMe, deleteMe };
