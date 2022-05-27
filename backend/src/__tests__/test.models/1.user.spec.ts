@@ -1,5 +1,5 @@
+import { schema } from "./../testingSchema";
 import { userModel } from "../../api/models/users";
-import { schema } from "../test.server.routes/server.spec";
 
 let userId = "";
 let userPw = "";
@@ -31,9 +31,9 @@ describe("Testing user Model functions: \n", () => {
   describe("Testing SQL functions: \n ", () => {
     it("should create new user", async () => {
       const result = await userModel.create(schema);
-      userId = result?.user_id as string;
+      userId = result?._id as string;
       userPw = result?.password as string;
-      expect(result?.user_id).toEqual(userId);
+      expect(result?._id).toEqual(userId);
       expect(result?.name).toEqual(schema.name);
       expect(result?.email).toEqual(schema.email);
       expect(result?.password).toEqual(userPw);
@@ -44,7 +44,7 @@ describe("Testing user Model functions: \n", () => {
       const result = await userModel.index();
       expect(result).toEqual([
         {
-          user_id: userId,
+          _id: userId,
           name: schema.name,
           email: schema.email,
         },
@@ -53,9 +53,9 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should return the correct user by id", async () => {
-      const result = await userModel.show({ user_id: userId });
+      const result = await userModel.show({ _id: userId });
       expect(result).toEqual({
-        user_id: userId,
+        _id: userId,
         email: schema.email,
         name: schema.name,
       });
@@ -63,9 +63,9 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it(`should update the password to = 123 for specific user by id`, async () => {
-      const result = await userModel.update({ user_id: userId, password: "123" });
+      const result = await userModel.update({ _id: userId, password: "123" });
       expect(result).toEqual({
-        user_id: userId,
+        _id: userId,
         email: schema.email,
         name: schema.name,
       });
@@ -78,7 +78,7 @@ describe("Testing user Model functions: \n", () => {
         password: "123",
       });
       expect(result).toEqual({
-        user_id: userId,
+        _id: userId,
         name: schema.name,
         email: schema.email,
       });
@@ -86,9 +86,9 @@ describe("Testing user Model functions: \n", () => {
     });
 
     it("should delete the selected user by id", async () => {
-      const result = await userModel.delete({ user_id: userId });
+      const result = await userModel.delete({ _id: userId });
       expect(result).toEqual({
-        user_id: userId,
+        _id: userId,
         email: schema.email,
         name: schema.name,
       });

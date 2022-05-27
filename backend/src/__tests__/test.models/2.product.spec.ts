@@ -1,4 +1,4 @@
-import { schema } from "../test.server.routes/server.spec";
+import { schema } from "./../testingSchema";
 import { productModel } from "../../api/models/products";
 
 let pId = "";
@@ -35,10 +35,10 @@ describe("Testing product Model functions: \n", () => {
 
     it("should return a list of all products", async () => {
       const result = await productModel.index();
-      pId = result[0].p_id as string;
+      pId = result[0]._id as string;
       expect(result).toEqual([
         {
-          p_id: pId,
+          _id: pId,
           category: schema.category,
           p_name: schema.p_name,
           brand: schema.brand,
@@ -51,9 +51,9 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it("should return the correct product by id", async () => {
-      const result = await productModel.show({ p_id: pId });
+      const result = await productModel.show({ _id: pId });
       expect(result).toEqual({
-        p_id: pId,
+        _id: pId,
         category: schema.category,
         p_name: schema.p_name,
         brand: schema.brand,
@@ -65,9 +65,9 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it(`should update the price to = (500) for product by id`, async () => {
-      const result = await productModel.update({ p_id: pId, price: 500 });
+      const result = await productModel.update({ _id: pId, price: 500 });
       expect(result).toEqual({
-        p_id: pId,
+        _id: pId,
         category: schema.category,
         p_name: schema.p_name,
         brand: schema.brand,
@@ -79,9 +79,9 @@ describe("Testing product Model functions: \n", () => {
     });
 
     it(`should delete the selected product by ID`, async () => {
-      const result = await productModel.delete({ p_id: pId });
+      const result = await productModel.delete({ _id: pId });
       expect(result).toEqual({
-        p_id: pId,
+        _id: pId,
         category: schema.category,
         p_name: schema.p_name,
         brand: schema.brand,

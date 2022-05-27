@@ -1,9 +1,10 @@
 import { userModel } from "../../api/models/users";
 import { orderModel } from "../../api/models/orders";
-import { schema } from "../test.server.routes/server.spec";
+import { schema } from "./../testingSchema";
 import pgDB from "../../db/database";
 
 let userId = "";
+let orderId = "";
 let time = "";
 const date = new Date().toISOString();
 
@@ -21,33 +22,31 @@ describe("Order Model functions: \n", () => {
   });
 
   it("should be method an update orders", () => {
-    expect(orderModel.update).toBeDefined();
+    expect(orderModel.updateUserOrders).toBeDefined();
   });
 
   it("should be a method to delete orders", () => {
-    expect(orderModel.delete).toBeDefined();
+    expect(orderModel.deleteUserOrders).toBeDefined();
   });
   describe("Testing SQL functions: \n ", () => {
     it("should create a user and extract its id", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].user_id as string;
+      userId = user[0]._id as string;
       console.log("order has been created");
     });
 
     it(`should create new order`, async () => {
-      await orderModel.create({
-        order_status: schema.order_status,
-        user_id: userId,
-      });
+      await orderModel.create({ user_id: userId });
     });
 
     it(`should get all orders`, async () => {
       const order = await orderModel.index();
       time = order[0].created_at as string;
+      orderId = order[0]._id as string;
       expect(order).toEqual([
         {
-          order_id: schema.order_id,
+          _id: orderId,
           order_status: schema.order_status,
           user_id: userId,
           created_at: time,
@@ -58,9 +57,9 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should get one order by id`, async () => {
-      const order = await orderModel.show({ order_id: schema.order_id });
+      const order = await orderModel.show({ _id: orderId });
       expect(order).toEqual({
-        order_id: schema.order_id,
+        _id: orderId,
         order_status: schema.order_status,
         user_id: userId,
         created_at: time,
@@ -70,13 +69,13 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should update the status of one order by id`, async () => {
-      const order = await orderModel.update({
-        order_id: schema.order_id,
+      const order = await orderModel.updateUserOrders({
+        _id: orderId,
         order_status: "active",
         updated_at: date,
       });
       expect(order).toEqual({
-        order_id: schema.order_id,
+        _id: orderId,
         order_status: "active",
         user_id: userId,
         created_at: time,
@@ -86,9 +85,9 @@ describe("Order Model functions: \n", () => {
     });
 
     it(`should delete one order by id`, async () => {
-      const order = await orderModel.delete({ order_id: schema.order_id });
+      const order = await orderModel.deleteUserOrders({ _id: orderId });
       expect(order).toEqual({
-        order_id: schema.order_id,
+        _id: orderId,
         order_status: "active",
         user_id: userId,
         created_at: time,

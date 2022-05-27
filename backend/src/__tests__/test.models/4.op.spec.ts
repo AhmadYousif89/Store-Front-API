@@ -1,4 +1,4 @@
-import { schema } from "../test.server.routes/server.spec";
+import { schema } from "./../testingSchema";
 import { productModel } from "../../api/models/products";
 import { OPT } from "../../api/models/ordered_products";
 import { orderModel } from "../../api/models/orders";
@@ -7,6 +7,8 @@ import pgDB from "../../db/database";
 
 let pId = "";
 let userId = "";
+let orderId = "";
+let opId = "";
 let time = "";
 
 describe("OrderedProducts Model functions: \n", () => {
@@ -23,45 +25,48 @@ describe("OrderedProducts Model functions: \n", () => {
   });
 
   it("should be method an update for product quantity", () => {
-    expect(OPT.update).toBeDefined();
+    expect(OPT.updateUserOrderedProduct).toBeDefined();
   });
 
   it("should be a method to delete a row by id", () => {
-    expect(OPT.delete).toBeDefined();
+    expect(OPT.delUserOrderedProduct).toBeDefined();
   });
 
   describe("Testing op SQL functions: \n ", () => {
     it("should create user and extract its id", async () => {
       await userModel.create(schema);
       const user = await userModel.index();
-      userId = user[0].user_id as string;
+      userId = user[0]._id as string;
     });
 
     it("should create product and extract its id", async () => {
       await productModel.create(schema);
       const product = await productModel.index();
-      pId = product[0].p_id as string;
+      pId = product[0]._id as string;
       console.log("product added to order");
     });
 
     it(`should create new order`, async () => {
-      await orderModel.create({
-        user_id: userId,
-        order_status: schema.order_status,
-      });
+      await orderModel.create({ user_id: userId });
+      const order = await orderModel.index();
+      orderId = order[0]._id as string;
     });
 
-    it(`should add product to order number ${schema.order_id}`, async () => {
-      const op = await OPT.addProducts({
-        product_id: pId,
-        order_id: schema.order_id,
-        quantity: schema.quantity,
-      });
+    it(`should add product to order number ${orderId}`, async () => {
+      const op = await OPT.addProducts(
+        {
+          product_id: pId,
+          order_id: orderId,
+          quantity: schema.quantity,
+        },
+        userId
+      );
       const created_at = op?.created_at;
+      opId = op?._id as string;
       time = created_at as string;
       expect(op).toEqual({
-        op_id: schema.op_id,
-        order_id: schema.order_id,
+        _id: opId,
+        order_id: orderId,
         product_id: pId,
         quantity: schema.quantity,
         created_at: time,
@@ -72,8 +77,8 @@ describe("OrderedProducts Model functions: \n", () => {
       const op = await OPT.index();
       expect(op).toEqual([
         {
-          op_id: schema.op_id,
-          order_id: schema.order_id,
+          _id: opId,
+          order_id: orderId,
           product_id: pId,
           quantity: schema.quantity,
           created_at: time,
@@ -83,10 +88,10 @@ describe("OrderedProducts Model functions: \n", () => {
     });
 
     it(`should get one ordered product by id`, async () => {
-      const op = await OPT.show({ op_id: schema.op_id });
+      const op = await OPT.show({ _id: opId });
       expect(op).toEqual({
-        op_id: schema.op_id,
-        order_id: schema.order_id,
+        _id: opId,
+        order_id: orderId,
         product_id: pId,
         quantity: schema.quantity,
         created_at: time,
@@ -95,10 +100,13 @@ describe("OrderedProducts Model functions: \n", () => {
     });
 
     it(`should update the quantity of one ordered products by id`, async () => {
-      const op = await OPT.update({ product_id: pId, quantity: 50 });
+      const op = await OPT.updateUserOrderedProduct(
+        { order_id: orderId, product_id: pId, quantity: 50 },
+        userId
+      );
       expect(op).toEqual({
-        op_id: schema.op_id,
-        order_id: schema.order_id,
+        _id: opId,
+        order_id: orderId,
         product_id: pId,
         quantity: 50,
         created_at: time,
@@ -107,10 +115,10 @@ describe("OrderedProducts Model functions: \n", () => {
     });
 
     it(`should delete one ordered products by id`, async () => {
-      const op = await OPT.delete({ op_id: schema.op_id });
+      const op = await OPT.delUserOrderedProduct({ order_id: orderId }, userId);
       expect(op).toEqual({
-        op_id: schema.op_id,
-        order_id: schema.order_id,
+        _id: opId,
+        order_id: orderId,
         product_id: pId,
         quantity: 50,
         created_at: time,

@@ -4,7 +4,7 @@
   "description": "full stack application",
   "main": "index.js",
   "repository": {
-    "url": "https://github.com/AhmadYousif89/Store-Front-API.git"
+    "url": "https://github.com/AhmadYousif89/Store_Front.git"
   },
   "scripts": {
     "start": "node dist/app.js",
@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
+    "dotenv": "^16.0.1",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
@@ -44,7 +45,6 @@
     "@types/pg": "^8.6.4",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "dotenv": "^16.0.0",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
