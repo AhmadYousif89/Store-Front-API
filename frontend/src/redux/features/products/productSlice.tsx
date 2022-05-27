@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Products } from "../../../types/types";
 const API_URL = "/api/products";
 
 const localProducts = JSON.parse(localStorage.getItem("products") as string);
@@ -11,14 +12,14 @@ const localProduct = JSON.parse(
 const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
   try {
     const response = await axios.get(API_URL);
-    localStorage.setItem("products", JSON.stringify(response.data));
+    if (response.data) {
+      localStorage.setItem("products", JSON.stringify(response.data));
+    }
     return response.data;
   } catch (err) {
     const message =
-      ((err as any).response &&
-        (err as any).response.data &&
-        (err as any).response.data.message) ||
-      (err as any).message ||
+      (err as any).response.data.message ||
+      (err as any).response.data ||
       (err as any).toString();
     return thunkAPI.rejectWithValue(message);
   }
@@ -30,14 +31,14 @@ const getProduct = createAsyncThunk(
   async (productId: string, thunkAPI) => {
     try {
       const response = await axios.get(API_URL + `/${productId}`);
-      localStorage.setItem("single-product", JSON.stringify(response.data));
+      if (response.data) {
+        localStorage.setItem("single-product", JSON.stringify(response.data));
+      }
       return response.data;
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
+        (err as any).response.data.message ||
+        (err as any).response.data ||
         (err as any).toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -45,7 +46,7 @@ const getProduct = createAsyncThunk(
 );
 
 const initialState = {
-  products: [],
+  products: [] as unknown as [Products],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -65,12 +66,12 @@ const productSlice = createSlice({
       .addCase(getProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products = action.payload.data;
+        state.products = action.payload;
       })
       .addCase(getProducts.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
-        state.products = localProducts.data;
+        state.products = localProducts;
       })
       .addCase(getProduct.pending, (state) => {
         state.isLoading = true;
@@ -78,12 +79,12 @@ const productSlice = createSlice({
       .addCase(getProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        (state.products as any[]).push(action.payload);
+        state.products = action.payload;
       })
       .addCase(getProduct.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
-        (state.products as any[]).push(localProduct);
+        state.products = [localProduct];
       });
   },
 });

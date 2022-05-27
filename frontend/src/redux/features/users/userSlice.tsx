@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
+import { Users } from "../../../types/types";
 import axios from "axios";
 
 // Base API URL
@@ -10,17 +11,17 @@ const user = JSON.parse(localStorage.getItem("user") as string);
 // Register a user
 const register = createAsyncThunk(
   "user/register",
-  async (user: object, thunkAPI) => {
+  async (user: Users, thunkAPI) => {
     try {
       const response = await axios.post(API_URL + "register", user);
-      localStorage.setItem("user", JSON.stringify(response.data));
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
       return response.data;
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
+        (err as any).response.data.message ||
+        (err as any).response.data ||
         (err as any).toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -28,7 +29,7 @@ const register = createAsyncThunk(
 );
 
 // Login user
-const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
+const login = createAsyncThunk("user/login", async (user: Users, thunkAPI) => {
   try {
     const response = await axios.post(API_URL + "login", user);
     if (response.data) {
@@ -37,10 +38,8 @@ const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
     return response.data;
   } catch (err) {
     const message =
-      ((err as any).response &&
-        (err as any).response.data &&
-        (err as any).response.data.message) ||
-      (err as any).message ||
+      (err as any).response.data.message ||
+      (err as any).response.data ||
       (err as any).toString();
     return thunkAPI.rejectWithValue(message);
   }
@@ -49,20 +48,18 @@ const login = createAsyncThunk("user/login", async (user: object, thunkAPI) => {
 // Update user
 const update = createAsyncThunk(
   `user/account/update`,
-  async (user: object, thunkAPI: RootStateOrAny) => {
+  async (password: string, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
-      const response = await axios.put(API_URL + "users", user, {
+      const token = thunkAPI.getState().auth.user.jwt;
+      const response = await axios.put(API_URL + "users/me", password, {
         headers: { Authorization: `Bearer ${token}` },
       });
       localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
+        (err as any).response.data.message ||
+        (err as any).response.data ||
         (err as any).toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -72,12 +69,11 @@ const update = createAsyncThunk(
 // Delete user
 const delUser = createAsyncThunk(
   `user/account/delete`,
-  async (userId: string, thunkAPI: RootStateOrAny) => {
+  async (_, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt.token;
-      const response = await axios.delete(API_URL + userId, {
+      const token = thunkAPI.getState().auth.user.jwt;
+      const response = await axios.delete(API_URL + `users/me`, {
         headers: { Authorization: `Bearer ${token}` },
-        data: { userId },
       });
       if (response.data) {
         localStorage.removeItem("user");
@@ -85,10 +81,8 @@ const delUser = createAsyncThunk(
       return response.data;
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
+        (err as any).response.data.message ||
+        (err as any).response.data ||
         (err as any).toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -98,18 +92,14 @@ const delUser = createAsyncThunk(
 // Logout user
 const logout = createAsyncThunk(
   "user/logout",
-  async (token: string, thunkAPI: RootStateOrAny) => {
+  async (_, thunkAPI: RootStateOrAny) => {
     try {
       localStorage.removeItem("user");
-      await axios.delete(API_URL + `logout/${token}`, {
-        data: { token },
-      });
+      await axios.post(API_URL + `logout`);
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
+        (err as any).response.data.message ||
+        (err as any).response.data ||
         (err as any).toString();
       return thunkAPI.rejectWithValue(message);
     }
@@ -144,7 +134,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = "you have been successfully registered";
+        state.message = "registration success";
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -159,7 +149,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = action.payload.message;
+        state.message = "login success";
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -167,7 +157,7 @@ const userSlice = createSlice({
         state.user = null;
         state.message = action.payload as string;
       })
-      .addCase(logout.fulfilled, (state, action) => {
+      .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.isSuccess = true;
       });

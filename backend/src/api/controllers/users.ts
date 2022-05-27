@@ -9,15 +9,15 @@ import { userModel } from "../models/users";
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { name, email, password } = req.body;
 
-  const checkEmail = validateEmail(email);
+  const isEmailValid = validateEmail(email);
   if (!name) {
     return res.status(400).json({ message: "name is required" });
   } else if (!email) {
     return res.status(400).json({ message: "email is required" });
   } else if (!password) {
     return res.status(400).json({ message: "password is required" });
-  } else if (checkEmail === false) {
-    return res.status(400).json({ message: "please provide a valid email" });
+  } else if (isEmailValid === false) {
+    return res.status(400).json({ message: "invalid email" });
   }
 
   const user = await userModel.create({ name, email, password });
@@ -39,8 +39,12 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
   const { email, password } = req.body;
 
   const isEmailValid = validateEmail(email);
-  if (!isEmailValid) {
-    return res.status(400).json({ message: "please enter a valid email" });
+  if (!email) {
+    return res.status(400).json({ message: "email is required" });
+  } else if (!password) {
+    return res.status(400).json({ message: "password is required" });
+  } else if (isEmailValid === false) {
+    return res.status(400).json({ message: "invalid email" });
   }
 
   const user = await userModel.authenticateUser({ email: email, password: password });

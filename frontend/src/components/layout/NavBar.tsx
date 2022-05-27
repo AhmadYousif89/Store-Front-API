@@ -16,7 +16,7 @@ function NavBar() {
   const { totalQuantity } = useSelector((state: RootStateOrAny) => state.cart);
 
   const handleLogOut = () => {
-    dispatch(logout(user.jwt));
+    dispatch(logout());
     toast.info("user logged out", { position: "top-center" });
     navigate("/products");
   };
@@ -31,7 +31,7 @@ function NavBar() {
       </div>
       <ul>
         {user ? (
-          user.jwt !== undefined ? (
+          user.jwt ? (
             <ul className="nav-menu">
               <Sidebar />
               <li>
