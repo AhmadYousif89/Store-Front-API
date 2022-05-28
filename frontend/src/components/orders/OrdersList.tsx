@@ -1,27 +1,25 @@
 import { MdDeleteForever } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { Orders } from "../../types/types";
 
 type Props = {
-  orders: [Order];
-  delOrder: (arg: number) => void;
-};
-type Order = {
-  order_id: number;
-  order_status: string;
-  created_at: string;
+  orders: [Orders];
 };
 
-function OrdersList({ orders, delOrder }: Props) {
+function OrdersList({ orders }: Props) {
+  const dispatch = useDispatch();
+
   return (
     <div className="order_list">
-      {orders.map((order: Order) => {
-        const { created_at, order_id, order_status } = order;
+      {orders.map((order: Orders) => {
+        const { _id, order_status, created_at } = order;
         return (
-          <ul key={order_id} className="order-card">
+          <ul key={_id} className="order-card">
             <li className="order-details">
               <div>
                 <p className="order-detail">
                   <span> #N: </span> <br />
-                  {order_id}
+                  {_id}
                 </p>
                 <p className="order-detail">
                   <span> Status: </span> <br />
@@ -33,7 +31,7 @@ function OrdersList({ orders, delOrder }: Props) {
                 </p>
               </div>
               <div className="order-btn-del">
-                <MdDeleteForever onClick={() => delOrder(order_id)} />
+                <MdDeleteForever onClick={() => {}} />
               </div>
             </li>
           </ul>

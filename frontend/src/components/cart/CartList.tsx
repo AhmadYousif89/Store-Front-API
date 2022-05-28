@@ -1,32 +1,45 @@
 import { MdRemoveShoppingCart } from "react-icons/md";
-import { useDispatch } from "react-redux";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   decrement,
+  emptyCart,
   increment,
   removeProduct,
 } from "../../redux/features/users/cartSlice";
 import * as Hi from "react-icons/hi";
+import { deleteAllOrder } from "../../redux/features/orders/orderSlice";
+import { toast } from "react-toastify";
 
 type Props = {
-  emptyCartItem: () => void;
-  cartCheckout: () => void;
-  totalAmount: number;
   cart: [];
+  totalAmount: number;
 };
 
-function CartList({ cart, cartCheckout, totalAmount, emptyCartItem }: Props) {
+function CartList({ cart, totalAmount }: Props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // const { orders } = useSelector((state: RootStateOrAny) => state.orders);
+  const { user } = useSelector((state: RootStateOrAny) => state.auth);
+
+  const handleCartCheckout = () => {
+    if (!user) {
+      toast.info("please login first");
+      navigate("/login");
+    } else {
+      toast.info("to be implemented");
+    }
+  };
 
   return (
     <>
       <section className="cart-container">
         {cart.map((product) => {
-          const { p_id, image_url, brand, p_name, color, quantity, price } =
+          const { _id, image_url, brand, p_name, color, quantity, price } =
             product;
           return (
-            <article className="cart-item" key={p_id}>
+            <article className="cart-item" key={_id}>
               <div className="cart-header">
                 <h3 id="product-titel">Product</h3>
                 <div className="item-card">
@@ -37,7 +50,9 @@ function CartList({ cart, cartCheckout, totalAmount, emptyCartItem }: Props) {
                     <p id="item-color">{color}</p>
                     <button
                       id="item-btn"
-                      onClick={() => dispatch(removeProduct(product))}>
+                      onClick={() => {
+                        dispatch(removeProduct(product));
+                      }}>
                       <Hi.HiShoppingCart /> <span>Remove</span>
                     </button>
                   </div>
@@ -72,7 +87,13 @@ function CartList({ cart, cartCheckout, totalAmount, emptyCartItem }: Props) {
         })}
       </section>
       <div className="cart-details">
-        <div className="clear-cart" onClick={emptyCartItem}>
+        <div
+          className="clear-cart"
+          onClick={() => {
+            dispatch(deleteAllOrder());
+            dispatch(emptyCart());
+            navigate("/products");
+          }}>
           <MdRemoveShoppingCart />
         </div>
         <div className="cart-checkout">
@@ -84,7 +105,7 @@ function CartList({ cart, cartCheckout, totalAmount, emptyCartItem }: Props) {
             </p>
           </div>
           <p id="checkout-text">Taxes and shipping calculated at checkout</p>
-          <button id="checkout-btn" onClick={cartCheckout}>
+          <button id="checkout-btn" onClick={handleCartCheckout}>
             CHECK OUT
           </button>
           <p className="go_back checkout" onClick={() => navigate("/products")}>

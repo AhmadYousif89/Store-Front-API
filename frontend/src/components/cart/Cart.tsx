@@ -1,11 +1,7 @@
-import {
-  displayCartInfo,
-  emptyCart,
-} from "../../redux/features/users/cartSlice";
-import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { displayCartInfo } from "../../redux/features/users/cartSlice";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import * as Hi from "react-icons/hi";
 import CartList from "./CartList";
 import "./styles/Cart.css";
@@ -18,25 +14,9 @@ function ShoppingCart(props: { cart: []; totalAmount: number }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
-
   useEffect(() => {
     dispatch(displayCartInfo());
   }, [props.cart, dispatch]);
-
-  const handleEmptyCart = () => {
-    dispatch(emptyCart());
-    navigate("/products");
-  };
-
-  const handleCartCheckout = () => {
-    if (!user) {
-      toast.info("please login first");
-      navigate("/login");
-    } else {
-      toast.info("to be implemented");
-    }
-  };
 
   return (
     <section>
@@ -50,12 +30,7 @@ function ShoppingCart(props: { cart: []; totalAmount: number }) {
           </p>
         </div>
       ) : (
-        <CartList
-          cart={cart}
-          totalAmount={totalAmount}
-          emptyCartItem={handleEmptyCart}
-          cartCheckout={handleCartCheckout}
-        />
+        <CartList cart={cart} totalAmount={totalAmount} />
       )}
     </section>
   );

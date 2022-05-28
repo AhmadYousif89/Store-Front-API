@@ -3,10 +3,11 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { Products } from "../../types/types";
+import "./styles/products.css";
 
 type Props = {
   products: [Products];
-  addToCart: (arg: object) => void;
+  addToCart: (product: object) => void;
 };
 
 function ProductList({ addToCart, products }: Props) {

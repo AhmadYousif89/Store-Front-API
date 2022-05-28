@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Spinner from "../utils/Spinner";
 import ProductList from "./ProductList";
 import ProductSideMenu from "./ProductSideMenu";
-import "./styles/products.css";
+import { createOrder } from "../../redux/features/orders/orderSlice";
 
 function Products() {
   const dispatch = useDispatch();
@@ -14,21 +14,22 @@ function Products() {
     (state: RootStateOrAny) => state.products,
   );
 
-  useEffect((): any => {
+  useEffect(() => {
     dispatch(getProducts());
-    return () => dispatch(reset());
+    return () => {
+      dispatch(reset());
+    };
   }, [dispatch]);
 
   const handleAddToCart = (product: object) => {
+    dispatch(createOrder());
     dispatch(addToCart(product));
   };
 
   if (isLoading) return <Spinner />;
 
-  if (products.length <= 0) {
-    return (
-      <h1 className="no-products">Store Is Under Construction , Sorry.</h1>
-    );
+  if (!products || products.length <= 0) {
+    return <h1 className="no-products">Store Is Under Construction . . .</h1>;
   }
 
   return (

@@ -3,40 +3,35 @@ import { login, reset } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Spinner from "../components/utils/Spinner";
-import { toast } from "react-toastify";
 import { IoCreateOutline } from "react-icons/io5";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const emailRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
+  const [userForm, setUserForm] = useState({
     email: "",
     password: "",
   });
-  const { email, password } = formData;
-  const [showErr, setShowErr] = useState(false);
+  const { email, password } = userForm;
 
-  const { user, isLoading, isSuccess, isError, message } = useSelector(
+  const { user, isLoading } = useSelector(
     (state: RootStateOrAny) => state.auth,
   );
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-      setShowErr(true);
-    }
     if (user) {
-      if (isSuccess) toast.success(message);
       navigate(`/products`);
     }
     emailRef.current?.focus();
-    dispatch(reset());
-  }, [user, isSuccess, isError, message, navigate, dispatch]);
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, navigate, dispatch]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
+    setUserForm((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -64,7 +59,6 @@ function Login() {
           <div className="form-content">
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="email"
                   className="form-control"
@@ -76,11 +70,9 @@ function Login() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !email && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="password"
                   className="form-control"
@@ -91,7 +83,6 @@ function Login() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !password && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <button type="submit" className="btn btn-block">
@@ -100,9 +91,10 @@ function Login() {
             </div>
           </div>
           <p className="form-link">
-            Don't have an account ?{" "}
+            Don't have an account ?
             <Link to="/register" id="form-link">
-              REGISTER <IoCreateOutline />
+              REGISTER
+              <IoCreateOutline />
             </Link>
           </p>
         </form>

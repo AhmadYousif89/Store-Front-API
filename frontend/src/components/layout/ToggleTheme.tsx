@@ -1,10 +1,10 @@
+import { toggleTheme } from "../../redux/features/themes/themeSlice";
+import { useDispatch } from "react-redux";
 import * as FaIcons from "react-icons/fa";
-import { ThemeContext } from "../../App";
-import { useContext } from "react";
-import "./styles/ToggleTheme.css";
+import "./styles/toggleTheme.css";
 
 function ToggleTheme() {
-  const { toggleTheme } = useContext(ThemeContext);
+  const dispatch = useDispatch();
 
   return (
     <span className="store-theme">
@@ -12,7 +12,7 @@ function ToggleTheme() {
         type="checkbox"
         name="appTheme"
         id="checkbox"
-        onChange={() => toggleTheme()}
+        onChange={() => dispatch(toggleTheme())}
       />
       <label htmlFor="checkbox" className="label">
         <FaIcons.FaMoon className="moon" />

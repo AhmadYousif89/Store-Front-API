@@ -8,38 +8,34 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 
 function Register() {
   const nameRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState({
+  const [userForm, setUserForm] = useState({
     name: "",
     email: "",
     password: "",
     password2: "",
   });
-  const [showErr, setShowErr] = useState(false);
 
-  const { name, email, password, password2 } = formData;
+  const { name, email, password, password2 } = userForm;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isSuccess, isLoading, isError, message } = useSelector(
+  const { user, isLoading } = useSelector(
     (state: RootStateOrAny) => state.auth,
   );
 
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-      setShowErr(true);
-    }
     if (user) {
-      if (isSuccess) toast.success(message);
       navigate(`/products`);
     }
     nameRef.current?.focus();
-    dispatch(reset());
-  }, [user, isSuccess, isError, message, navigate, dispatch]);
+    return () => {
+      dispatch(reset());
+    };
+  }, [user, navigate, dispatch]);
 
   const handleForm = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
+    setUserForm((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -48,7 +44,7 @@ function Register() {
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (password !== password2) {
-      toast.error("Password does not match !");
+      toast.error("password not matching");
     } else {
       const user = {
         name,
@@ -72,7 +68,6 @@ function Register() {
           <div className="form-content">
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="text"
                   className="form-control"
@@ -84,11 +79,9 @@ function Register() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !name && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="email"
                   className="form-control"
@@ -99,11 +92,9 @@ function Register() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !email && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="password"
                   className="form-control"
@@ -114,11 +105,9 @@ function Register() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !password && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <div className="input-icon">
-                {showErr && <span className="show-err">*</span>}
                 <input
                   type="password"
                   className="form-control"
@@ -129,7 +118,6 @@ function Register() {
                   onChange={handleForm}
                 />
               </div>
-              {showErr && !password2 && <p className="show-err">required</p>}
             </div>
             <div className="form-group">
               <button type="submit" className="btn btn-block">
@@ -138,7 +126,7 @@ function Register() {
             </div>
           </div>
           <p className="form-link">
-            Already have an account ?{" "}
+            Already have an account ?
             <Link to="/login" id="form-link">
               LOGIN <IoPersonCircleOutline />
             </Link>

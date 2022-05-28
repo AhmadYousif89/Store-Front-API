@@ -22,7 +22,8 @@ function SingleProduct() {
 
   if (isLoading) return <Spinner />;
 
-  if (products.length <= 0) return <h1>No Product Found . . . </h1>;
+  if (!products || products.length <= 0)
+    return <h1>No Product Found . . . </h1>;
 
   return (
     <section>

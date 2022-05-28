@@ -16,4 +16,10 @@ type Products = {
   description?: string;
 };
 
-export type { Users, Products };
+type Orders = {
+  _id: string;
+  order_status: string;
+  created_at: string;
+};
+
+export type { Users, Products, Orders };

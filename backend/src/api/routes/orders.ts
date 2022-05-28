@@ -6,6 +6,7 @@ import {
   getUserOrders,
   updateUserOrders,
   deleteUserOrders,
+  deleteAllOrders,
 } from "../controllers/orders";
 import authentication from "../../middlewares/auth";
 
@@ -16,7 +17,8 @@ routes.route("/users/orders/:id").get(getOneOrder);
 routes
   .route("/user/account/orders")
   .post(authentication, createOrder)
-  .get(authentication, getUserOrders);
+  .get(authentication, getUserOrders)
+  .delete(authentication, deleteAllOrders);
 routes
   .route("/user/account/orders/:id")
   .put(authentication, updateUserOrders)

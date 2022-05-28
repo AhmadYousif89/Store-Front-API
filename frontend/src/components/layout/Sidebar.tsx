@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as Fa from "react-icons/fa";
 import * as Hi from "react-icons/hi";
 import * as Ai from "react-icons/ai";
-import "./styles/Sidebar.css";
+import "./styles/sidebar.css";
 
 function Sidebar() {
   const [sidebar, setSidebar] = useState(false);

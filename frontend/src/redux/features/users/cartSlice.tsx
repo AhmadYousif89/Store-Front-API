@@ -1,32 +1,29 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { RootStateOrAny } from "react-redux";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const cart = JSON.parse(localStorage.getItem("cart") as string);
-const user = JSON.parse(localStorage.getItem("user") as string);
 const orders = JSON.parse(localStorage.getItem("orders") as string);
 
 const sendCartDetailsToDB = createAsyncThunk(
   "cart/send-to-database",
   async (productDetail: object, thunkAPI: RootStateOrAny) => {
     try {
-      const token = user.jwt;
-      const response = await axios.post(
+      const token = thunkAPI.getState().auth.user.jwt;
+      const product = await axios.post(
         `/api/user/account/orders/${orders.order_id}/products`,
         productDetail,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      return response.data;
+      return product.data;
     } catch (err) {
       const message =
-        ((err as any).response &&
-          (err as any).response.data &&
-          (err as any).response.data.message) ||
-        (err as any).message ||
-        (err as any).toString();
+        (err as any).response.data.message ||
+        (err as any).response.data ||
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -39,7 +36,6 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
 };
 
 const cartSlice = createSlice({
@@ -48,7 +44,7 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const productIndex = state.cart.findIndex(
-        (product: { p_id: string }) => product.p_id === action.payload.p_id,
+        (product: { _id: string }) => product._id === action.payload._id,
       );
       if (productIndex < 0) {
         const cartProduct = { ...action.payload, quantity: 1 };
@@ -66,38 +62,39 @@ const cartSlice = createSlice({
       }
     },
     displayCartInfo: (state) => {
-      let { total, quantity } = state.cart.reduce(
+      let { subtotal, quantity } = state.cart.reduce(
         (
+          cart: { subtotal: number; quantity: number },
           item: { price: number; quantity: number },
-          cartItem: { total: number; quantity: number },
         ) => {
-          const itemTotalValue = item.price * item.quantity; // 500 * 2 = 1000
-          cartItem.total += itemTotalValue; // 0 + 1000 , 1 + 1000 ...
-          cartItem.quantity += quantity; // 0 + 1 , 1 + 2  ...
-
-          return cartItem;
+          const { price, quantity } = item;
+          const itemTotalValue = price * quantity;
+          cart.subtotal += itemTotalValue;
+          cart.quantity += quantity;
+          return cart;
         },
-        { total: 0, quantity: 0 },
+        { subtotal: 0, quantity: 0 },
       );
-      state.totalAmount = total;
+
+      state.totalAmount = subtotal;
       state.totalQuantity = quantity;
     },
     increment: (state, action) => {
       const productIndex = state.cart.findIndex(
-        (product: { p_id: string }) => product.p_id === action.payload.p_id,
+        (product: { _id: string }) => product._id === action.payload._id,
       );
       (state.cart[productIndex] as { quantity: number }).quantity += 1;
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     decrement: (state, action) => {
       const productIndex = state.cart.findIndex(
-        (product: { p_id: string }) => product.p_id === action.payload.p_id,
+        (product: { _id: string }) => product._id === action.payload._id,
       );
       if (state.cart[productIndex].quantity > 1) {
         (state.cart[productIndex] as { quantity: number }).quantity -= 1;
       } else if (state.cart[productIndex].quantity === 1) {
         const cartList = state.cart.filter(
-          (product: { p_id: string }) => product.p_id !== action.payload.p_id,
+          (product: { _id: string }) => product._id !== action.payload._id,
         );
         state.cart = cartList;
         toast.error(`${action.payload.p_name} removed from cart`);
@@ -106,7 +103,7 @@ const cartSlice = createSlice({
     },
     removeProduct: (state, action) => {
       const cartList = state.cart.filter(
-        (product: { p_id: string }) => product.p_id !== action.payload.p_id,
+        (product: { _id: string }) => product._id !== action.payload._id,
       );
       state.cart = cartList;
       toast.error(`${action.payload.p_name} removed from cart`);
@@ -127,11 +124,12 @@ const cartSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.cart = action.payload;
+        toast.success("product added to cart");
       })
       .addCase(sendCartDetailsToDB.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
-        state.message = action.payload as string;
+        toast.error(action.payload as string);
       });
   },
 });
@@ -144,5 +142,6 @@ export const {
   removeProduct,
   emptyCart,
 } = cartSlice.actions;
+
 export { sendCartDetailsToDB };
 export default cartSlice.reducer;

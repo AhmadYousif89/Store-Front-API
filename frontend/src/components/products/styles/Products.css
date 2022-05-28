@@ -36,22 +36,16 @@
 #img-card {
   align-self: center;
   padding: 0 1rem;
-  width: fit-content;
-  transition: 300ms;
-}
-#img-card:hover {
-  transform: scale(1.02);
 }
 
 .price-color {
   display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin-top: 0.5rem;
+  align-items: center;
+  gap: 2rem;
+  margin-block: 2rem;
 }
 .price-color svg {
-  transform: scale(0.5);
-  align-self: start;
+  transform: scale(2);
 }
 .price-tag {
   display: flex;

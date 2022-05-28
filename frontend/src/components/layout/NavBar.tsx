@@ -1,25 +1,31 @@
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/features/users/userSlice";
+import { logout, reset } from "../../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
+import CartIcon from "../utils/CartIcon";
 import * as FaIcons from "react-icons/fa";
-import { toast } from "react-toastify";
 import ToggleTheme from "./ToggleTheme";
 import Sidebar from "./Sidebar";
-import "./styles/NavBar.css";
-import CartIcon from "../utils/CartIcon";
+import Spinner from "../utils/Spinner";
+import "./styles/navBar.css";
 
 function NavBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state: RootStateOrAny) => state.auth);
+  const { user, isLoading } = useSelector(
+    (state: RootStateOrAny) => state.auth,
+  );
   const { totalQuantity } = useSelector((state: RootStateOrAny) => state.cart);
 
   const handleLogOut = () => {
     dispatch(logout());
-    toast.info("user logged out", { position: "top-center" });
-    navigate("/products");
+    navigate("/");
+    return () => {
+      dispatch(reset());
+    };
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <header className="nav">

@@ -12,15 +12,14 @@ const localProduct = JSON.parse(
 const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
   try {
     const response = await axios.get(API_URL);
-    if (response.data) {
+    response.data &&
       localStorage.setItem("products", JSON.stringify(response.data));
-    }
     return response.data;
   } catch (err) {
     const message =
       (err as any).response.data.message ||
       (err as any).response.data ||
-      (err as any).toString();
+      (err as any).response;
     return thunkAPI.rejectWithValue(message);
   }
 });
@@ -31,15 +30,14 @@ const getProduct = createAsyncThunk(
   async (productId: string, thunkAPI) => {
     try {
       const response = await axios.get(API_URL + `/${productId}`);
-      if (response.data) {
+      response.data &&
         localStorage.setItem("single-product", JSON.stringify(response.data));
-      }
       return response.data;
     } catch (err) {
       const message =
         (err as any).response.data.message ||
         (err as any).response.data ||
-        (err as any).toString();
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -72,7 +70,8 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.products = localProducts;
-      })
+      });
+    builder
       .addCase(getProduct.pending, (state) => {
         state.isLoading = true;
       })
@@ -89,7 +88,7 @@ const productSlice = createSlice({
   },
 });
 
-const { reset } = productSlice.actions;
+export const { reset } = productSlice.actions;
 
-export { reset, getProducts, getProduct };
+export { getProducts, getProduct };
 export default productSlice.reducer;

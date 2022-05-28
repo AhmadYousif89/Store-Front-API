@@ -109,6 +109,20 @@ class OrdersModel {
       throw new Error(`${err}`);
     }
   }
+
+  async deleteAllOrders({ user_id }: Orders): Promise<Orders[]> {
+    try {
+      this.conct = await pgClient.connect();
+      const sql = `DELETE FROM orders WHERE user_id = ($1) RETURNING _id`;
+      const query = await this.conct.query(sql, [user_id]);
+      const orders = query.rows;
+      this.conct.release();
+      return orders;
+    } catch (err) {
+      this.conct.release();
+      throw new Error(`${err}`);
+    }
+  }
 }
 
 export const orderModel = new OrdersModel();

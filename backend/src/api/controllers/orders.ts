@@ -105,4 +105,23 @@ const deleteUserOrders = asyncWrapper(
   }
 );
 
-export { getOrders, getOneOrder, createOrder, getUserOrders, updateUserOrders, deleteUserOrders };
+const deleteAllOrders = asyncWrapper(
+  async (req: Request, res: Response): Promise<void | Response> => {
+    const { _id } = req.user as Users;
+    const orders = await orderModel.deleteAllOrders({ user_id: _id });
+    if (!orders.length) {
+      return res.status(404).json({ message: `no orders were found` });
+    }
+    res.status(200).json({ message: "delete success", orders });
+  }
+);
+
+export {
+  getOrders,
+  getOneOrder,
+  createOrder,
+  getUserOrders,
+  updateUserOrders,
+  deleteUserOrders,
+  deleteAllOrders,
+};

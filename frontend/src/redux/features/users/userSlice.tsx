@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootStateOrAny } from "react-redux";
 import { Users } from "../../../types/types";
+import { toast } from "react-toastify";
 import axios from "axios";
 
-// Base API URL
-const API_URL = "/api/";
+const API_URL = "/api";
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem("user") as string);
 
@@ -13,16 +13,15 @@ const register = createAsyncThunk(
   "user/register",
   async (user: Users, thunkAPI) => {
     try {
-      const response = await axios.post(API_URL + "register", user);
-      if (response.data) {
+      const response = await axios.post(`${API_URL}/register`, user);
+      response.data &&
         localStorage.setItem("user", JSON.stringify(response.data));
-      }
       return response.data;
     } catch (err) {
       const message =
         (err as any).response.data.message ||
         (err as any).response.data ||
-        (err as any).toString();
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -31,16 +30,15 @@ const register = createAsyncThunk(
 // Login user
 const login = createAsyncThunk("user/login", async (user: Users, thunkAPI) => {
   try {
-    const response = await axios.post(API_URL + "login", user);
-    if (response.data) {
+    const response = await axios.post(`${API_URL}/login`, user);
+    response.data &&
       localStorage.setItem("user", JSON.stringify(response.data));
-    }
     return response.data;
   } catch (err) {
     const message =
       (err as any).response.data.message ||
       (err as any).response.data ||
-      (err as any).toString();
+      (err as any).response;
     return thunkAPI.rejectWithValue(message);
   }
 });
@@ -51,16 +49,17 @@ const update = createAsyncThunk(
   async (password: string, thunkAPI: RootStateOrAny) => {
     try {
       const token = thunkAPI.getState().auth.user.jwt;
-      const response = await axios.put(API_URL + "users/me", password, {
+      const response = await axios.put(`${API_URL}/users/me`, password, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      localStorage.setItem("user", JSON.stringify(response.data));
+      response.data &&
+        localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
         (err as any).response.data.message ||
         (err as any).response.data ||
-        (err as any).toString();
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -72,18 +71,16 @@ const delUser = createAsyncThunk(
   async (_, thunkAPI: RootStateOrAny) => {
     try {
       const token = thunkAPI.getState().auth.user.jwt;
-      const response = await axios.delete(API_URL + `users/me`, {
+      const response = await axios.delete(`${API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.data) {
-        localStorage.removeItem("user");
-      }
+      response.data && localStorage.removeItem("user");
       return response.data;
     } catch (err) {
       const message =
         (err as any).response.data.message ||
         (err as any).response.data ||
-        (err as any).toString();
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -94,13 +91,17 @@ const logout = createAsyncThunk(
   "user/logout",
   async (_, thunkAPI: RootStateOrAny) => {
     try {
-      localStorage.removeItem("user");
-      await axios.post(API_URL + `logout`);
+      const token = thunkAPI.getState().auth.user.jwt;
+      const response = await axios.post(`${API_URL}/logout`, "", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      response.data && localStorage.removeItem("user");
+      return response.data;
     } catch (err) {
       const message =
         (err as any).response.data.message ||
         (err as any).response.data ||
-        (err as any).toString();
+        (err as any).response;
       return thunkAPI.rejectWithValue(message);
     }
   },
@@ -111,7 +112,6 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  message: "",
 };
 
 const userSlice = createSlice({
@@ -122,7 +122,6 @@ const userSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.isLoading = false;
-      state.message = "";
     },
   },
   extraReducers: (builder) => {
@@ -134,14 +133,15 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = "registration success";
+        toast.success("Registration success", { position: "top-center" });
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.user = null;
-        state.message = action.payload as string;
-      })
+        toast.error(action.payload as string);
+      });
+    builder
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
@@ -149,22 +149,28 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
-        state.message = "login success";
+        toast.success("Login success", { position: "top-center" });
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.user = null;
-        state.message = action.payload as string;
+        toast.error(action.payload as string);
+      });
+    builder
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null;
+      .addCase(logout.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.isSuccess = true;
+        state.user = null;
+        toast.info(action.payload, { position: "top-center" });
       });
   },
 });
 
-const { reset } = userSlice.actions;
+export const { reset } = userSlice.actions;
 
-export { reset, register, login, update, delUser, logout };
+export { register, login, update, delUser, logout };
 export default userSlice.reducer;
