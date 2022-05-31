@@ -144,12 +144,12 @@
 
 /* media qureys */
 @media (max-width: 600px) {
-  .form {
-    width: 90%;
+  .app-container {
+    padding: 0;
   }
 
-  #img-card {
-    width: 100%;
+  .form {
+    width: 90%;
   }
 
   .heading h1 {

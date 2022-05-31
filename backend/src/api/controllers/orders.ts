@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { orderModel } from "../models/orders";
+import { Order } from "../models/orders";
 import asyncWrapper from "../../middlewares/asyncWrapper";
 import { Users } from "../../types/types";
 
@@ -8,7 +8,7 @@ import { Users } from "../../types/types";
 const createOrder = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { _id } = req.user as Users;
 
-  const order = await orderModel.create({ user_id: _id });
+  const order = await Order.createOrder({ user_id: _id });
 
   res.status(201).json(order);
 });
@@ -16,7 +16,7 @@ const createOrder = asyncWrapper(async (req: Request, res: Response): Promise<vo
 // method => GET /users/orders
 // desc   => All Orders data.
 const getOrders = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const orders = await orderModel.index();
+  const orders = await Order.index();
 
   if (!orders.length) {
     return res.status(404).json({ message: `no orders were found` });
@@ -34,7 +34,7 @@ const getOneOrder = asyncWrapper(async (req: Request, res: Response): Promise<vo
     return res.status(400).json({ message: "order id not valid" });
   }
 
-  const order = await orderModel.show({ _id: oid });
+  const order = await Order.show({ _id: oid });
   if (!order) {
     return res.status(404).json({ message: "order not found" });
   }
@@ -48,7 +48,7 @@ const getUserOrders = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
 
-    const orders = await orderModel.getUserOrders({ user_id: _id });
+    const orders = await Order.getUserOrders({ user_id: _id });
     if (!orders.length) {
       return res.status(404).json({ message: `user doesn't have any orders` });
     }
@@ -73,7 +73,7 @@ const updateUserOrders = asyncWrapper(
       return res.status(400).json({ message: "order status not provided" });
     }
 
-    const order = await orderModel.updateUserOrders({
+    const order = await Order.updateUserOrders({
       user_id: _id,
       _id: oid,
       order_status: status,
@@ -96,7 +96,7 @@ const deleteUserOrders = asyncWrapper(
     if (!oid) {
       return res.status(400).json({ message: "invalid order id" });
     }
-    const order = await orderModel.deleteUserOrders({ user_id: _id, _id: oid });
+    const order = await Order.deleteUserOrders({ user_id: _id, _id: oid });
     if (!order) {
       return res.status(404).json({ message: `order not found` });
     }
@@ -108,7 +108,7 @@ const deleteUserOrders = asyncWrapper(
 const deleteAllOrders = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
-    const orders = await orderModel.deleteAllOrders({ user_id: _id });
+    const orders = await Order.deleteAllOrders({ user_id: _id });
     if (!orders.length) {
       return res.status(404).json({ message: `no orders were found` });
     }

@@ -8,7 +8,7 @@ import {
   deleteUserOrders,
   deleteAllOrders,
 } from "../controllers/orders";
-import authentication from "../../middlewares/auth";
+import authenticator from "../../middlewares/auth";
 
 const routes = Router();
 
@@ -16,12 +16,12 @@ routes.get("/users/orders", getOrders);
 routes.route("/users/orders/:id").get(getOneOrder);
 routes
   .route("/user/account/orders")
-  .post(authentication, createOrder)
-  .get(authentication, getUserOrders)
-  .delete(authentication, deleteAllOrders);
+  .post(authenticator, createOrder)
+  .get(authenticator, getUserOrders)
+  .delete(authenticator, deleteAllOrders);
 routes
   .route("/user/account/orders/:id")
-  .put(authentication, updateUserOrders)
-  .delete(authentication, deleteUserOrders);
+  .put(authenticator, updateUserOrders)
+  .delete(authenticator, deleteUserOrders);
 
 export default routes;

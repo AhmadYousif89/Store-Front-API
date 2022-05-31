@@ -106,4 +106,4 @@ class ProductModel {
   }
 }
 
-export const productModel = new ProductModel();
+export const Product = new ProductModel();

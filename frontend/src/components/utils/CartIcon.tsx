@@ -7,7 +7,7 @@ type Props = {
 
 function CartIcon({ totalQuantity }: Props) {
   return (
-    <Link to="/dashboard/cart">
+    <Link to="/cart">
       <div className="cart-count">
         <FaCartArrowDown /> <span>{totalQuantity}</span>
       </div>

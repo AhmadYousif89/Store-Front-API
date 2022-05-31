@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { userModel } from "./../api/models/users";
+import { User } from "./../api/models/users";
 import { Error, Users } from "../types/types";
 import jwt from "jsonwebtoken";
 
@@ -17,7 +17,7 @@ const handleAuthentication = async (req: Request, _res: Response, next: NextFunc
       if (token && bearer === "Bearer") {
         const decode = jwt.verify(token, process.env.SECRET_TOKEN as string);
         // get a user based on the user_id from decoded token
-        const user = await userModel.show({ _id: (decode as Users)._id });
+        const user = await User.show({ _id: (decode as Users)._id });
         // create a user proprety inside the request header with the user auth info
         req.user = user as Users;
         if (decode) {

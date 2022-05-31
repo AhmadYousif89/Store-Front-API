@@ -1,48 +1,43 @@
 .product-container {
-  display: grid;
-  grid-template-columns: 0.25fr 1fr;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .products {
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: center;
   gap: 2rem;
   margin-top: 2rem;
   margin-bottom: 10rem;
 }
 
-.product-side-menu {
-  border-right: 1px #000 solid;
-  border-left: 1px #000 solid;
-  margin-right: 2rem;
-}
-
 .product-card {
-  display: flex;
   border-radius: 10px;
-  padding-block: 1rem;
   box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.5),
     0px 0px 5px 1px rgba(115, 105, 105, 0.5);
-  justify-content: center;
+  padding: 1rem;
 }
 
 .card-details {
   display: flex;
   text-align: left;
-  gap: 1rem;
+  gap: 2rem;
+  padding: 1rem;
 }
-
-#img-card {
-  align-self: center;
-  padding: 0 1rem;
+@media (max-width: 480px) {
+  .card-details {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .price-color {
   display: flex;
   align-items: center;
   gap: 2rem;
-  margin-block: 2rem;
+  margin-block: 1rem;
 }
 .price-color svg {
   transform: scale(2);
@@ -54,7 +49,7 @@
 }
 #price {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 .color-tag {
   display: flex;
@@ -63,7 +58,7 @@
 }
 #color {
   font-size: 0.7rem;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 1px;
 }
 #brand {
@@ -96,7 +91,7 @@
 .btn-card {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
   margin-top: 1rem;
   padding: 0.5rem;
   border: 1px solid #000;
@@ -105,6 +100,7 @@
   color: #fff;
   cursor: pointer;
   font-size: 0.7rem;
+  width: 100%;
 }
 .btn-card:hover {
   color: #ccc;

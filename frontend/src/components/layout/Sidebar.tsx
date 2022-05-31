@@ -51,7 +51,7 @@ function Sidebar() {
             className={({ isActive }) =>
               isActive ? "sidebar-link active" : "sidebar-link"
             }
-            to={"/dashboard/cart"}>
+            to={"/cart"}>
             <Fa.FaShoppingCart /> Cart
           </NavLink>
           <NavLink

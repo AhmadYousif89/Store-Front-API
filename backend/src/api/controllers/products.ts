@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { productModel } from "../models/products";
+import { Product } from "../models/products";
 import asyncWrapper from "../../middlewares/asyncWrapper";
 
 // method => POST /products
@@ -14,7 +14,7 @@ const createProducts = asyncWrapper(
       return res.status(400).json({ message: "Please enter a valid details before submiting" });
     }
 
-    const product = await productModel.create({
+    const product = await Product.create({
       category: category,
       p_name: name,
       brand: brand,
@@ -31,7 +31,7 @@ const createProducts = asyncWrapper(
 // method => GET /products
 // desc   =>  all products data.
 const getProducts = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const products = await productModel.index();
+  const products = await Product.index();
 
   if (!products.length) {
     return res.status(404).json({ message: `no products were found` });
@@ -46,7 +46,7 @@ const getProductById = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const pid = req.params.id;
 
-    const product = await productModel.show({ _id: pid });
+    const product = await Product.show({ _id: pid });
     if (!product) {
       return res.status(404).json({ message: `product not found` });
     }
@@ -66,7 +66,7 @@ const updateProduct = asyncWrapper(
       return res.status(400).json({ message: "invalid product price" });
     }
 
-    const product = await productModel.update({ _id: pid, price: price });
+    const product = await Product.update({ _id: pid, price: price });
     if (!product) {
       return res.status(404).json({ message: `product not found` });
     }
@@ -85,7 +85,7 @@ const deleteProduct = asyncWrapper(
       return res.status(400).json({ message: "invalid product id" });
     }
 
-    const product = await productModel.delete({ _id: pid });
+    const product = await Product.delete({ _id: pid });
     if (!product) {
       return res.status(404).json({ message: `product not found` });
     }

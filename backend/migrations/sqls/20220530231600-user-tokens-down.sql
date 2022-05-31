@@ -1,2 +1,2 @@
-/* Drop User_Tokens */
+/* Drop user_Tokens */
 DROP TABLE user_tokens;

@@ -7,10 +7,9 @@
     "url": "https://github.com/AhmadYousif89/Store_Front.git"
   },
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node dist/server.js",
     "build": "rimraf dist && tsc",
-    "watch": "tsc -w",
-    "dev": "npx nodemon",
+    "dev": "concurrently \"tsc -w\" \"npx nodemon\"",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "lint": "eslint src/**/*.ts",
     "jasmine": "jasmine",
@@ -32,6 +31,7 @@
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.3",
+    "stripe": "^9.5.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.2"
   },
@@ -45,6 +45,7 @@
     "@types/pg": "^8.6.4",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "concurrently": "^7.2.1",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

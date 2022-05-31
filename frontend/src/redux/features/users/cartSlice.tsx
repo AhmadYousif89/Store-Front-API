@@ -29,6 +29,28 @@ const sendCartDetailsToDB = createAsyncThunk(
   },
 );
 
+const stripCheckout = createAsyncThunk(
+  "cart/checkout",
+  async (cartDetail: object, thunkAPI: RootStateOrAny) => {
+    try {
+      const token = thunkAPI.getState().auth.user.jwt;
+      const response = await axios.post(`/api/stripe/checkout`, cartDetail, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+      return response.data;
+    } catch (err) {
+      const message =
+        (err as any).response.data.message ||
+        (err as any).response.data ||
+        (err as any).response;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
 const initialState = {
   cart: cart ? cart : [],
   totalQuantity: 0,
@@ -42,6 +64,12 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    reset: (state) => {
+      state.cart = [];
+      state.totalAmount = 0;
+      state.totalQuantity = 0;
+      localStorage.removeItem("cart");
+    },
     addToCart: (state, action) => {
       const productIndex = state.cart.findIndex(
         (product: { _id: string }) => product._id === action.payload._id,
@@ -117,6 +145,19 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(stripCheckout.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(stripCheckout.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+      })
+      .addCase(stripCheckout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        toast.error(action.payload as string);
+      });
+    builder
       .addCase(sendCartDetailsToDB.pending, (state) => {
         state.isLoading = true;
       })
@@ -135,6 +176,7 @@ const cartSlice = createSlice({
 });
 
 export const {
+  reset,
   addToCart,
   displayCartInfo,
   increment,
@@ -143,5 +185,5 @@ export const {
   emptyCart,
 } = cartSlice.actions;
 
-export { sendCartDetailsToDB };
+export { sendCartDetailsToDB, stripCheckout };
 export default cartSlice.reducer;

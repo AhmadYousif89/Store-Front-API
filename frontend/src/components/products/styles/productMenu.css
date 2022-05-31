@@ -1,0 +1,13 @@
+.menu {
+  margin-block: 2rem;
+  padding-inline: 2rem;
+}
+.menu svg {
+  transform: scale(3);
+  margin-right: 1.5rem;
+  color: rgb(41, 162, 206);
+}
+.menu input {
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+}

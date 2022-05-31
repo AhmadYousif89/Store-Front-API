@@ -1,6 +1,6 @@
 import { schema } from "./../testingSchema";
 import { productModel } from "../../api/models/products";
-import { OPT } from "../../api/models/ordered_products";
+import { OPT } from "../../api/models/order_details";
 import { orderModel } from "../../api/models/orders";
 import { userModel } from "../../api/models/users";
 import pgDB from "../../db/database";

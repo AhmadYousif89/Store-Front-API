@@ -24,7 +24,7 @@ function ProductList({ addToCart, products }: Props) {
                   <img src={image_url} alt={p_name} />
                 </Link>
               </div>
-              <div>
+              <div className="product-info">
                 <p id="brand">{brand?.toUpperCase()}</p>
                 <p id="p-name">{p_name}</p>
                 <p id="p-desc">{description}</p>

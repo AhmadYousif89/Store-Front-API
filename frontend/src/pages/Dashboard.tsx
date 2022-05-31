@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "./styles/Dashboard.css";
+import "./styles/dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();

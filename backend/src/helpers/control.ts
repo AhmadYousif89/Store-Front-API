@@ -5,7 +5,7 @@ import { Users } from "../types/types";
 const { SALT, PEPPER, SECRET_TOKEN } = process.env;
 
 const jwtGenerator = (user: Users): string => {
-  const token = jwt.sign(user, SECRET_TOKEN as string, { expiresIn: "24h" });
+  const token = jwt.sign(user, SECRET_TOKEN as string, { expiresIn: "30d" });
   return token;
 };
 

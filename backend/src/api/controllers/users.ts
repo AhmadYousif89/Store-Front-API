@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { jwtGenerator, validateEmail } from "../../helpers/control";
 import asyncWrapper from "../../middlewares/asyncWrapper";
 import { Users } from "../../types/types";
-import { userModel } from "../models/users";
+import { User } from "../models/users";
 
 // method => POST /register
 // desc   => Create new user data.
@@ -20,15 +20,16 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void 
     return res.status(400).json({ message: "invalid email" });
   }
 
-  const user = await userModel.create({ name, email, password });
+  const user = await User.create({ name, email, password });
 
   const token = jwtGenerator(user);
-  await userModel.addUserToken({
+  await User.addUserToken({
     _id: user._id as string,
     token,
   });
 
   res.status(201).json({
+    ...user,
     jwt: token,
   });
 });
@@ -47,18 +48,19 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
     return res.status(400).json({ message: "invalid email" });
   }
 
-  const user = await userModel.authenticateUser({ email: email, password: password });
+  const user = await User.authenticateUser({ email: email, password: password });
   if (!user) {
     return res.status(401).json({ message: "invalid email or password" });
   }
 
   const token = jwtGenerator(user);
-  await userModel.addUserToken({
+  await User.addUserToken({
     _id: user._id as string,
     token,
   });
 
   res.status(200).json({
+    ...user,
     jwt: token,
   });
 });
@@ -68,7 +70,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
 const logout = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { _id } = req.user as Users;
 
-  const user = await userModel.delUserToken({ _id });
+  const user = await User.delUserToken({ _id });
   if (!user) {
     return res.status(400).send();
   }
@@ -79,7 +81,7 @@ const logout = asyncWrapper(async (req: Request, res: Response): Promise<void | 
 // methtod => GET /users
 // desc   => Return all users data.
 const getUsers = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const users = await userModel.index();
+  const users = await User.index();
 
   if (!users.length) {
     return res.status(404).json({ message: `no users were found` });
@@ -107,7 +109,7 @@ const updateMe = asyncWrapper(async (req: Request, res: Response): Promise<void 
     return res.status(400).json({ message: "please enter your new password" });
   }
 
-  await userModel.update({ _id, password: password });
+  await User.update({ _id, password: password });
 
   res.status(200).json({ message: `update success` });
 });
@@ -117,7 +119,7 @@ const updateMe = asyncWrapper(async (req: Request, res: Response): Promise<void 
 const deleteMe = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { _id } = req.user as Users;
 
-  const user = await userModel.delete({ _id });
+  const user = await User.delete({ _id });
 
   res.status(200).json({ message: `user deleted`, ...user });
 });

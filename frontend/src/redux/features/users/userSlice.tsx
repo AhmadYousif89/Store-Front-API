@@ -92,7 +92,7 @@ const logout = createAsyncThunk(
   async (_, thunkAPI: RootStateOrAny) => {
     try {
       const token = thunkAPI.getState().auth.user.jwt;
-      const response = await axios.post(`${API_URL}/logout`, "", {
+      const response = await axios.post(`${API_URL}/logout`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
       response.data && localStorage.removeItem("user");

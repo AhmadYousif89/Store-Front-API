@@ -9,13 +9,6 @@ type UserToken = {
   token?: string;
   i_at?: string;
 };
-type Orders = {
-  _id?: string;
-  order_status?: string;
-  user_id?: string;
-  created_at?: string;
-  updated_at?: string | null;
-};
 type Products = {
   _id?: string;
   category?: string;
@@ -26,12 +19,20 @@ type Products = {
   image_url?: string;
   description?: string;
 };
-type OP = {
+type Orders = {
   _id?: string;
-  order_id?: string;
-  product_id?: string;
-  quantity?: number;
+  order_status?: string;
+  user_id?: string;
+  stripe_customerId?: string;
   created_at?: string;
+  updated_at?: string | null;
+};
+type OrderDetail = {
+  _id?: string;
+  customerId?: string;
+  order_info?: object;
+  created_at?: string;
+  updated_at?: string | null;
 };
 type Error = {
   name?: string;
@@ -40,4 +41,4 @@ type Error = {
   status?: number;
 };
 
-export { Users, UserToken, Orders, Products, OP, Error };
+export { Users, UserToken, Orders, Products, OrderDetail, Error };

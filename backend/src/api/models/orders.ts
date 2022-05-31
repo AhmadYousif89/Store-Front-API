@@ -1,19 +1,21 @@
 import { PoolClient } from "pg";
 import pgClient from "../../db/database";
 import { Orders } from "../../types/types";
-import { customErr } from "../../helpers/control";
 
 class OrdersModel {
   conct!: PoolClient;
   errMsg = "";
-  async create({ user_id }: Orders): Promise<Orders> {
+  async createOrder({ user_id, stripe_customerId, order_status }: Orders): Promise<Orders> {
     try {
       this.conct = await pgClient.connect();
-      const sql = `INSERT INTO orders (user_id) VALUES ($1) RETURNING *`;
-      const query = await this.conct.query(sql, [user_id]);
-      const orders = query.rows[0];
+      const sql = `
+      INSERT INTO orders 
+      (user_id, stripe_customerId, order_status) 
+      VALUES ($1, $2, $3) RETURNING *`;
+      const query = await this.conct.query(sql, [user_id, stripe_customerId, order_status]);
+      const order = query.rows[0];
       this.conct.release();
-      return orders;
+      return order;
     } catch (err) {
       this.conct.release();
       throw new Error(`${err}`);
@@ -64,20 +66,6 @@ class OrdersModel {
   async updateUserOrders({ _id, user_id, order_status }: Orders): Promise<Orders> {
     try {
       this.conct = await pgClient.connect();
-      const sql = "SELECT order_id FROM ordered_products WHERE order_id = ($1)";
-      const query = await this.conct.query(sql, [_id]);
-      query.rows[0].order_id;
-    } catch (err) {
-      this.conct.release();
-      if ((err as Error).message?.includes("undefined")) {
-        this.errMsg = customErr(err as Error, "no products were found in this order.", ".");
-      } else {
-        this.errMsg = err as string;
-      }
-      throw new Error(`${this.errMsg}`);
-    }
-    try {
-      this.conct = await pgClient.connect();
       const sql = `
       UPDATE orders 
       SET order_status = ($3), updated_at = NOW() 
@@ -125,4 +113,4 @@ class OrdersModel {
   }
 }
 
-export const orderModel = new OrdersModel();
+export const Order = new OrdersModel();

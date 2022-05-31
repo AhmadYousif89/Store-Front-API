@@ -19,6 +19,7 @@ import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,18 +45,19 @@ function App() {
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="products" element={<Products />} />
           <Route path="products/:productID" element={<SingleProduct />} />
-          <Route path="dashboard" element={<Dashboard />} />
           <Route
-            path="dashboard/cart"
+            path="cart"
             element={<Cart cart={cart} totalAmount={totalAmount} />}
           />
+          <Route path="checkout-success" element={<CheckoutSuccess />} />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="dashboard/orders" element={<Orders />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

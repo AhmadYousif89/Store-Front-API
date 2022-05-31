@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { register, login, logout, getUsers, getMe, updateMe, deleteMe } from "../controllers/users";
 import authenticator from "../../middlewares/auth";
+import { register, login, logout, getUsers, getMe, updateMe, deleteMe } from "../controllers/users";
 
 const routes = Router();
 

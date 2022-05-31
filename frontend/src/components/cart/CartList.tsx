@@ -9,7 +9,7 @@ import {
 } from "../../redux/features/users/cartSlice";
 import * as Hi from "react-icons/hi";
 import { deleteAllOrder } from "../../redux/features/orders/orderSlice";
-import { toast } from "react-toastify";
+import PayButton from "./StripePayButton";
 
 type Props = {
   cart: [];
@@ -20,21 +20,11 @@ function CartList({ cart, totalAmount }: Props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const { orders } = useSelector((state: RootStateOrAny) => state.orders);
   const { user } = useSelector((state: RootStateOrAny) => state.auth);
-
-  const handleCartCheckout = () => {
-    if (!user) {
-      toast.info("please login first");
-      navigate("/login");
-    } else {
-      toast.info("to be implemented");
-    }
-  };
 
   return (
     <>
-      <section className="cart-container">
+      <section className="cart-items-container">
         {cart.map((product) => {
           const { _id, image_url, brand, p_name, color, quantity, price } =
             product;
@@ -105,9 +95,15 @@ function CartList({ cart, totalAmount }: Props) {
             </p>
           </div>
           <p id="checkout-text">Taxes and shipping calculated at checkout</p>
-          <button id="checkout-btn" onClick={handleCartCheckout}>
-            CHECK OUT
-          </button>
+          {user ? (
+            <PayButton cartItems={cart} />
+          ) : (
+            <button
+              className="checkout-btn login-to-checkout"
+              onClick={() => navigate("/login")}>
+              Login To Checkout
+            </button>
+          )}
           <p className="go_back checkout" onClick={() => navigate("/products")}>
             <Hi.HiArrowNarrowLeft /> Continue Shopping
           </p>

@@ -1,4 +1,9 @@
 .cart-container {
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.cart-items-container {
   display: grid;
   padding: 0 2rem;
   margin-block: 2rem;
@@ -153,17 +158,21 @@
   font-size: 0.8rem;
   color: #777;
 }
-#checkout-btn {
+
+.checkout-btn {
   margin-bottom: 1rem;
   width: 100%;
   padding: 0.5rem 0;
   border-radius: 5px;
   border: 1px solid #333;
-  background-color: rgb(57, 247, 51);
+  background-color: rgb(30, 225, 40);
   font-weight: bold;
   font-size: 1.125rem;
 }
-#checkout-btn:hover {
+.login-to-checkout {
+  background-color: rgb(241, 247, 51);
+}
+.checkout-btn:hover {
   cursor: pointer;
   opacity: 0.7;
 }

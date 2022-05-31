@@ -9,20 +9,23 @@ const localProduct = JSON.parse(
 );
 
 // Show products
-const getProducts = createAsyncThunk("products/getAll", async (_, thunkAPI) => {
-  try {
-    const response = await axios.get(API_URL);
-    response.data &&
-      localStorage.setItem("products", JSON.stringify(response.data));
-    return response.data;
-  } catch (err) {
-    const message =
-      (err as any).response.data.message ||
-      (err as any).response.data ||
-      (err as any).response;
-    return thunkAPI.rejectWithValue(message);
-  }
-});
+const getAllProducts = createAsyncThunk(
+  "products/getAll",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(API_URL);
+      response.data &&
+        localStorage.setItem("products", JSON.stringify(response.data));
+      return response.data;
+    } catch (err) {
+      const message =
+        (err as any).response.data.message ||
+        (err as any).response.data ||
+        (err as any).response;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
 
 // Get one product
 const getProduct = createAsyncThunk(
@@ -45,6 +48,7 @@ const getProduct = createAsyncThunk(
 
 const initialState = {
   products: [] as unknown as [Products],
+  filtered: [],
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -54,19 +58,24 @@ const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    reset: (state) => initialState,
+    reset: () => initialState,
+    searchByName: (state, action) => {
+      state.filtered = state.products.filter((product) =>
+        product.p_name?.toLowerCase().includes(action.payload),
+      ) as [];
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getProducts.pending, (state) => {
+      .addCase(getAllProducts.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getProducts.fulfilled, (state, action) => {
+      .addCase(getAllProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.products = action.payload;
       })
-      .addCase(getProducts.rejected, (state) => {
+      .addCase(getAllProducts.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
         state.products = localProducts;
@@ -78,7 +87,7 @@ const productSlice = createSlice({
       .addCase(getProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products = action.payload;
+        state.products = [action.payload];
       })
       .addCase(getProduct.rejected, (state) => {
         state.isLoading = false;
@@ -88,7 +97,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { reset } = productSlice.actions;
+export const { reset, searchByName } = productSlice.actions;
 
-export { getProducts, getProduct };
+export { getAllProducts, getProduct };
 export default productSlice.reducer;

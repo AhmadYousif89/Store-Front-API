@@ -19,7 +19,7 @@ function ShoppingCart(props: { cart: []; totalAmount: number }) {
   }, [props.cart, dispatch]);
 
   return (
-    <section>
+    <section className="cart-container">
       <h1 className="cart-titel">Shopping Cart</h1>
       {!cart.length ? (
         <div className="cart-empty">

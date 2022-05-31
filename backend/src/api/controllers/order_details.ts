@@ -1,36 +1,12 @@
 import { Request, Response } from "express";
 import { Users } from "../../types/types";
-import { OPT } from "../models/ordered_products";
+import { OrderDetails } from "../models/order_details";
 import asyncWrapper from "../../middlewares/asyncWrapper";
 
-// method => POST /user/account/orders/:oid/products/:pid
-// desc   => add product to orders.
-const addProducts = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const { _id } = req.user as Users;
-  const pId = req.params.pid;
-  const oId = req.params.oid;
-  const quantity = parseInt(req.body.quantity);
-
-  if (isNaN(quantity) || quantity <= 0) {
-    return res.status(400).json({ message: "quantity not provided" });
-  }
-
-  const op = await OPT.addProducts(
-    {
-      order_id: oId,
-      product_id: pId,
-      quantity: quantity,
-    },
-    _id as string
-  );
-
-  res.status(201).json(op);
-});
-
-// method => GET /users/ordered-products
+// method => GET /users/order-details
 // desc   => All Ordered products.
 const getAll = asyncWrapper(async (_req: Request, res: Response): Promise<void | Response> => {
-  const op = await OPT.index();
+  const op = await OrderDetails.index();
 
   if (!op.length) {
     return res.status(404).json({ message: `no orders being processed currently` });
@@ -39,7 +15,7 @@ const getAll = asyncWrapper(async (_req: Request, res: Response): Promise<void |
   res.status(200).json(op);
 });
 
-// method => GET /users/ordered-products/:id
+// method => GET /users/order-details/:id
 // desc   => A specific row from ordered products.
 const getOneById = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const opId = req.params.id;
@@ -48,7 +24,7 @@ const getOneById = asyncWrapper(async (req: Request, res: Response): Promise<voi
     return res.status(400).json({ message: "invalid ordered product id" });
   }
 
-  const op = await OPT.show({ _id: opId });
+  const op = await OrderDetails.show({ _id: opId });
   if (!op) {
     return res.status(404).json({ message: `no orders being processed with id number (${opId})` });
   }
@@ -56,13 +32,13 @@ const getOneById = asyncWrapper(async (req: Request, res: Response): Promise<voi
   res.status(200).json(op);
 });
 
-// method => GET /user/account/ordered-products
+// method => GET /user/account/order-details
 // desc   => Return a list of all ordered products for a user.
-const getUserOrderedProducts = asyncWrapper(
+const getUserOrderDetails = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
 
-    const data = await OPT.getUserOrderedProducts(_id as string);
+    const data = await OrderDetails.getUserOrderDetails(_id as string);
     if (!data) {
       return res.status(404).json({ message: "no current orders being processed" });
     }
@@ -71,14 +47,14 @@ const getUserOrderedProducts = asyncWrapper(
   }
 );
 
-// method => GET /user/account/orders/:id/ordered-products
+// method => GET /user/account/orders/:id/order-details
 // desc   => Return specific ordered products for a user by order id.
-const getUserOrderedProductsByid = asyncWrapper(
+const getUserOrderDetailsByid = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
     const oid = req.params.id;
 
-    const data = await OPT.getUserOrderedProductsByid(_id as string, oid);
+    const data = await OrderDetails.getUserOrderDetailsByid(_id as string, oid);
     if (!data) {
       return res.status(404).json({
         message: `no current orders being processed`,
@@ -91,10 +67,9 @@ const getUserOrderedProductsByid = asyncWrapper(
 
 // method => PUT /user/account/orders/:oid/products/:pid
 // desc   => Update a specific Order.
-const updateUserOrderedProduct = asyncWrapper(
+const updateUserOrderDetails = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
-    const pId = req.params.pid;
     const oId = req.params.oid;
     const quantity = parseInt(req.body.quantity);
 
@@ -102,8 +77,8 @@ const updateUserOrderedProduct = asyncWrapper(
       return res.status(400).json({ message: "quantity not provided" });
     }
 
-    const op = await OPT.updateUserOrderedProduct(
-      { order_id: oId, product_id: pId, quantity: quantity },
+    const op = await OrderDetails.updateUserOrderDetails(
+      { _id: oId, order_info: {} },
       _id as string
     );
     if (!op) {
@@ -114,14 +89,14 @@ const updateUserOrderedProduct = asyncWrapper(
   }
 );
 
-// method => DELETE /user/account/ordered-products/:id
+// method => DELETE /user/account/order-details/:id
 // desc   => Delete a specific Order.
-const delUserOrderedProduct = asyncWrapper(
+const delUserOrderDetails = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
     const oId = req.params.id;
 
-    const op = await OPT.delUserOrderedProduct({ order_id: oId }, _id as string);
+    const op = await OrderDetails.delUserOrderDetails({ _id: oId }, _id as string);
     if (!op) {
       return res.status(404).json({ message: `order not found` });
     }
@@ -133,9 +108,8 @@ const delUserOrderedProduct = asyncWrapper(
 export {
   getAll,
   getOneById,
-  addProducts,
-  getUserOrderedProducts,
-  getUserOrderedProductsByid,
-  updateUserOrderedProduct,
-  delUserOrderedProduct,
+  getUserOrderDetails,
+  getUserOrderDetailsByid,
+  updateUserOrderDetails,
+  delUserOrderDetails,
 };
