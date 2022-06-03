@@ -1,30 +1,38 @@
 import { Request, Response } from "express";
 import { Product } from "../models/products";
 import asyncWrapper from "../../middlewares/asyncWrapper";
+import cloudinary from "../cloudinary/cloudinary";
 
 // method => POST /products
 // desc   => Create new product data.
 const createProducts = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
-    const { name, brand, imageUrl, description, color } = req.body;
+    const { name, brand, image, description, color } = req.body;
     const price = parseInt(req.body.price);
     const category = req.body.category.toLowerCase();
 
-    if (!category || !name || !brand || !imageUrl || !price || price <= 0) {
-      return res.status(400).json({ message: "Please enter a valid details before submiting" });
+    if (!category || !name || !brand || !image || !price || price <= 0) {
+      return res.status(400).json({ message: "Please complete the form before submiting" });
     }
 
-    const product = await Product.create({
-      category: category,
-      p_name: name,
-      brand: brand,
-      price: price,
-      image_url: imageUrl,
-      description: description || "No description!",
-      color: color || "N/A",
-    });
-
-    res.status(201).json(product);
+    if (image) {
+      const uploadedImg = await cloudinary.uploader.upload(image, {
+        upload_preset: "TechStore",
+        overwrite: true,
+      });
+      if (uploadedImg) {
+        const product = await Product.create({
+          category: category,
+          name: name,
+          brand: brand,
+          price: price,
+          image: uploadedImg.secure_url,
+          description: description || "No description!",
+          color: color || "N/A",
+        });
+        res.status(201).json(product);
+      }
+    }
   }
 );
 
@@ -94,4 +102,9 @@ const deleteProduct = asyncWrapper(
   }
 );
 
-export { createProducts, getProducts, getProductById, updateProduct, deleteProduct };
+const deleteAll = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
+  await Product.deleteAll();
+  res.status(200).json({ message: "delete all success" });
+});
+
+export { createProducts, getProducts, getProductById, updateProduct, deleteProduct, deleteAll };

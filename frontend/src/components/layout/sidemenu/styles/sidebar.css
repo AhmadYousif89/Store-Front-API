@@ -49,6 +49,6 @@
   opacity: 0.5;
 }
 
-.active {
+.sidebar-link.active {
   color: rgb(36, 120, 179);
 }

@@ -13,7 +13,7 @@ const register = createAsyncThunk(
   "user/register",
   async (user: Users, thunkAPI) => {
     try {
-      const response = await axios.post(`${API_URL}/register`, user);
+      const response = await axios.post(`${API_URL}/auth/register`, user);
       response.data &&
         localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
@@ -30,7 +30,7 @@ const register = createAsyncThunk(
 // Login user
 const login = createAsyncThunk("user/login", async (user: Users, thunkAPI) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, user);
+    const response = await axios.post(`${API_URL}/auth/login`, user);
     response.data &&
       localStorage.setItem("user", JSON.stringify(response.data));
     return response.data;
@@ -43,17 +43,35 @@ const login = createAsyncThunk("user/login", async (user: Users, thunkAPI) => {
   }
 });
 
+// Logout user
+const logout = createAsyncThunk(
+  "user/logout",
+  async (_, thunkAPI: RootStateOrAny) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await axios.delete(`${API_URL}/auth/logout`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (err) {
+      const message =
+        (err as any).response.data.message ||
+        (err as any).response.data ||
+        (err as any).response;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
 // Update user
 const update = createAsyncThunk(
-  `user/account/update`,
-  async (password: string, thunkAPI: RootStateOrAny) => {
+  `user/account/update-password`,
+  async (password: object, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt;
+      const token = thunkAPI.getState().auth.user.token;
       const response = await axios.put(`${API_URL}/users/me`, password, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      response.data &&
-        localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (err) {
       const message =
@@ -70,29 +88,8 @@ const delUser = createAsyncThunk(
   `user/account/delete`,
   async (_, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt;
+      const token = thunkAPI.getState().auth.user.token;
       const response = await axios.delete(`${API_URL}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      response.data && localStorage.removeItem("user");
-      return response.data;
-    } catch (err) {
-      const message =
-        (err as any).response.data.message ||
-        (err as any).response.data ||
-        (err as any).response;
-      return thunkAPI.rejectWithValue(message);
-    }
-  },
-);
-
-// Logout user
-const logout = createAsyncThunk(
-  "user/logout",
-  async (_, thunkAPI: RootStateOrAny) => {
-    try {
-      const token = thunkAPI.getState().auth.user.jwt;
-      const response = await axios.post(`${API_URL}/logout`, null, {
         headers: { Authorization: `Bearer ${token}` },
       });
       response.data && localStorage.removeItem("user");
@@ -165,7 +162,31 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = null;
+        localStorage.removeItem("user");
         toast.info(action.payload, { position: "top-center" });
+      });
+    builder
+      .addCase(update.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = null;
+        localStorage.removeItem("user");
+        toast.success(
+          `
+          ${action.payload.message}
+           please re-login with your new password`,
+          {
+            position: "top-center",
+          },
+        );
+      })
+      .addCase(update.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        toast.error(action.payload as string);
       });
   },
 });

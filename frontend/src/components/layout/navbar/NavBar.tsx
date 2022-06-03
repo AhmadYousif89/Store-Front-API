@@ -1,11 +1,11 @@
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
-import { logout, reset } from "../../redux/features/users/userSlice";
+import { logout, reset } from "../../../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import CartIcon from "../utils/CartIcon";
+import CartIcon from "../../utils/CartIcon";
 import * as FaIcons from "react-icons/fa";
-import ToggleTheme from "./ToggleTheme";
-import Sidebar from "./Sidebar";
-import Spinner from "../utils/Spinner";
+import ToggleTheme from "../apptheme/ToggleTheme";
+import Sidebar from "../sidemenu/Sidebar";
+import Spinner from "../../utils/Spinner";
 import "./styles/navBar.css";
 
 function NavBar() {
@@ -37,24 +37,19 @@ function NavBar() {
       </div>
       <ul>
         {user ? (
-          user.jwt ? (
+          user.token ? (
             <ul className="nav-menu">
+              {user.isadmin && <p>Admin</p>}
               <Sidebar />
-              <li>
-                <CartIcon totalQuantity={totalQuantity} />
-              </li>
-              <li>
-                <div className="logout" onClick={handleLogOut}>
-                  Logout <FaIcons.FaSignOutAlt />
-                </div>
-              </li>
+              <CartIcon totalQuantity={totalQuantity} />
+              <div className="logout" onClick={handleLogOut}>
+                Logout <FaIcons.FaSignOutAlt />
+              </div>
             </ul>
           ) : null
         ) : (
           <ul className="nav-menu">
-            <li>
-              <CartIcon totalQuantity={totalQuantity} />
-            </li>
+            <CartIcon totalQuantity={totalQuantity} />
             <li>
               <Link className="icon" to="/register">
                 <FaIcons.FaUser /> Register

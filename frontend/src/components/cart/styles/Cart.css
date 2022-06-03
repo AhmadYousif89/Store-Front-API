@@ -1,64 +1,56 @@
 .cart-container {
   max-width: 1200px;
+  margin-top: 2rem;
   margin-inline: auto;
 }
 
-.cart-items-container {
+.cart-wrapper {
   display: grid;
-  padding: 0 2rem;
-  margin-block: 2rem;
-  border-radius: 5px;
-  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5),
-    2px 2px 10px rgba(83, 79, 79, 0.5);
-}
-
-.cart-item {
-  display: grid;
+  grid-template-rows: auto 1fr;
   grid-template-columns: repeat(4, 1fr);
-  /* align-items: start; */
-  gap: 1rem;
+  box-shadow: 0px 0px 5px 0px #ccc;
+  padding: 0 5rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
 }
 
 .cart-header {
-  align-self: start;
   display: grid;
-  grid-template-rows: 100px 1fr;
-}
-
-.cart-item {
-  display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
   justify-items: center;
-  padding: 2rem 1rem;
-}
-
-.item-card {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  text-align: left;
+  grid-template-columns: repeat(4, 1fr);
+  margin-block: 2rem;
+  grid-column: 1/5;
 }
 
 .item-details {
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
+  align-items: center;
+  margin-block: 2rem;
+  grid-column: 1/5;
 }
 
-#item-brand {
+.item-info {
+  display: flex;
+  gap: 1rem;
+}
+
+.item-image {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item-brand {
   color: #5f808e;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 1.5px;
 }
-#item-name {
-  font-size: 0.9rem;
-}
-#item-color {
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
-}
-#item-btn {
+
+.item-btn {
   margin-top: auto;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -66,47 +58,45 @@
   cursor: pointer;
   border: 0;
 }
-#item-btn span {
-  color: #558aa1;
-}
-#item-btn span:hover {
-  color: rgba(255, 0, 0, 0.5);
+.item-btn:hover {
+  color: red;
+  opacity: 0.8;
 }
 
-#item-price {
+.item-price {
   display: flex;
   justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
   gap: 0.3rem;
 }
-#item-price span {
+.item-price span {
   font-weight: normal;
   font-size: 0.8rem;
 }
 
-#item-quantity {
+.item-quantity {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
 }
-#item-quantity svg {
+.item-quantity svg {
   transform: scale(2);
   cursor: pointer;
 }
-#item-quantity svg:hover {
+.item-quantity svg:hover {
   color: #777;
 }
 
-#item-total {
+.item-total {
   display: flex;
   justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
   gap: 0.3rem;
 }
-#item-total span {
+.item-total span {
   font-weight: normal;
   font-size: 0.8rem;
 }
@@ -175,6 +165,10 @@
 .checkout-btn:hover {
   cursor: pointer;
   opacity: 0.7;
+}
+
+.cart-empty {
+  margin-top: 3rem;
 }
 
 @media screen and (max-width: 768px) {

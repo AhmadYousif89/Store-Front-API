@@ -1,7 +1,7 @@
 import { PoolClient } from "pg";
 import pgClient from "../../db/database";
-import { Users, UserToken } from "../../types/types";
-import { encrypt, customErr, isPasswordValide } from "../../helpers/control";
+import { Users } from "../../types/types";
+import { encrypt, customErr, isPasswordValide, generateAccessToken } from "../../helpers/control";
 
 class UserModel {
   conct!: PoolClient;
@@ -9,11 +9,26 @@ class UserModel {
   async create(user: Users): Promise<Users> {
     try {
       this.conct = await pgClient.connect();
-      const sql = `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING _id, name, email`;
+      let sql = `
+      INSERT INTO users 
+      (name, email, password, isadmin) 
+      VALUES ($1, $2, $3, $4) 
+      RETURNING _id, name, email, isadmin`;
       const hashedPassword = encrypt(user.password as string);
-      const query = await this.conct.query(sql, [user.name, user.email, hashedPassword]);
+      const query = await this.conct.query(sql, [
+        user.name,
+        user.email,
+        hashedPassword,
+        user.isadmin,
+      ]);
+      const { _id, name, email, isadmin } = query.rows[0] as Users;
+      const token = generateAccessToken({ _id, name, email, isadmin });
+      sql = `
+      UPDATE users SET token = ($1) 
+      WHERE _id = ($2) RETURNING _id, name, email, isadmin, token`;
+      const _user = await this.conct.query(sql, [token, _id]);
       this.conct.release();
-      return query.rows[0];
+      return _user.rows[0];
     } catch (err) {
       this.conct.release();
       if ((err as Error).message?.includes("unique_user_email")) {
@@ -28,7 +43,7 @@ class UserModel {
   async index(): Promise<Users[]> {
     try {
       this.conct = await pgClient.connect();
-      const sql = `SELECT _id, name, email FROM users`;
+      const sql = `SELECT _id, name, email, isadmin FROM users`;
       const query = await this.conct.query(sql);
       this.conct.release();
       return query.rows;
@@ -41,7 +56,7 @@ class UserModel {
   async show({ _id }: Users): Promise<Users | string> {
     try {
       this.conct = await pgClient.connect();
-      const sql = `SELECT _id, name, email FROM users WHERE _id = ($1) `;
+      const sql = `SELECT _id, name, email, isadmin FROM users WHERE _id = ($1) `;
       const query = await this.conct.query(sql, [_id]);
       this.conct.release();
       return query.rows[0];
@@ -51,12 +66,25 @@ class UserModel {
     }
   }
 
-  async update({ _id, password }: Users): Promise<Users> {
+  async updatePassword({ _id, password }: Users): Promise<Users> {
     try {
       this.conct = await pgClient.connect();
       const sql = `UPDATE users SET password = ($2) WHERE _id = ($1)`;
       const hash = encrypt(password as string);
       const query = await this.conct.query(sql, [_id, hash]);
+      this.conct.release();
+      return query.rows[0];
+    } catch (err) {
+      this.conct.release();
+      throw new Error(`${err}`);
+    }
+  }
+
+  async updateAdminState({ _id, isadmin }: Users): Promise<Users> {
+    try {
+      this.conct = await pgClient.connect();
+      const sql = `UPDATE users SET isadmin = ($2) WHERE _id = ($1)`;
+      const query = await this.conct.query(sql, [_id, isadmin]);
       this.conct.release();
       return query.rows[0];
     } catch (err) {
@@ -95,10 +123,15 @@ class UserModel {
       }
       const hashed = query.rows[0].password;
       if (isPasswordValide(password as string, hashed)) {
-        const sql = `SELECT _id, name, email FROM users WHERE email = ($1)`;
+        let sql = `SELECT _id, name, email, isadmin FROM users WHERE email = ($1)`;
         const user = await this.conct.query(sql, [email]);
+        const token = generateAccessToken(user.rows[0]);
+        sql = `
+        UPDATE users SET token = ($1) WHERE email = ($2) 
+        RETURNING _id, name, email, isadmin, token`;
+        const loggedUser = await this.conct.query(sql, [token, email]);
         this.conct.release();
-        return user.rows[0];
+        return loggedUser.rows[0];
       }
       return null;
     } catch (err) {
@@ -112,25 +145,10 @@ class UserModel {
     }
   }
 
-  async addUserToken({ _id, token }: UserToken): Promise<UserToken> {
+  async delUserToken({ _id }: Users): Promise<Users> {
     try {
       this.conct = await pgClient.connect();
-      const sql1 = `INSERT INTO user_tokens (_id, token) VALUES ($1, $2) ON CONFLICT DO NOTHING`;
-      await pgClient.query(sql1, [_id, token]);
-      const sql2 = `UPDATE user_tokens SET token = ($2) , i_at = NOW() WHERE _id = ($1)`;
-      const query = await pgClient.query(sql2, [_id, token]);
-      this.conct.release();
-      return query.rows[0];
-    } catch (err) {
-      this.conct.release();
-      throw new Error(`${err}`);
-    }
-  }
-
-  async delUserToken({ _id }: UserToken): Promise<UserToken> {
-    try {
-      this.conct = await pgClient.connect();
-      const sql = `DELETE FROM user_tokens WHERE _id = ($1) RETURNING _id`;
+      const sql = `UPDATE users SET token = '' WHERE _id = ($1)`;
       const query = await pgClient.query(sql, [_id]);
       this.conct.release();
       return query.rows[0];

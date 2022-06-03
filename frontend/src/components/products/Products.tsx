@@ -3,7 +3,6 @@ import {
   reset,
 } from "../../redux/features/products/productSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
-import { addToCart } from "../../redux/features/users/cartSlice";
 import { useEffect } from "react";
 import Spinner from "../utils/Spinner";
 import ProductList from "./ProductList";
@@ -23,10 +22,6 @@ function Products() {
     };
   }, [dispatch]);
 
-  const handleAddToCart = (product: object) => {
-    dispatch(addToCart(product));
-  };
-
   if (isLoading) return <Spinner />;
 
   return (
@@ -37,7 +32,7 @@ function Products() {
         {!products || products.length <= 0 ? (
           <h2 className="no-products">No products were found !</h2>
         ) : (
-          <ProductList addToCart={handleAddToCart} products={products} />
+          <ProductList products={products} />
         )}
       </section>
     </>

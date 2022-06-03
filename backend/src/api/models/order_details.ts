@@ -83,12 +83,12 @@ class Order_Details {
     }
   }
 
-  async delUserOrderDetails({ _id }: OrderDetail, userId: string): Promise<OrderDetail> {
+  async delUserOrderDetails({ customerId }: OrderDetail, userId: string): Promise<OrderDetail> {
     try {
       this.conct = await pgClient.connect();
-      const sql = "SELECT user_id FROM orders WHERE _id = ($1)";
-      const query = await this.conct.query(sql, [_id]);
-      const user_id = query.rows[0].user_id;
+      const sql = "SELECT user_id FROM orders WHERE user_id = ($1)";
+      const query = await this.conct.query(sql, [userId]);
+      const user_id = query.rows[0];
       if (user_id !== userId) {
         throw new Error(`invalid user signature`);
       }
@@ -98,8 +98,8 @@ class Order_Details {
     }
     try {
       this.conct = await pgClient.connect();
-      const sql = `DELETE FROM order_details WHERE _id = ($1) RETURNING order_id`;
-      const query = await this.conct.query(sql, [_id]);
+      const sql = `DELETE FROM order_details WHERE customerId = ($1) RETURNING customerId`;
+      const query = await this.conct.query(sql, [customerId]);
       const order = query.rows[0];
       this.conct.release();
       return order;
@@ -109,11 +109,11 @@ class Order_Details {
     }
   }
 
-  async getUserOrderDetails<T>(uid: string): Promise<T[] | null> {
+  async getUserOrderDetails<T>({ _id }: OrderDetail): Promise<T[] | null> {
     try {
       this.conct = await pgClient.connect();
       const sql = `SELECT * FROM order_details WHERE _id = ($1)`;
-      const result = await this.conct.query(sql, [uid]);
+      const result = await this.conct.query(sql, [_id]);
       if (result.rows.length) {
         this.conct.release();
         return result.rows;

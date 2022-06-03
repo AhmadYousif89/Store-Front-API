@@ -38,7 +38,7 @@ const getUserOrderDetails = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
 
-    const data = await OrderDetails.getUserOrderDetails(_id as string);
+    const data = await OrderDetails.getUserOrderDetails({ _id });
     if (!data) {
       return res.status(404).json({ message: "no current orders being processed" });
     }
@@ -94,9 +94,9 @@ const updateUserOrderDetails = asyncWrapper(
 const delUserOrderDetails = asyncWrapper(
   async (req: Request, res: Response): Promise<void | Response> => {
     const { _id } = req.user as Users;
-    const oId = req.params.id;
+    const cId = req.params.id;
 
-    const op = await OrderDetails.delUserOrderDetails({ _id: oId }, _id as string);
+    const op = await OrderDetails.delUserOrderDetails({ customerId: cId }, _id as string);
     if (!op) {
       return res.status(404).json({ message: `order not found` });
     }

@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { RootStateOrAny } from "react-redux";
+import { toast } from "react-toastify";
 import { Products } from "../../../types/types";
 const API_URL = "/api/products";
 
@@ -46,8 +48,29 @@ const getProduct = createAsyncThunk(
   },
 );
 
+// Create product
+const createProduct = createAsyncThunk(
+  "products/create-product",
+  async (product: Products, thunkAPI: RootStateOrAny) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      const response = await axios.post(API_URL, product, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (err) {
+      const message =
+        (err as any).response.data.message ||
+        (err as any).response.data ||
+        (err as any).response;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
 const initialState = {
   products: [] as unknown as [Products],
+  createdProduct: null,
   filtered: [],
   isError: false,
   isSuccess: false,
@@ -61,7 +84,7 @@ const productSlice = createSlice({
     reset: () => initialState,
     searchByName: (state, action) => {
       state.filtered = state.products.filter((product) =>
-        product.p_name?.toLowerCase().includes(action.payload),
+        product.name?.toLowerCase().includes(action.payload),
       ) as [];
     },
   },
@@ -94,10 +117,26 @@ const productSlice = createSlice({
         state.isError = true;
         state.products = [localProduct];
       });
+    builder
+      .addCase(createProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.createdProduct = action.payload;
+        toast.success("Product created");
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.createdProduct = null;
+        toast.error(action.payload as string);
+      });
   },
 });
 
 export const { reset, searchByName } = productSlice.actions;
 
-export { getAllProducts, getProduct };
+export { getAllProducts, getProduct, createProduct };
 export default productSlice.reducer;

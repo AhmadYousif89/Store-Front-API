@@ -1,32 +1,35 @@
+import { addToCart, stripCheckout } from "../../redux/features/users/cartSlice";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { FaShopify, FaShoppingCart } from "react-icons/fa";
 import { AiOutlineTag } from "react-icons/ai";
-import { FaShoppingCart } from "react-icons/fa";
-import { IoIosColorPalette } from "react-icons/io";
-import { Link } from "react-router-dom";
 import { Products } from "../../types/types";
+import { Link } from "react-router-dom";
 import "./styles/products.css";
+import { MdInvertColors } from "react-icons/md";
 
 type Props = {
   products: [Products];
-  addToCart: (product: object) => void;
 };
 
-function ProductList({ addToCart, products }: Props) {
+function ProductList({ products }: Props) {
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state: RootStateOrAny) => state.cart);
+
   return (
     <section className="products">
       {products.map((product) => {
-        const { _id, p_name, brand, price, color, image_url, description } =
-          product;
+        const { _id, name, brand, price, color, image, description } = product;
         return (
           <ul className="product-card" key={_id}>
             <div className="card-details">
-              <div id="img-card">
+              <div className="img-card">
                 <Link to={`/products/${_id}`}>
-                  <img src={image_url} alt={p_name} />
+                  <img src={image} alt={name} />
                 </Link>
               </div>
               <div className="product-info">
                 <p id="brand">{brand?.toUpperCase()}</p>
-                <p id="p-name">{p_name}</p>
+                <p id="p-name">{name}</p>
                 <p id="p-desc">{description}</p>
                 <div className="price-color">
                   <div className="price-tag">
@@ -34,13 +37,29 @@ function ProductList({ addToCart, products }: Props) {
                     <span id="price">{price}</span>
                   </div>
                   <div className="color-tag">
-                    <IoIosColorPalette />
-                    <p id="color">{color}</p>
+                    <p id="color">Color</p>
+                    <MdInvertColors
+                      style={{ color: color ? color : "black" }}
+                    />
                   </div>
                 </div>
-                <button className="btn-card" onClick={() => addToCart(product)}>
-                  <FaShoppingCart /> Add to cart
-                </button>
+                <div className="shop-btn">
+                  <button
+                    className="btn-card"
+                    onClick={() => dispatch(addToCart(product))}>
+                    <FaShoppingCart /> Add to cart
+                  </button>
+                  <button
+                    className="btn-card"
+                    onClick={() => {
+                      dispatch(addToCart(product));
+                      setTimeout(() => {
+                        dispatch(stripCheckout({ cart }));
+                      }, 1000);
+                    }}>
+                    <FaShopify /> Buy Now
+                  </button>
+                </div>
               </div>
             </div>
           </ul>

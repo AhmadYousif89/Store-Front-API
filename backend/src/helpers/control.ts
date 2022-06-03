@@ -4,7 +4,7 @@ import { Users } from "../types/types";
 
 const { SALT, PEPPER, SECRET_TOKEN } = process.env;
 
-const jwtGenerator = (user: Users): string => {
+const generateAccessToken = (user: Users): string => {
   const token = jwt.sign(user, SECRET_TOKEN as string, { expiresIn: "30d" });
   return token;
 };
@@ -28,4 +28,4 @@ const validateEmail = (email: string): boolean => {
   return emailPattern.test(email);
 };
 
-export { encrypt, isPasswordValide, customErr, validateEmail, jwtGenerator };
+export { encrypt, isPasswordValide, customErr, validateEmail, generateAccessToken };

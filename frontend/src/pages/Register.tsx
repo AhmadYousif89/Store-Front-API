@@ -1,13 +1,12 @@
 import { reset, register } from "../redux/features/users/userSlice";
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../components/utils/Spinner";
 import { IoPersonCircleOutline } from "react-icons/io5";
 
 function Register() {
-  const nameRef = useRef<HTMLInputElement>(null);
   const [userForm, setUserForm] = useState({
     name: "",
     email: "",
@@ -27,7 +26,6 @@ function Register() {
     if (user) {
       navigate(`/products`);
     }
-    nameRef.current?.focus();
     return () => {
       dispatch(reset());
     };
@@ -59,71 +57,53 @@ function Register() {
 
   return (
     <>
-      <section className="heading">
+      <div className="heading">
         <h1>Create new account </h1>
         <p>FREE REGISTERATION</p>
-      </section>
-      <section className="form">
-        <form onSubmit={handleSubmit}>
-          <div className="form-content">
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  name="name"
-                  value={name}
-                  ref={nameRef}
-                  placeholder="Enter your name"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  value={email}
-                  placeholder="Enter your email"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  value={password}
-                  placeholder="Enter password"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password2"
-                  name="password2"
-                  value={password2}
-                  placeholder="Confirm password"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <button type="submit" className="btn btn-block">
-                S U B M I T
-              </button>
-            </div>
+      </div>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-content">
+          <div className="form-group">
+            <input
+              type="text"
+              name="name"
+              value={name}
+              autoFocus={true}
+              placeholder="Enter your name"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              value={email}
+              placeholder="Enter your email"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              value={password}
+              placeholder="Enter password"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password2"
+              value={password2}
+              placeholder="Confirm password"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <button type="submit" className="btn btn-block">
+              S U B M I T
+            </button>
           </div>
           <p className="form-link">
             Already have an account ?
@@ -131,8 +111,8 @@ function Register() {
               LOGIN <IoPersonCircleOutline />
             </Link>
           </p>
-        </form>
-      </section>
+        </div>
+      </form>
     </>
   );
 }

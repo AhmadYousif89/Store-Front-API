@@ -1,6 +1,6 @@
 import { MdDeleteForever } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { Orders } from "../../types/types";
+import { Orders } from "../../../types/types";
 
 type Props = {
   orders: [Orders];

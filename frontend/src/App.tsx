@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Cart from "./components/cart/Cart";
-import Orders from "./components/orders/Orders";
+import Orders from "./components/dashboard/orders/Orders";
 import Products from "./components/products/Products";
 import SingleProduct from "./components/products/SingleProduct";
 
@@ -20,6 +20,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import Profile from "./components/dashboard/profile/Profile";
+import CreateProduct from "./components/dashboard/products/CreateProduct";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,8 +56,11 @@ function App() {
             element={<Cart cart={cart} totalAmount={totalAmount} />}
           />
           <Route path="checkout-success" element={<CheckoutSuccess />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="dashboard/orders" element={<Orders />} />
+          <Route path="dashboard" element={<Dashboard />}>
+            <Route path="profile" element={<Profile />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="create-product" element={<CreateProduct />} />
+          </Route>
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<About />} />
           <Route path="*" element={<NotFound />} />

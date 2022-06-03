@@ -19,11 +19,11 @@ function ShoppingCart(props: { cart: []; totalAmount: number }) {
   }, [props.cart, dispatch]);
 
   return (
-    <section className="cart-container">
-      <h1 className="cart-titel">Shopping Cart</h1>
+    <>
+      <h2>Shopping Cart</h2>
       {!cart.length ? (
         <div className="cart-empty">
-          <p>Your cart is currently empty . . . </p>
+          <p>Your cart is currently empty</p>
           <img src={emptyCartImg} alt="empty-cart" width={"400px"} />
           <p className="go_back" onClick={() => navigate("/products")}>
             <Hi.HiArrowNarrowLeft /> Start Shopping
@@ -32,7 +32,7 @@ function ShoppingCart(props: { cart: []; totalAmount: number }) {
       ) : (
         <CartList cart={cart} totalAmount={totalAmount} />
       )}
-    </section>
+    </>
   );
 }
 

@@ -10,17 +10,16 @@ class ProductModel {
     try {
       this.conct = await pgClient.connect();
       const sql = `
-      INSERT INTO products (category, p_name, brand, color, price, image_url, description)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *
-      `;
+      INSERT INTO products 
+      (category, name, brand, color, price, image, description)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
       const result = await this.conct.query(sql, [
         values.category,
-        values.p_name,
+        values.name,
         values.brand,
         values.color,
         values.price,
-        values.image_url,
+        values.image,
         values.description,
       ]);
       const product = result.rows[0];
@@ -28,16 +27,7 @@ class ProductModel {
       return product;
     } catch (err) {
       this.conct.release();
-      if ((err as Error).message?.includes("enum category")) {
-        this.errMsg = customErr(
-          err as Error,
-          "Please enter category between (electronics) and (mobiles) !.",
-          "."
-        );
-      } else {
-        this.errMsg = err as string;
-      }
-      throw new Error(`${this.errMsg}`);
+      throw new Error(`${err}`);
     }
   }
 
@@ -102,6 +92,16 @@ class ProductModel {
         this.errMsg = err as string;
       }
       throw new Error(`${this.errMsg}`);
+    }
+  }
+
+  async deleteAll(): Promise<void> {
+    try {
+      this.conct = await pgClient.connect();
+      await this.conct.query(`DELETE FROM products`);
+      this.conct.release();
+    } catch (err) {
+      throw new Error(`${err}`);
     }
   }
 }

@@ -1,0 +1,22 @@
+.form {
+  padding: 0.75rem;
+  border-radius: 5px;
+  align-self: center;
+  border-bottom: 1px solid #e6e6e6;
+  box-shadow: 0px 0px 05px rgb(233, 230, 230),
+    0px 0px 5px rgba(116, 113, 113, 0.813);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+}
+
+.form-content {
+  padding: 0.5rem;
+}

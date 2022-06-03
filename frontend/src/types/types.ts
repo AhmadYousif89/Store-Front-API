@@ -3,16 +3,17 @@ type Users = {
   name?: string;
   email?: string;
   password?: string;
+  isAdmin?: boolean;
 };
 
 type Products = {
   _id?: string;
   category?: string;
-  p_name?: string;
+  name?: string;
   brand?: string;
   color?: string;
   price?: number;
-  image_url?: string;
+  image?: string;
   description?: string;
 };
 

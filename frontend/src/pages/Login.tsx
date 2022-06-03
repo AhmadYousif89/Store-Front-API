@@ -1,18 +1,18 @@
 import { useSelector, useDispatch, RootStateOrAny } from "react-redux";
 import { login, reset } from "../redux/features/users/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Spinner from "../components/utils/Spinner";
 import { IoCreateOutline } from "react-icons/io5";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const emailRef = useRef<HTMLInputElement>(null);
   const [userForm, setUserForm] = useState({
     email: "",
     password: "",
   });
+
   const { email, password } = userForm;
 
   const { user, isLoading } = useSelector(
@@ -23,7 +23,6 @@ function Login() {
     if (user) {
       navigate(`/products`);
     }
-    emailRef.current?.focus();
     return () => {
       dispatch(reset());
     };
@@ -54,41 +53,31 @@ function Login() {
         <h1>TechStore</h1>
         <p>Login to your account</p>
       </div>
-      <section className="form">
-        <form onSubmit={handleSubmit}>
-          <div className="form-content">
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  value={email}
-                  ref={emailRef}
-                  placeholder="Enter your email"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <div className="input-icon">
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  value={password}
-                  placeholder="Enter password"
-                  onChange={handleForm}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <button type="submit" className="btn btn-block">
-                L O G I N
-              </button>
-            </div>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-content">
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              value={email}
+              autoFocus={true}
+              placeholder="Enter your email"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              value={password}
+              placeholder="Enter password"
+              onChange={handleForm}
+            />
+          </div>
+          <div className="form-group">
+            <button type="submit" className="btn btn-block">
+              L O G I N
+            </button>
           </div>
           <p className="form-link">
             Don't have an account ?
@@ -97,8 +86,8 @@ function Login() {
               <IoCreateOutline />
             </Link>
           </p>
-        </form>
-      </section>
+        </div>
+      </form>
     </>
   );
 }

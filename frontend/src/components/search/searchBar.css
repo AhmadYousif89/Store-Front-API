@@ -1,0 +1,26 @@
+.search-bar {
+  border-radius: 5px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.19);
+}
+
+.search-bar svg {
+  transform: scale(1.25);
+  color: #2c709b;
+}
+.search-bar input {
+  border: none;
+  outline: none;
+  background-color: #f6f7fb;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+#delete-icon:hover {
+  cursor: pointer;
+  color: #777;
+  transition: 100ms linear;
+}

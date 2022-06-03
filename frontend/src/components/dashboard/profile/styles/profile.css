@@ -1,0 +1,41 @@
+.profile-container {
+  display: grid;
+  align-content: flex-start;
+  height: calc(100vh - 10rem);
+  max-width: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 0px 3px rgb(44, 43, 43), 0px 0px 2px #369de1;
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.title-change-password {
+  margin-bottom: 3rem;
+}
+
+.user-profile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1rem;
+  gap: 5rem;
+}
+
+.user-info-container {
+  display: grid;
+}
+.title-user-info {
+  margin-bottom: 1rem;
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  box-shadow: 0px 0px 3px rgb(44, 43, 43), 0px 0px 2px #369de1;
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.user-btn {
+  margin-top: 2rem;
+}

@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import { getUserOrders, reset } from "../../redux/features/orders/orderSlice";
+import {
+  getUserOrders,
+  reset,
+} from "../../../redux/features/orders/orderSlice";
 import { useSelector, RootStateOrAny, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "../utils/Spinner";
+import Spinner from "../../utils/Spinner";
 import "./styles/Orders.css";
 import OrdersList from "./OrdersList";
-import { FaArrowLeft } from "react-icons/fa";
 
 function Orders() {
   const dispatch = useDispatch();
@@ -32,20 +34,15 @@ function Orders() {
 
   return (
     <>
-      <section className="container">
-        <div className="heading">
-          <h1>My Orders</h1>
-        </div>
-        <section className="content">
-          {!orders.length ? (
-            <h3>You don't have any orders...</h3>
-          ) : (
+      <section className="orders-container">
+        {!orders.length ? (
+          <h3>You don't have any orders...</h3>
+        ) : (
+          <>
+            <h1 className="title">Orders</h1>
             <OrdersList orders={orders} />
-          )}
-          <div className="go_back" onClick={() => navigate("/products")}>
-            <FaArrowLeft /> {!orders.length ? "Start Shopping" : "Back"}
-          </div>
-        </section>
+          </>
+        )}
       </section>
     </>
   );

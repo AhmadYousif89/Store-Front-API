@@ -1,5 +1,13 @@
-.container {
+.orders-container {
   display: grid;
+  justify-content: left;
+  align-content: flex-start;
+  height: calc(100vh - 10rem);
+  max-width: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 0px 3px rgb(44, 43, 43), 0px 0px 2px #369de1;
+  border-radius: 10px;
+  padding: 2rem;
 }
 
 .order-card {
@@ -39,4 +47,8 @@
 
 .order-btn-del:hover {
   color: darkred;
+}
+
+.go_back {
+  margin-block: 2rem;
 }

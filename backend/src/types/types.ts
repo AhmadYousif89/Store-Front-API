@@ -3,20 +3,17 @@ type Users = {
   name?: string;
   email?: string;
   password?: string;
-};
-type UserToken = {
-  _id?: string;
   token?: string;
-  i_at?: string;
+  isadmin?: boolean;
 };
 type Products = {
   _id?: string;
   category?: string;
-  p_name?: string;
+  name?: string;
   brand?: string;
   color?: string;
   price?: number;
-  image_url?: string;
+  image?: string | object;
   description?: string;
 };
 type Orders = {
@@ -41,4 +38,4 @@ type Error = {
   status?: number;
 };
 
-export { Users, UserToken, Orders, Products, OrderDetail, Error };
+export { Users, Orders, Products, OrderDetail, Error };

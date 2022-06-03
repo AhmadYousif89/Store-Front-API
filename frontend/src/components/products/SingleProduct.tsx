@@ -32,16 +32,16 @@ function SingleProduct() {
       </div>
       <section className="single-product">
         {products?.map((product: Products) => {
-          const { _id, p_name, brand, price, color, image_url, description } =
+          const { _id, name, brand, price, color, image, description } =
             product;
           return (
             <ul className="single-product-card" key={_id}>
               <div className="img-card">
-                <img src={image_url} alt={p_name} />
+                <img src={image} alt={name} />
               </div>
               <div className="product-details">
                 <p className="brand">{brand?.toUpperCase()}</p>
-                <p className="name">{p_name}</p>
+                <p className="name">{name}</p>
                 <p className="specs">
                   <span>Specs</span>
                   <span>{description}</span>

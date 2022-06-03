@@ -10,7 +10,6 @@ const stripe = new Stripe(STRIPE_SECRET_KEY as string, { apiVersion: "2020-08-27
 
 const createCheckoutSession = asyncWrapper(async (req: Request, res: Response) => {
   const user = req.user as Users;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const line_items = req.body.cartItems.map((item: any) => ({
     price_data: {
       currency: "usd",

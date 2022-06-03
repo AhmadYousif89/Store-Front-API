@@ -3,7 +3,10 @@
   flex-direction: column;
   align-items: center;
 }
-
+.product-info {
+  display: flex;
+  flex-direction: column;
+}
 .products {
   display: flex;
   flex-wrap: wrap;
@@ -23,14 +26,18 @@
 .card-details {
   display: flex;
   text-align: left;
+  align-items: center;
   gap: 2rem;
-  padding: 1rem;
 }
 @media (max-width: 480px) {
   .card-details {
     flex-direction: column;
     align-items: center;
   }
+}
+
+.img-card {
+  max-width: 220px;
 }
 
 .price-color {
@@ -88,23 +95,27 @@
   font-size: 1.1rem;
 }
 
+.shop-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 .btn-card {
   display: flex;
   align-items: center;
-  justify-content: space-around;
   margin-top: 1rem;
   padding: 0.5rem;
-  border: 1px solid #000;
   border-radius: 5px;
-  background: #000;
-  color: #fff;
+  outline: none;
+  background: rgb(231, 182, 6);
+  color: #000;
   cursor: pointer;
   font-size: 0.7rem;
-  width: 100%;
 }
 .btn-card:hover {
-  color: #ccc;
+  opacity: 0.9;
 }
+
 .btn-card svg {
   margin-right: 10px;
   font-size: 1rem;

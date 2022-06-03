@@ -5,16 +5,21 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
+  deleteAll,
 } from "../controllers/products";
-import authenticator from "../../middlewares/auth";
+import { adminAuth, userAuth } from "../../middlewares/auth";
 
 const routes = Router();
 
-routes.route("/products").get(getProducts).post(authenticator, createProducts);
+routes
+  .route("/products")
+  .get(getProducts)
+  .post(userAuth, adminAuth, createProducts)
+  .delete(userAuth, adminAuth, deleteAll);
 routes
   .route("/products/:id")
   .get(getProductById)
-  .put(authenticator, updateProduct)
-  .delete(authenticator, deleteProduct);
+  .put(userAuth, adminAuth, updateProduct)
+  .delete(userAuth, adminAuth, deleteProduct);
 
 export default routes;

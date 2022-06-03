@@ -1,4 +1,4 @@
-import { toggleTheme } from "../../redux/features/themes/themeSlice";
+import { toggleTheme } from "../../../redux/features/themes/themeSlice";
 import { useDispatch } from "react-redux";
 import * as FaIcons from "react-icons/fa";
 import "./styles/toggleTheme.css";

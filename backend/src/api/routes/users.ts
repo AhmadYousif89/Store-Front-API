@@ -1,17 +1,27 @@
 import { Router } from "express";
-import authenticator from "../../middlewares/auth";
-import { register, login, logout, getUsers, getMe, updateMe, deleteMe } from "../controllers/users";
+import { adminAuth, userAuth } from "../../middlewares/auth";
+import {
+  register,
+  login,
+  logout,
+  getUsers,
+  getMe,
+  updatePassword,
+  updateAdminState,
+  deleteMe,
+} from "../controllers/users";
 
 const routes = Router();
 
 routes.route("/users").get(getUsers);
 routes
   .route("/users/me")
-  .get(authenticator, getMe)
-  .put(authenticator, updateMe)
-  .delete(authenticator, deleteMe);
-routes.post("/register", register);
-routes.post("/login", login);
-routes.post("/logout", authenticator, logout);
+  .get(userAuth, getMe)
+  .put(userAuth, updatePassword)
+  .delete(userAuth, deleteMe);
+routes.put("/users/state", userAuth, adminAuth, updateAdminState);
+routes.post("/auth/register", register);
+routes.post("/auth/login", login);
+routes.delete("/auth/logout", userAuth, logout);
 
 export default routes;

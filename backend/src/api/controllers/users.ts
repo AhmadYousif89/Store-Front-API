@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { jwtGenerator, validateEmail } from "../../helpers/control";
+import { validateEmail } from "../../helpers/control";
 import asyncWrapper from "../../middlewares/asyncWrapper";
 import { Users } from "../../types/types";
 import { User } from "../models/users";
@@ -7,9 +7,10 @@ import { User } from "../models/users";
 // method => POST /register
 // desc   => Create new user data.
 const register = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const { name, email, password } = req.body;
+  const { name, email, password, isadmin } = req.body;
 
   const isEmailValid = validateEmail(email);
+
   if (!name) {
     return res.status(400).json({ message: "name is required" });
   } else if (!email) {
@@ -20,18 +21,9 @@ const register = asyncWrapper(async (req: Request, res: Response): Promise<void 
     return res.status(400).json({ message: "invalid email" });
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ name, email, password, isadmin: isadmin || false });
 
-  const token = jwtGenerator(user);
-  await User.addUserToken({
-    _id: user._id as string,
-    token,
-  });
-
-  res.status(201).json({
-    ...user,
-    jwt: token,
-  });
+  res.status(201).json({ ...user });
 });
 
 // method => POST /login
@@ -40,6 +32,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
   const { email, password } = req.body;
 
   const isEmailValid = validateEmail(email);
+
   if (!email) {
     return res.status(400).json({ message: "email is required" });
   } else if (!password) {
@@ -53,16 +46,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
     return res.status(401).json({ message: "invalid email or password" });
   }
 
-  const token = jwtGenerator(user);
-  await User.addUserToken({
-    _id: user._id as string,
-    token,
-  });
-
-  res.status(200).json({
-    ...user,
-    jwt: token,
-  });
+  res.status(200).json({ ...user });
 });
 
 // method => POST /logout
@@ -70,10 +54,7 @@ const login = asyncWrapper(async (req: Request, res: Response): Promise<void | R
 const logout = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
   const { _id } = req.user as Users;
 
-  const user = await User.delUserToken({ _id });
-  if (!user) {
-    return res.status(400).send();
-  }
+  await User.delUserToken({ _id });
 
   res.status(200).json("user logged out");
 });
@@ -101,18 +82,39 @@ const getMe = asyncWrapper(async (req: Request, res: Response): Promise<void | R
 
 // method => PUT /users/me
 // desc   => Update a specific user .
-const updateMe = asyncWrapper(async (req: Request, res: Response): Promise<void | Response> => {
-  const { _id } = req.user as Users;
+const updatePassword = asyncWrapper(
+  async (req: Request, res: Response): Promise<void | Response> => {
+    const { _id } = req.user as Users;
 
-  const { password } = req.body;
-  if (!password) {
-    return res.status(400).json({ message: "please enter your new password" });
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ message: "please enter your new password" });
+    }
+
+    await User.updatePassword({ _id, password: password });
+    res.status(200).json({ message: `update success` });
   }
+);
 
-  await User.update({ _id, password: password });
+// method => PUT /users/me
+// desc   => Update a specific user .
+const updateAdminState = asyncWrapper(
+  async (req: Request, res: Response): Promise<void | Response> => {
+    const { _id } = req.user as Users;
 
-  res.status(200).json({ message: `update success` });
-});
+    const { isadmin } = req.body;
+    if (!isadmin) {
+      return res.status(200).json({ message: "parameter not provided, state not changed" });
+    }
+    if (isadmin.includes("f")) {
+      await User.updateAdminState({ _id, isadmin });
+      return res.status(200).json({ message: "Admin access removed" });
+    }
+
+    await User.updateAdminState({ _id, isadmin });
+    res.status(200).json({ message: `Admin access granted` });
+  }
+);
 
 // method => DELETE /users/me
 // desc   => Delete a specific user.
@@ -120,8 +122,7 @@ const deleteMe = asyncWrapper(async (req: Request, res: Response): Promise<void 
   const { _id } = req.user as Users;
 
   const user = await User.delete({ _id });
-
   res.status(200).json({ message: `user deleted`, ...user });
 });
 
-export { register, login, logout, getUsers, getMe, updateMe, deleteMe };
+export { register, login, logout, getUsers, getMe, updatePassword, updateAdminState, deleteMe };

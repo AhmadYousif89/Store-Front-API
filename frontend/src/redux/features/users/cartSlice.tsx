@@ -4,36 +4,12 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const cart = JSON.parse(localStorage.getItem("cart") as string);
-const orders = JSON.parse(localStorage.getItem("orders") as string);
-
-const sendCartDetailsToDB = createAsyncThunk(
-  "cart/send-to-database",
-  async (productDetail: object, thunkAPI: RootStateOrAny) => {
-    try {
-      const token = thunkAPI.getState().auth.user.jwt;
-      const product = await axios.post(
-        `/api/user/account/orders/${orders.order_id}/products`,
-        productDetail,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      return product.data;
-    } catch (err) {
-      const message =
-        (err as any).response.data.message ||
-        (err as any).response.data ||
-        (err as any).response;
-      return thunkAPI.rejectWithValue(message);
-    }
-  },
-);
 
 const stripCheckout = createAsyncThunk(
   "cart/checkout",
   async (cartDetail: object, thunkAPI: RootStateOrAny) => {
     try {
-      const token = thunkAPI.getState().auth.user.jwt;
+      const token = thunkAPI.getState().auth.user.token;
       const response = await axios.post(`/api/stripe/checkout`, cartDetail, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -157,21 +133,6 @@ const cartSlice = createSlice({
         state.isError = true;
         toast.error(action.payload as string);
       });
-    builder
-      .addCase(sendCartDetailsToDB.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(sendCartDetailsToDB.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.cart = action.payload;
-        toast.success("product added to cart");
-      })
-      .addCase(sendCartDetailsToDB.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        toast.error(action.payload as string);
-      });
   },
 });
 
@@ -185,5 +146,5 @@ export const {
   emptyCart,
 } = cartSlice.actions;
 
-export { sendCartDetailsToDB, stripCheckout };
+export { stripCheckout };
 export default cartSlice.reducer;
