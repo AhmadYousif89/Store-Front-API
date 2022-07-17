@@ -4,7 +4,7 @@
   "description": "online mobile shop",
   "main": "index.js",
   "scripts": {
-    "deploy": "npm-run-all build",
+    "deploy": "npm-run-all install build",
     "install": "npm-run-all *:install",
     "frontend:install": "npm install --prefix frontend",
     "backend:install": "npm install --prefix backend",
