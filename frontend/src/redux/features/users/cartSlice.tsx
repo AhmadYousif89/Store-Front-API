@@ -1,12 +1,12 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RootStateOrAny } from "react-redux";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootStateOrAny } from 'react-redux';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
-const cart = JSON.parse(localStorage.getItem("cart") as string);
+const cart = JSON.parse(localStorage.getItem('cart') as string);
 
 const stripCheckout = createAsyncThunk(
-  "cart/checkout",
+  'cart/checkout',
   async (cartDetail: object, thunkAPI: RootStateOrAny) => {
     try {
       const token = thunkAPI.getState().auth.user.token;
@@ -37,14 +37,14 @@ const initialState = {
 };
 
 const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
-    reset: (state) => {
+    reset: state => {
       state.cart = [];
       state.totalAmount = 0;
       state.totalQuantity = 0;
-      localStorage.removeItem("cart");
+      localStorage.removeItem('cart');
     },
     addToCart: (state, action) => {
       const productIndex = state.cart.findIndex(
@@ -53,11 +53,11 @@ const cartSlice = createSlice({
       if (productIndex < 0) {
         const cartProduct = { ...action.payload, quantity: 1 };
         (state.cart as any[]).push(cartProduct);
-        localStorage.setItem("cart", JSON.stringify(state.cart));
+        localStorage.setItem('cart', JSON.stringify(state.cart));
         toast.success(`${action.payload.p_name} added to your cart`);
       } else {
         (state.cart[productIndex] as { quantity: number }).quantity += 1;
-        localStorage.setItem("cart", JSON.stringify(state.cart));
+        localStorage.setItem('cart', JSON.stringify(state.cart));
         toast.info(
           `(${(state.cart[productIndex] as { quantity: number }).quantity}) ${
             action.payload.p_name
@@ -65,7 +65,7 @@ const cartSlice = createSlice({
         );
       }
     },
-    displayCartInfo: (state) => {
+    displayCartInfo: state => {
       let { subtotal, quantity } = state.cart.reduce(
         (
           cart: { subtotal: number; quantity: number },
@@ -88,7 +88,7 @@ const cartSlice = createSlice({
         (product: { _id: string }) => product._id === action.payload._id,
       );
       (state.cart[productIndex] as { quantity: number }).quantity += 1;
-      localStorage.setItem("cart", JSON.stringify(state.cart));
+      localStorage.setItem('cart', JSON.stringify(state.cart));
     },
     decrement: (state, action) => {
       const productIndex = state.cart.findIndex(
@@ -103,7 +103,7 @@ const cartSlice = createSlice({
         state.cart = cartList;
         toast.error(`${action.payload.p_name} removed from cart`);
       }
-      localStorage.setItem("cart", JSON.stringify(state.cart));
+      localStorage.setItem('cart', JSON.stringify(state.cart));
     },
     removeProduct: (state, action) => {
       const cartList = state.cart.filter(
@@ -111,17 +111,17 @@ const cartSlice = createSlice({
       );
       state.cart = cartList;
       toast.error(`${action.payload.p_name} removed from cart`);
-      localStorage.setItem("cart", JSON.stringify(state.cart));
+      localStorage.setItem('cart', JSON.stringify(state.cart));
     },
-    emptyCart: (state) => {
+    emptyCart: state => {
       state.cart = [];
-      localStorage.removeItem("cart");
-      toast.success("shopping cart is empty");
+      localStorage.removeItem('cart');
+      toast.success('shopping cart is empty');
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(stripCheckout.pending, (state) => {
+      .addCase(stripCheckout.pending, state => {
         state.isLoading = true;
       })
       .addCase(stripCheckout.fulfilled, (state, action) => {
