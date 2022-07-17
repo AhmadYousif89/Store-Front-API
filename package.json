@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "deploy": "npm-run-all install build",
-    "install": "npm-run-all *:install",
-    "frontend:install": "npm install --prefix frontend",
-    "backend:install": "npm install --prefix backend",
-    "build": "npm-run-all *:build",
-    "frontend:build": "npm run build --prefix frontend",
-    "backend:build": "npm run build --prefix backend"
+    "install": "npm-run-all install:*",
+    "install:frontend": "npm install --prefix frontend",
+    "install:backend": "npm install --prefix backend",
+    "build": "npm-run-all build:*",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend"
   },
   "repository": {
     "type": "git",
